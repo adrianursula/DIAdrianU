@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador Discoteca v8.4 (Final) - Club Gemini</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        /* --- ESTILOS CSS - TEMA DISCOTECA NEÓN --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+        :root {
+            --neon-pink: #F72585; --neon-purple: #B5179E; --neon-blue: #4361EE; --neon-cyan: #4CC9F0;
+            --dark-bg-primary: #111; --dark-bg-secondary: #1c1c1e; --light-text: #f4f4f5;
+            --bg-gradient-dark: linear-gradient(135deg, #000000 0%, #1a1a2a 50%, #2c003e 100%);
+            --container-bg-dark: linear-gradient(135deg, rgba(28, 28, 30, 0.85) 0%, rgba(17, 17, 17, 0.9) 100%);
+            --primary-text-dark: var(--neon-cyan); --secondary-text-dark: var(--neon-pink);
+            --body-text-dark: var(--light-text); --border-dark: rgba(255, 255, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px; position: relative; overflow-x: hidden;
+            background: var(--bg-gradient-dark); color: var(--body-text-dark);
+        }
+        
+        .background-decoration { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .decoration-item { position: absolute; opacity: 0.1; color: var(--neon-pink); }
+        .decoration-1 { top: 10%; left: 10%; font-size: 120px; transform: rotate(-20deg); }
+        .decoration-2 { bottom: 15%; right: 10%; font-size: 100px; transform: rotate(15deg); color: var(--neon-cyan); }
+        
+        .hidden { display: none !important; }
+
+        .container {
+            padding: 40px 30px; border-radius: 25px; width: 100%; max-width: 850px;
+            text-align: center; backdrop-filter: blur(10px); position: relative; z-index: 10;
+            background: var(--container-bg-dark); border: 2px solid var(--border-dark);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .employee-management { padding: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; margin-bottom: 25px; border: 1px solid var(--border-dark); }
+        #employee-display { display: flex; justify-content: space-between; align-items: center; }
+        #employee-display span { font-size: 1.1rem; }
+        #current-employee-id { font-weight: 700; color: var(--neon-cyan); }
+        #logout-btn { background: transparent; border: 1px solid var(--neon-pink); color: var(--neon-pink); border-radius: 10px; padding: 8px 15px; cursor: pointer; transition: all 0.3s ease; }
+        #logout-btn:hover { background: var(--neon-pink); color: white; box-shadow: 0 0 10px var(--neon-pink); }
+        
+        #employee-login-form { display: flex; gap: 10px; align-items: center; }
+        #employee-id-input { flex-grow: 1; background: transparent; border: 2px solid var(--neon-cyan); border-radius: 10px; padding: 10px 15px; font-size: 1.1rem; color: var(--light-text); transition: all 0.3s ease; }
+        #employee-id-input:focus { box-shadow: 0 0 15px var(--neon-cyan); outline: none; }
+        #login-btn { border: none; border-radius: 10px; padding: 12px 25px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; color: white; background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); }
+        #login-btn:hover { box-shadow: 0 0 15px var(--neon-purple); }
+
+        .employee-history { margin-top: 20px; text-align: left; width: 100%; }
+        .employee-history h4 { text-align: center; margin-bottom: 10px; color: var(--neon-pink); }
+        #employee-history-list { list-style: none; max-height: 120px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; }
+        #employee-history-list li { display: flex; justify-content: space-between; padding: 5px; font-size: 0.9rem; }
+        #employee-history-list li .employee-name { font-weight: 600; color: var(--neon-cyan); }
+        #employee-history-list li .last-active { font-size: 0.8rem; color: #aaa; }
+
+        .controls-disabled .gender-counters, .controls-disabled .reset-btn, .controls-disabled .club-header, .controls-disabled .total-counter, .controls-disabled .activity-log-container, .controls-disabled .incident-logger, .controls-disabled .main-actions { opacity: 0.4; pointer-events: none; filter: blur(2px); }
+        .club-header, .total-counter, .gender-counters, .reset-btn, .activity-log-container, .incident-logger, .main-actions { transition: opacity 0.4s ease, filter 0.4s ease; }
+        .club-header { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 3px solid var(--neon-pink); }
+        .club-logo { width: 80px; height: 80px; background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 0 25px var(--neon-pink); color: white; font-size: 2.5rem; }
+        h1 { color: var(--primary-text-dark); text-shadow: 0 0 5px var(--neon-cyan), 0 0 15px var(--neon-cyan); font-size: 2.2rem; }
+        .subtitle { color: var(--secondary-text-dark); }
+        .total-counter { margin-bottom: 25px; padding: 25px; border-radius: 20px; transition: all 0.5s ease; border: 2px solid var(--neon-cyan); background: linear-gradient(135deg, #000 0%, #111 100%); }
+        .total-counter .count { font-size: 6rem; font-weight: 800; color: var(--primary-text-dark); text-shadow: 0 0 10px var(--neon-cyan), 0 0 25px var(--neon-cyan); }
+        .total-counter.warning { border-color: #FFC300; }
+        .total-counter.warning .count { color: #FFC300; text-shadow: 0 0 10px #FFC300, 0 0 25px #FFC300; }
+        .total-counter.danger { border-color: #C70039; }
+        .total-counter.danger .count { color: #C70039; text-shadow: 0 0 10px #C70039, 0 0 25px #C70039; }
+        .total-counter .label { font-size: 1.8rem; }
+        .capacity-info { margin-top: 15px; }
+        .gender-counters { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
+        .gender-card { padding: 25px 20px; border-radius: 20px; flex: 1 1 220px; max-width: 250px; display: flex; flex-direction: column; align-items: center; transition: all 0.5s ease; background: var(--dark-bg-secondary); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); border: 2px solid transparent; }
+        .gender-card h2 { font-size: 1.6rem; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+        .gender-card .count { font-size: 2.8rem; font-weight: 800; margin-bottom: 20px; }
+        .gender-card.men h2 { color: var(--neon-cyan); }
+        .gender-card.women h2 { color: var(--neon-pink); }
+        .gender-card.other h2 { color: #90a4ae; }
+        .controls { display: flex; gap: 10px; justify-content: center; align-items: center; }
+        .group-input { width: 60px; text-align: center; background: transparent; border: 1px solid var(--border-dark); color: var(--light-text); font-size: 1.2rem; border-radius: 8px; padding: 5px; }
+        .btn { border: 2px solid; border-radius: 50%; width: 50px; height: 50px; font-size: 1.8rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; font-weight: bold; background: transparent; }
+        .btn:hover:not(:disabled) { transform: scale(1.15); box-shadow: 0 0 15px; }
+        .btn.add-men { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .btn.add-men:hover:not(:disabled) { background: var(--neon-cyan); color: var(--dark-bg-primary); box-shadow: 0 0 15px var(--neon-cyan); }
+        .btn.remove-men { color: var(--neon-cyan); border-color: var(--neon-cyan); opacity: 0.7; }
+        .btn.add-women { color: var(--neon-pink); border-color: var(--neon-pink); }
+        .btn.add-women:hover:not(:disabled) { background: var(--neon-pink); color: var(--dark-bg-primary); box-shadow: 0 0 15px var(--neon-pink); }
+        .btn.remove-women { color: var(--neon-pink); border-color: var(--neon-pink); opacity: 0.7; }
+        .btn.add-other { color: #90a4ae; border-color: #90a4ae; }
+        .btn.add-other:hover:not(:disabled) { background: #90a4ae; color: var(--dark-bg-primary); box-shadow: 0 0 15px #90a4ae; }
+        .btn.remove-other { color: #90a4ae; border-color: #90a4ae; opacity: 0.7; }
+        .btn:disabled { opacity: 0.2; cursor: not-allowed; transform: scale(1); box-shadow: none; }
+        
+        .activity-log-container { margin: 25px 0; padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-dark); border-radius: 15px; text-align: left; }
+        .activity-log-container h3 { text-align: center; margin-bottom: 15px; color: var(--light-text); text-shadow: 0 0 5px var(--neon-pink); }
+        #activity-log-list { list-style: none; max-height: 150px; overflow-y: auto; padding-right: 10px; }
+        #activity-log-list li { display: flex; justify-content: space-between; padding: 8px 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.95rem; }
+        #activity-log-list li:last-child { border-bottom: none; }
+        .log-time { color: #aaa; }
+        .log-action.entry { color: #28a745; font-weight: 600; }
+        .log-action.exit { color: #dc3545; font-weight: 600; }
+        .log-action.incident { color: #FFC300; font-weight: 600; flex-grow: 1; text-align: right; }
+        
+        .incident-logger { margin: 25px 0; }
+        .incident-logger h3 { margin-bottom: 15px; text-align: center; color: var(--light-text); text-shadow: 0 0 5px var(--neon-purple); }
+        .incident-controls { display: flex; gap: 10px; }
+        #incident-input { flex-grow: 1; background: transparent; border: 1px solid var(--border-dark); border-radius: 10px; padding: 10px 15px; font-size: 1rem; color: var(--light-text); }
+        #add-incident-btn { border: 1px solid var(--neon-purple); color: var(--neon-purple); border-radius: 10px; padding: 10px 20px; cursor: pointer; background: transparent; transition: all 0.3s ease; font-weight: 600; }
+        #add-incident-btn:hover { background: var(--neon-purple); color: white; box-shadow: 0 0 10px var(--neon-purple); }
+        
+        .main-actions { display: flex; justify-content: center; gap: 20px; margin-top: 25px; flex-wrap: wrap; }
+        .neon-btn { border-radius: 15px; padding: 15px 35px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 12px; color: white; border: none; }
+        .reset-btn { background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink)); }
+        .reset-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(247, 37, 133, 0.5); }
+        .export-btn { background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan)); }
+        .export-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(76, 201, 240, 0.5); }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--dark-bg-secondary); padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--border-dark); }
+        .modal-content h3 { margin-bottom: 15px; font-size: 1.5rem; color: var(--neon-cyan); }
+        .modal-content p { margin-bottom: 25px; color: var(--light-text); opacity: 0.9; }
+        .modal-actions { display: flex; justify-content: center; gap: 15px; }
+        .modal-btn { padding: 10px 25px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .modal-btn.confirm { background: var(--neon-pink); color: white; }
+        .modal-btn.cancel { background: #333; color: var(--light-text); }
+        .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="dark-theme">
+    
+    <div class="background-decoration">
+        <div class="decoration-item decoration-1"><i class="fas fa-music"></i></div>
+        <div class="decoration-item decoration-2"><i class="fas fa-martini-glass-empty"></i></div>
+    </div>
+    
+    <div class="container" id="main-container">
+
+        <div class="employee-management">
+            <div id="employee-display" class="hidden">
+                <span>Empleado: <b id="current-employee-id"></b></span>
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Cambiar</button>
+            </div>
+            <div id="login-wrapper">
+                <div id="employee-login-form">
+                    <input type="text" id="employee-id-input" placeholder="Introduce tu Nº de Empleado...">
+                    <button id="login-btn">Cargar / Registrar</button>
+                </div>
+                <div class="employee-history">
+                    <h4>Historial de Sesiones</h4>
+                    <ul id="employee-history-list"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="club-header">
+            <div class="club-logo"><i class="fas fa-compact-disc"></i></div>
+            <h1>Contador de Personas</h1>
+            <div class="subtitle">Club Gemini - Pista Principal</div>
+        </div>
+
+        <div class="total-counter" id="total-counter">
+            <span class="count" id="total-count">0</span>
+            <span class="label" id="total-label">personas</span>
+            <div class="capacity-info">Aforo Máximo: <span id="capacity-limit-display"></span></div>
+        </div>
+
+        <div class="gender-counters">
+            <div class="gender-card men">
+                <h2><i class="fas fa-male"></i> Hombres</h2>
+                <span class="count" id="men-count">0</span>
+                <div class="controls">
+                    <input type="number" class="group-input" min="1" value="1" data-gender="men" aria-label="Cantidad">
+                    <button class="btn add-men" data-gender="men" data-action="add" aria-label="Añadir hombre"><i class="fas fa-plus"></i></button>
+                    <button class="btn remove-men" data-gender="men" data-action="remove" aria-label="Quitar hombre"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="gender-card women">
+                 <h2><i class="fas fa-female"></i> Mujeres</h2>
+                <span class="count" id="women-count">0</span>
+                <div class="controls">
+                    <input type="number" class="group-input" min="1" value="1" data-gender="women" aria-label="Cantidad">
+                    <button class="btn add-women" data-gender="women" data-action="add" aria-label="Añadir mujer"><i class="fas fa-plus"></i></button>
+                    <button class="btn remove-women" data-gender="women" data-action="remove" aria-label="Quitar mujer"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="gender-card other">
+                <h2><i class="fas fa-question-circle"></i> Otro</h2>
+                <span class="count" id="other-count">0</span>
+                <div class="controls">
+                    <input type="number" class="group-input" min="1" value="1" data-gender="other" aria-label="Cantidad">
+                    <button class="btn add-other" data-gender="other" data-action="add" aria-label="Añadir no identificado"><i class="fas fa-plus"></i></button>
+                    <button class="btn remove-other" data-gender="other" data-action="remove" aria-label="Quitar no identificado"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-log-container">
+            <h3>Registro de Actividad</h3>
+            <ul id="activity-log-list"></ul>
+        </div>
+
+        <div class="incident-logger">
+            <h3>Anotar Incidencia</h3>
+            <div class="incident-controls">
+                <input type="text" id="incident-input" placeholder="Describe la incidencia...">
+                <button id="add-incident-btn">Añadir Nota</button>
+            </div>
+        </div>
+        
+        <div class="main-actions">
+            <button class="neon-btn reset-btn" data-action="reset"><i class="fas fa-sync-alt"></i> Reiniciar Conteo</button>
+            <button class="neon-btn export-btn" id="export-btn"><i class="fas fa-file-csv"></i> Exportar Registro</button>
+        </div>
+    </div>
+    
+    <div class="modal-overlay hidden" id="confirmation-modal">
+        <div class="modal-content">
+            <h3>Confirmar Reinicio</h3>
+            <p>¿Estás seguro de que quieres reiniciar el conteo y el registro para este empleado?</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" data-action="cancel-reset">Cancelar</button>
+                <button class="modal-btn confirm" data-action="confirm-reset">Reiniciar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const CAPACITY_LIMIT = 200;
+        const WARNING_THRESHOLD = 0.9;
+        const MAX_LOG_ENTRIES = 200;
+
+        const mainContainer = document.getElementById('main-container');
+        const loginWrapper = document.getElementById('login-wrapper');
+        const employeeDisplay = document.getElementById('employee-display');
+        const employeeIdInput = document.getElementById('employee-id-input');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const currentEmployeeIdEl = document.getElementById('current-employee-id');
+        const totalCountEl = document.getElementById('total-count');
+        const totalLabelEl = document.getElementById('total-label');
+        const totalCounterEl = document.getElementById('total-counter');
+        const menCountEl = document.getElementById('men-count');
+        const womenCountEl = document.getElementById('women-count');
+        const otherCountEl = document.getElementById('other-count');
+        const modal = document.getElementById('confirmation-modal');
+        const capacityLimitDisplayEl = document.getElementById('capacity-limit-display');
+        const activityLogList = document.getElementById('activity-log-list');
+        const incidentInput = document.getElementById('incident-input');
+        const addIncidentBtn = document.getElementById('add-incident-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const employeeHistoryList = document.getElementById('employee-history-list');
+        
+        let currentEmployeeId = null;
+        let state = { men: 0, women: 0, other: 0, log: [] };
+        let capacityAlertPlayed = false;
+
+        const synth = new Tone.Synth().toDestination();
+        const playClickSound = () => {
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+            synth.triggerAttackRelease("C2", "8n");
+        };
+        const playAlertSound = () => {
+             if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+            synth.triggerAttackRelease("C5", "4n");
+        };
+
+        const showLoginView = () => {
+            employeeDisplay.classList.add('hidden');
+            loginWrapper.classList.remove('hidden');
+            mainContainer.classList.add('controls-disabled');
+            employeeIdInput.value = '';
+            employeeIdInput.focus();
+            updateEmployeeHistoryUI();
+        };
+
+        const showEmployeeView = () => {
+            loginWrapper.classList.add('hidden');
+            employeeDisplay.classList.remove('hidden');
+            mainContainer.classList.remove('controls-disabled');
+            currentEmployeeIdEl.textContent = currentEmployeeId;
+        };
+        
+        const updateLogUI = () => {
+            activityLogList.innerHTML = '';
+            if (!state.log) state.log = [];
+            state.log.forEach(entry => {
+                const li = document.createElement('li');
+                const time = new Date(entry.time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if (entry.type === 'incident') {
+                    li.innerHTML = `<span class="log-time">${time}</span> <span class="log-action incident"><i class="fas fa-exclamation-triangle"></i> ${entry.note}</span>`;
+                } else {
+                    const actionClass = entry.action === 'Entrada' ? 'entry' : 'exit';
+                    const sign = entry.action === 'Entrada' ? `(+${entry.count})` : `(-${entry.count})`;
+                    li.innerHTML = `<span class="log-time">${time}</span> <span class="log-action ${actionClass}">${entry.action} ${sign} ${entry.gender}</span>`;
+                }
+                activityLogList.appendChild(li);
+            });
+            activityLogList.scrollTop = 0;
+        };
+
+        const logActivity = (type, details) => {
+            const time = new Date().toISOString();
+            let entry = { time, type, ...details };
+
+            if(type === 'count') {
+                const genderMap = { men: 'Hombre', women: 'Mujer', other: 'Otro' };
+                entry.gender = genderMap[details.gender];
+            }
+            if(!state.log) state.log = [];
+            state.log.unshift(entry);
+            if (state.log.length > MAX_LOG_ENTRIES) state.log.pop();
+            updateLogUI();
+        };
+        
+        const updateEmployeeHistoryUI = () => {
+            employeeHistoryList.innerHTML = '';
+            const employeeKeys = Object.keys(localStorage).filter(k => k.startsWith('clubCounterState_'));
+            
+            if (employeeKeys.length === 0) {
+                employeeHistoryList.innerHTML = '<li>No hay sesiones guardadas.</li>';
+                return;
+            }
+
+            employeeKeys.forEach(key => {
+                const employeeId = key.replace('clubCounterState_', '');
+                try {
+                    const savedState = JSON.parse(localStorage.getItem(key));
+                    if (savedState.log && savedState.log.length > 0) {
+                        const lastLog = savedState.log[0];
+                        const lastActiveDate = new Date(lastLog.time);
+                        const formattedDate = lastActiveDate.toLocaleString('es-ES');
+                        
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span class="employee-name">${employeeId}</span> <span class="last-active">Últ. Act: ${formattedDate}</span>`;
+                        employeeHistoryList.appendChild(li);
+                    }
+                } catch (e) { console.warn(`No se pudo leer el historial para ${employeeId}`); }
+            });
+        };
+
+        const saveState = () => {
+            if (!currentEmployeeId) return;
+            try {
+                localStorage.setItem(`clubCounterState_${currentEmployeeId}`, JSON.stringify(state));
+            } catch (e) {
+                console.warn('No se pudo guardar el estado:', e);
+            }
+        };
+        
+        const loadState = () => {
+            if (!currentEmployeeId) return;
+            try {
+                const savedState = localStorage.getItem(`clubCounterState_${currentEmployeeId}`);
+                const parsedState = savedState ? JSON.parse(savedState) : { men: 0, women: 0, other: 0, log: [] };
+                state = { ...{ men: 0, women: 0, other: 0, log: [] }, ...parsedState };
+            } catch (e) {
+                console.warn('Error al cargar el estado:', e);
+                state = { men: 0, women: 0, other: 0, log: [] };
+            }
+        };
+
+        const updateUI = () => {
+            const totalCount = state.men + state.women + state.other;
+
+            menCountEl.textContent = state.men;
+            womenCountEl.textContent = state.women;
+            otherCountEl.textContent = state.other;
+            totalCountEl.textContent = totalCount;
+            totalLabelEl.textContent = totalCount === 1 ? 'persona' : 'personas';
+
+            mainContainer.querySelector('[data-gender="men"][data-action="remove"]').disabled = state.men === 0;
+            mainContainer.querySelector('[data-gender="women"][data-action="remove"]').disabled = state.women === 0;
+            mainContainer.querySelector('[data-gender="other"][data-action="remove"]').disabled = state.other === 0;
+
+            totalCounterEl.classList.remove('warning', 'danger');
+            const addButtons = mainContainer.querySelectorAll('[data-action="add"]');
+            
+            if (totalCount >= CAPACITY_LIMIT) {
+                totalCounterEl.classList.add('danger');
+                addButtons.forEach(btn => btn.disabled = true);
+                if (!capacityAlertPlayed) {
+                    playAlertSound();
+                    capacityAlertPlayed = true;
+                }
+            } else {
+                 addButtons.forEach(btn => btn.disabled = false);
+                 capacityAlertPlayed = false;
+                if (totalCount >= CAPACITY_LIMIT * WARNING_THRESHOLD) {
+                    totalCounterEl.classList.add('warning');
+                }
+            }
+        };
+
+        const resetCounter = () => {
+            state.men = 0;
+            state.women = 0;
+            state.other = 0;
+            state.log = [];
+            updateUI();
+            updateLogUI();
+            saveState();
+        };
+        
+        const handleLogin = () => {
+            const id = employeeIdInput.value.trim();
+            if (id) {
+                currentEmployeeId = id;
+                localStorage.setItem('currentEmployeeId', currentEmployeeId);
+                loadState();
+                updateUI();
+                updateLogUI();
+                showEmployeeView();
+            }
+        };
+
+        const handleLogout = () => {
+            saveState();
+            localStorage.removeItem('currentEmployeeId');
+            currentEmployeeId = null;
+            state = { men: 0, women: 0, other: 0, log: [] };
+            updateUI();
+            updateLogUI();
+            showLoginView();
+        };
+
+        const handleAddIncident = () => {
+            const note = incidentInput.value.trim();
+            if (note) {
+                logActivity('incident', { note });
+                incidentInput.value = '';
+                saveState();
+            }
+        };
+
+        const exportToCSV = () => {
+            if (!state.log || state.log.length === 0) {
+                alert("El registro está vacío. No hay nada que exportar.");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Hora,Tipo,Accion,Cantidad,Categoria,Nota\r\n";
+
+            const reversedLog = [...state.log].reverse();
+
+            reversedLog.forEach(entry => {
+                const time = new Date(entry.time).toLocaleTimeString('es-ES');
+                let row;
+                if(entry.type === 'count') {
+                    row = [time, "Conteo", entry.action, entry.count, entry.gender, ""].join(",");
+                } else {
+                    const note = `"${entry.note.replace(/"/g, '""')}"`;
+                    row = [time, "Incidencia", "", "", "", note].join(",");
+                }
+                csvContent += row + "\r\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            const timestamp = new Date().toISOString().slice(0,10);
+            link.setAttribute("download", `registro_${currentEmployeeId}_${timestamp}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+        
+        loginBtn.addEventListener('click', handleLogin);
+        employeeIdInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') handleLogin(); });
+        logoutBtn.addEventListener('click', handleLogout);
+        addIncidentBtn.addEventListener('click', handleAddIncident);
+        incidentInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') handleAddIncident(); });
+        exportBtn.addEventListener('click', exportToCSV);
+
+        mainContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.btn, .neon-btn');
+            if (!button || mainContainer.classList.contains('controls-disabled')) return;
+
+            playClickSound();
+
+            const { action, gender } = button.dataset;
+            const groupInput = mainContainer.querySelector(`.group-input[data-gender="${gender}"]`);
+            const count = groupInput ? parseInt(groupInput.value, 10) || 1 : 1;
+
+            switch (action) {
+                case 'add':
+                    state[gender] += count;
+                    logActivity('count', { action: 'Entrada', gender, count });
+                    break;
+                case 'remove':
+                    if (state[gender] > 0) {
+                        const finalCount = Math.max(0, state[gender] - count);
+                        const actualRemoved = state[gender] - finalCount;
+                        if (actualRemoved > 0) {
+                            state[gender] = finalCount;
+                            logActivity('count', { action: 'Salida', gender, count: actualRemoved });
+                        }
+                    }
+                    break;
+                case 'reset':
+                    modal.classList.remove('hidden');
+                    return;
+            }
+            if (groupInput) groupInput.value = 1;
+            updateUI();
+            saveState();
+        });
+
+        modal.addEventListener('click', (event) => {
+            const target = event.target;
+            const action = target.dataset.action;
+
+            if (action === 'confirm-reset') {
+                resetCounter();
+                modal.classList.add('hidden');
+            } else if (action === 'cancel-reset' || target.classList.contains('modal-overlay')) {
+                modal.classList.add('hidden');
+            }
+        });
+        
+        const initialize = () => {
+            capacityLimitDisplayEl.textContent = CAPACITY_LIMIT;
+            currentEmployeeId = localStorage.getItem('currentEmployeeId');
+
+            if (currentEmployeeId) {
+                loadState();
+                updateUI();
+                updateLogUI();
+                showEmployeeView();
+            } else {
+                showLoginView();
+                updateUI();
+                updateLogUI();
+            }
+        };
+
+        initialize();
+    });
+    </script>
+</body>
+</html>
+
