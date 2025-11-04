@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<!-- MEJORA V18: Simplificado. Eliminado visualizador y lector de tags. -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario Sónico - v18 (Simplificado)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.8/dist/jsmediatags.min.js"></script> --> <!-- V18: Eliminado -->
+
+    <style>
+        /* --- Sistema de Diseño: "Diario Sónico" (v13) --- */
+        
+        /* --- PALETA DE REFERENCIA (LIGHT) - TEMA "LOFI" (Key: #6750A4) --- */
+        :root {
+            /* Primary (Purple) */
+            --md-ref-palette-primary-10: #21005D;
+            --md-ref-palette-primary-40: #6750A4;
+            --md-ref-palette-primary-90: #EADDFF;
+            --md-ref-palette-primary-100: #FFFFFF;
+            
+            /* Secondary (Mint/Teal Accent) */
+            --md-ref-palette-secondary-10: #002019;
+            --md-ref-palette-secondary-40: #006B57;
+            --md-ref-palette-secondary-90: #7BF8D9;
+            
+            /* Error */
+            --md-ref-palette-error-40: #B3261E;
+            --md-ref-palette-error-90: #F9DEDC;
+            --md-ref-palette-error-10: #410E0B;
+            
+            /* Neutral (Indigo/Slate) */
+            --md-ref-palette-neutral-10: #1B1B22;
+            --md-ref-palette-neutral-20: #303036;
+            --md-ref-palette-neutral-90: #E3E2E9;
+            --md-ref-palette-neutral-94: #F2F0F7;
+            --md-ref-palette-neutral-95: #F5F3FA;
+            --md-ref-palette-neutral-99: #FEFBFF;
+            --md-ref-palette-neutral-0: #000000;
+
+            /* Neutral Variant (Indigo/Slate) */
+            --md-ref-palette-neutral-variant-30: #46464F;
+            --md-ref-palette-neutral-variant-50: #767680;
+            --md-ref-palette-neutral-variant-80: #C7C6D0;
+            --md-ref-palette-neutral-variant-90: #E3E2EC;
+        }
+
+        /* --- TOKENS DEL SISTEMA (LIGHT THEME) --- */
+        :root, [data-theme="light"] {
+            --md-sys-color-primary: var(--md-ref-palette-primary-40);
+            --md-sys-color-on-primary: var(--md-ref-palette-primary-100);
+            --md-sys-color-primary-container: var(--md-ref-palette-primary-90);
+            --md-sys-color-on-primary-container: var(--md-ref-palette-primary-10);
+            
+            --md-sys-color-secondary: var(--md-ref-palette-secondary-40);
+            --md-sys-color-on-secondary-container: var(--md-ref-palette-secondary-10);
+            --md-sys-color-secondary-container: var(--md-ref-palette-secondary-90);
+            
+            --md-sys-color-surface: var(--md-ref-palette-neutral-99);
+            --md-sys-color-on-surface: var(--md-ref-palette-neutral-10);
+            --md-sys-color-on-surface-variant: var(--md-ref-palette-neutral-variant-30);
+            --md-sys-color-outline: var(--md-ref-palette-neutral-variant-50);
+            --md-sys-color-surface-container-highest: var(--md-ref-palette-neutral-90);
+            --md-sys-color-surface-container: var(--md-ref-palette-neutral-94);
+            --md-sys-color-surface-variant: var(--md-ref-palette-neutral-variant-90);
+            --md-sys-color-surface-container-low: var(--md-ref-palette-neutral-95);
+            
+            --md-sys-color-scrim: var(--md-ref-palette-neutral-0);
+            --md-sys-color-inverse-surface: var(--md-ref-palette-neutral-20);
+            --md-sys-color-inverse-on-surface: var(--md-ref-palette-neutral-95);
+            --md-sys-color-error-container: var(--md-ref-palette-error-90);
+            --md-sys-color-on-error-container: var(--md-ref-palette-error-10);
+        }
+        
+        /* --- PALETA DE REFERENCIA (DARK) - TEMA "LOFI" (Key: #BEA9FF) --- */
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                /* Primary (Purple) */
+                --md-ref-palette-primary-20: #381E72;
+                --md-ref-palette-primary-30: #4F378B;
+                --md-ref-palette-primary-80: #BEA9FF;
+                
+                /* Secondary (Mint/Teal Accent) */
+                --md-ref-palette-secondary-30: #005141;
+                --md-ref-palette-secondary-80: #5DEBCF;
+                --md-ref-palette-secondary-90: #7BF8D9;
+                
+                /* Error */
+                --md-ref-palette-error-80: #F2B8B5;
+                --md-ref-palette-error-30: #8C1D18;
+                
+                /* Neutral (Indigo/Slate) - DARK THEME BASE */
+                --md-ref-palette-neutral-6: #181920; /* Base Surface */
+                --md-ref-palette-neutral-10: #1B1B22; /* Surface Container */
+                --md-ref-palette-neutral-20: #303036; /* Surface Container Highest */
+                --md-ref-palette-neutral-90: #E3E2E9; /* On Surface */
+                
+                /* Neutral Variant (Indigo/Slate) */
+                --md-ref-palette-neutral-variant-30: #46464F; /* Surface Variant */
+                --md-ref-palette-neutral-variant-60: #8F8F99; /* Outline */
+                --md-ref-palette-neutral-variant-70: #A9A9B3; /* On Surface Variant */
+            }
+        }
+        
+        /* --- TOKENS DEL SISTEMA (DARK THEME) --- */
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]), [data-theme="dark"] {
+                --md-sys-color-primary: var(--md-ref-palette-primary-80);
+                --md-sys-color-on-primary: var(--md-ref-palette-primary-20);
+                --md-sys-color-primary-container: var(--md-ref-palette-primary-30);
+                --md-sys-color-on-primary-container: var(--md-ref-palette-primary-90);
+                
+                --md-sys-color-secondary: var(--md-ref-palette-secondary-80);
+                --md-sys-color-on-secondary-container: var(--md-ref-palette-secondary-90);
+                --md-sys-color-secondary-container: var(--md-ref-palette-secondary-30);
+                
+                --md-sys-color-surface: var(--md-ref-palette-neutral-6);
+                --md-sys-color-on-surface: var(--md-ref-palette-neutral-90);
+                --md-sys-color-on-surface-variant: var(--md-ref-palette-neutral-variant-70);
+                --md-sys-color-outline: var(--md-ref-palette-neutral-variant-60);
+                --md-sys-color-surface-container-highest: var(--md-ref-palette-neutral-20);
+                --md-sys-color-surface-container: var(--md-ref-palette-neutral-10);
+                --md-sys-color-surface-variant: var(--md-ref-palette-neutral-variant-30);
+                --md-sys-color-surface-container-low: var(--md-ref-palette-neutral-10);
+                
+                --md-sys-color-scrim: var(--md-ref-palette-neutral-0);
+                --md-sys-color-inverse-surface: var(--md-ref-palette-neutral-90);
+                --md-sys-color-inverse-on-surface: var(--md-ref-palette-neutral-20);
+                --md-sys-color-error-container: var(--md-ref-palette-error-30);
+                --md-sys-color-on-error-container: var(--md-ref-palette-error-80);
+            }
+        }
+        
+        /* --- Tokens de Tipografía (v13) --- */
+        :root {
+            --md-sys-font-family: "Inter", sans-serif;
+            
+            --md-sys-typescale-headline-small-font: var(--md-sys-font-family);
+            --md-sys-typescale-headline-small-size: 1.5rem;
+            --md-sys-typescale-headline-small-weight: 500;
+
+            --md-sys-typescale-title-large-font: var(--md-sys-font-family);
+            --md-sys-typescale-title-large-size: 1.375rem;
+            --md-sys-typescale-title-large-weight: 500;
+            
+            --md-sys-typescale-title-medium-font: var(--md-sys-font-family);
+            --md-sys-typescale-title-medium-size: 1rem;
+            --md-sys-typescale-title-medium-weight: 600;
+
+            --md-sys-typescale-title-small-font: var(--md-sys-font-family);
+            --md-sys-typescale-title-small-size: 0.875rem;
+            --md-sys-typescale-title-small-weight: 600;
+            --md-sys-typescale-title-small-line-height: 1.25rem;
+
+            --md-sys-typescale-body-large-font: var(--md-sys-font-family);
+            --md-sys-typescale-body-large-size: 1rem;
+            --md-sys-typescale-body-large-weight: 400;
+
+            --md-sys-typescale-label-large-font: var(--md-sys-font-family);
+            --md-sys-typescale-label-large-size: 0.875rem;
+            --md-sys-typescale-label-large-weight: 500;
+            
+            --md-sys-typescale-label-medium-font: var(--md-sys-font-family);
+            --md-sys-typescale-label-medium-size: 0.75rem;
+            --md-sys-typescale-label-medium-weight: 500;
+            
+            --md-sys-typescale-body-medium-font: var(--md-sys-font-family);
+            --md-sys-typescale-body-medium-size: 0.875rem;
+            --md-sys-typescale-body-medium-weight: 400;
+            --md-sys-typescale-body-medium-line-height: 1.25rem;
+        }
+
+        /* --- Tokens de Forma (Shape) --- */
+        :root {
+            --md-sys-shape-corner-small: 8px;
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-shape-corner-large: 16px;
+            --md-sys-shape-corner-extra-large: 28px;
+            --md-sys-shape-corner-full: 999px;
+        }
+
+        /* --- Estilos Globales y de Base --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            transition: color-scheme 0.3s ease;
+        }
+
+        body {
+            font-family: var(--md-sys-font-family);
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            transition: font-variation-settings 0.2s ease;
+        }
+        
+        /* --- Estructura Principal (v10) --- */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background-color: var(--md-sys-color-surface-container-highest);
+            border-radius: var(--md-sys-shape-corner-large);
+            box-shadow: 0 4px 12px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 95vh;
+            padding: 0;
+            border: 1px solid var(--md-sys-color-surface-container);
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem 1.5rem;
+            position: relative;
+        }
+
+        
+        /* --- Cabecera del Calendario (v13) --- */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo-container h1 {
+            font-family: var(--md-sys-font-family);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--md-sys-color-on-surface);
+        }
+        .logo-svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--md-sys-color-primary);
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+        .header-nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        #month-year-display {
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            margin: 0 auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        #search-input {
+            -webkit-appearance: none;
+            appearance: none;
+            border: 1px solid var(--md-sys-color-outline);
+            outline: none;
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            border-radius: var(--md-sys-shape-corner-full);
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            width: 100%;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .search-container .material-symbols-outlined {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        #search-input:focus {
+             box-shadow: 0 0 0 2px var(--md-sys-color-primary);
+             border-color: var(--md-sys-color-primary);
+        }
+
+        /* --- Calendario Grid --- */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+        }
+        #calendar-days { outline: none; border-radius: var(--md-sys-shape-corner-medium); }
+        .weekday {
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: var(--md-sys-typescale-label-large-size);
+            margin-bottom: 0.25rem;
+        }
+        .day {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            border-radius: var(--md-sys-shape-corner-full);
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease, border-radius 0.2s ease;
+            position: relative;
+            outline: none;
+            background-color: transparent;
+        }
+        .day.filtered {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        #calendar-days:focus-visible .day.focused {
+            background-color: var(--md-sys-color-primary-container);
+            outline: 2px solid var(--md-sys-color-primary);
+            outline-offset: 1px;
+        }
+        #calendar-days:focus-visible .day.selected.focused {
+             outline: 2px solid var(--md-sys-color-on-primary);
+             outline-offset: 1px;
+        }
+        .day:not(.prev-month, .next-month):hover {
+            background-color: var(--md-sys-color-surface-container);
+        }
+        .day.prev-month, .day.next-month {
+            color: var(--md-sys-color-on-surface-variant);
+            opacity: 0.6;
+            cursor: default;
+        }
+        .day.today { 
+            font-weight: 700;
+            color: var(--md-sys-color-secondary);
+        }
+        
+        .day.playing {
+            box-shadow: inset 0 0 0 2px var(--md-sys-color-secondary);
+            color: var(--md-sys-color-secondary);
+        }
+        
+        .day.selected {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            font-weight: 700;
+        }
+        
+        .day.playing.selected {
+            box-shadow: inset 0 0 0 2px var(--md-sys-color-on-primary);
+        }
+        
+        .day.streak-start, .day.streak-mid, .day.streak-end {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .day.streak-start:not(.selected), .day.streak-mid:not(.selected) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .day.streak-end:not(.selected), .day.streak-mid:not(.selected) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        
+        .day.selected.streak-start, .day.selected.streak-mid, .day.selected.streak-end {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+        
+        /* MEJORA V17: Indicador de audio (tilde) */
+        .day.has-audio::after {
+            content: 'check_circle';
+            font-family: 'Material Symbols Outlined';
+            font-weight: 400;
+            font-size: 14px;
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            color: var(--md-sys-color-primary);
+            opacity: 0.8;
+        }
+        .day.selected.has-audio::after {
+            color: var(--md-sys-color-on-primary);
+        }
+        
+        /* (v14) Indicador de Nota */
+        .day.has-note::before {
+            content: 'notes';
+            font-family: 'Material Symbols Outlined';
+            font-weight: 400;
+            font-size: 14px;
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            color: var(--md-sys-color-secondary);
+        }
+        .day.selected.has-note::before {
+            color: var(--md-sys-color-on-primary);
+        }
+        .day.playing.has-note::before {
+            color: var(--md-sys-color-secondary);
+        }
+        /* Si tiene audio Y nota, se ajustan */
+        .day.has-audio.has-note::after {
+            right: 2px;
+        }
+         .day.has-audio.has-note::before {
+            right: auto;
+            left: 4px;
+        }
+
+
+        /* --- Componentes de MD3 (Botones) --- */
+        .md-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1.5rem;
+            height: 40px;
+            border-radius: var(--md-sys-shape-corner-full);
+            border: none;
+            cursor: pointer;
+            font-family: var(--md-sys-font-family);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            gap: 0.5rem; /* V16: Añadido gap para icono+texto */
+        }
+        .md-button.filled {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+        .md-button.filled:hover {
+            box-shadow: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .md-button.text {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+            padding: 0 0.75rem;
+        }
+        .md-button.text:hover {
+             background-color: var(--md-sys-color-primary-container);
+        }
+        
+        .md-button.text.speed-control {
+            min-width: 64px;
+            font-weight: 700;
+        }
+        
+        .md-segmented-button-group {
+            display: flex;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-corner-full);
+            overflow: hidden;
+        }
+        .md-segmented-button {
+            flex-grow: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 40px;
+            padding: 0 1rem;
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface-variant);
+            border: none;
+            border-left: 1px solid var(--md-sys-color-outline);
+            cursor: pointer;
+            font-family: var(--md-sys-font-family);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            font-size: var(--md-sys-typescale-label-large-size);
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .md-segmented-button:first-child {
+            border-left: none;
+        }
+        .md-segmented-button.selected {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+        .md-segmented-button:focus-visible {
+            outline: 2px solid var(--md-sys-color-primary);
+            outline-offset: -2px;
+            z-index: 1;
+        }
+
+        .md-icon-button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: var(--md-sys-shape-corner-full);
+            background-color: transparent;
+            color: var(--md-sys-color-on-surface-variant);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .md-icon-button:hover { 
+            background-color: var(--md-sys-color-surface-container);
+        }
+        .md-icon-button:disabled {
+            color: var(--md-sys-color-on-surface-variant);
+            opacity: 0.38;
+            cursor: not-allowed;
+            background-color: transparent;
+        }
+        .md-button:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        /* --- MEJORA V16: Sección de Controles eliminada --- */
+        .controls-section {
+            display: none; /* Eliminamos el botón "Seleccionar Carpeta" */
+        }
+        
+        /* --- Layout del Player (v10) --- */
+        .player-surface {
+            flex-shrink: 0;
+            background-color: var(--md-sys-color-surface-container);
+            border-radius: 0;
+            padding: 1rem 1.5rem;
+            box-shadow: none;
+            border-top: 1px solid var(--md-sys-color-outline);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        #current-track-info {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            color: var(--md-sys-color-on-surface);
+            text-align: center;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-bottom: 0.5rem;
+        }
+        
+        .player {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-height: 40px;
+            margin: 0 auto;
+        }
+        
+        /* (v18) Player Progress Simplificado */
+        .player-progress { 
+            width: 100%;
+            position: relative;
+            height: 4px; /* V18: Reducido */
+            margin: 8px 0;
+            background-color: var(--md-sys-color-surface-variant);
+            border-radius: var(--md-sys-shape-corner-full);
+        }
+        
+        /* V18: Canvas Eliminado */
+        
+        .time-indicators {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            color: var(--md-sys-color-on-surface-variant);
+            padding: 0 4px;
+            margin-top: 0.25rem;
+        }
+        
+        #progress-bar {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px; /* V18: Reducido */
+            background: transparent;
+            outline: none;
+            cursor: pointer;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        #progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            border: none;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            transform: scale(1.0);
+            margin-top: -8px; /* V18: Ajuste para centrar */
+        }
+        
+        #progress-bar.seeking::-webkit-slider-thumb {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 8px var(--md-sys-color-primary-container);
+        }
+        
+        #progress-bar:focus-visible::-webkit-slider-thumb {
+             box-shadow: 0 0 0 8px var(--md-sys-color-primary-container);
+        }
+        #progress-bar::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            transform: scale(1.0);
+        }
+        
+        #progress-bar.seeking::-moz-range-thumb {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 8px var(--md-sys-color-primary-container);
+        }
+        
+        #progress-bar:focus-visible::-moz-range-thumb {
+             box-shadow: 0 0 0 8px var(--md-sys-color-primary-container);
+        }
+         #progress-bar::-moz-range-track {
+            width: 100%;
+            height: 4px;
+            background: transparent;
+        }
+        #progress-bar::-moz-range-progress {
+            background-color: var(--md-sys-color-primary); /* V18: Añadido para Firefox */
+            height: 4px;
+            border-radius: var(--md-sys-shape-corner-full);
+        }
+
+        /* V18: Estilo para la barra de progreso (track) */
+        #progress-bar::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: var(--progress-percent, 0%);
+            height: 100%;
+            background-color: var(--md-sys-color-primary);
+            border-radius: var(--md-sys-shape-corner-full);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* --- Indicador de Progreso Lineal (v5) --- */
+        @keyframes indeterminate-progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+        
+        #loading-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--md-sys-color-surface-variant);
+            overflow: hidden;
+            visibility: hidden;
+            z-index: 10;
+        }
+        
+        #loading-indicator.visible {
+            visibility: visible;
+        }
+        
+        #loading-indicator .progress-bar {
+            width: 100%;
+            height: 100%;
+            background-color: var(--md-sys-color-primary);
+            animation: indeterminate-progress 2s infinite linear;
+        }
+        
+        /* --- Estilos del Dialog (v15) --- */
+        .dialog-scrim {
+            position: fixed;
+            inset: 0;
+            background-color: var(--md-sys-color-scrim);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, backdrop-filter 0.3s ease;
+        }
+        
+        .dialog-scrim.visible {
+            opacity: 0.6; 
+            visibility: visible;
+            backdrop-filter: blur(6px); 
+        }
+
+        .md-dialog {
+            background-color: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-extra-large);
+            padding: 1.5rem;
+            width: calc(100% - 3rem);
+            max-width: 560px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            color: var(--md-sys-color-on-surface);
+            transform: scale(0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            z-index: 101;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        
+        .dialog-scrim.visible .md-dialog {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dialog-title {
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            margin-bottom: 1rem;
+        }
+        
+        .dialog-list {
+            list-style: none;
+            margin: 0 -1rem;
+            max-height: 40vh;
+            overflow-y: auto;
+        }
+        
+        .dialog-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--md-sys-shape-corner-full);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            outline: none;
+        }
+        
+        /* MEJORA V17: Estilo para el estado vacío del dialog */
+        .dialog-list-item.empty-state {
+            pointer-events: none;
+            color: var(--md-sys-color-on-surface-variant);
+            justify-content: center;
+            font-style: italic;
+        }
+        
+        .dialog-list-item:focus {
+            background-color: var(--md-sys-color-surface-container-highest);
+            outline: 2px solid var(--md-sys-color-primary);
+            outline-offset: -2px;
+        }
+        
+        .dialog-list-item:not(.empty-state):hover {
+            background-color: var(--md-sys-color-surface-container-highest);
+        }
+
+        .dialog-list-item.playing {
+            background-color: var(--md-sys-color-secondary-container);
+        }
+        .dialog-list-item.playing .material-symbols-outlined {
+            color: var(--md-sys-color-on-secondary-container);
+        }
+        .dialog-list-item.playing span {
+            color: var(--md-sys-color-on-secondary-container);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+        }
+        
+        .dialog-list-item .material-symbols-outlined {
+            color: var(--md-sys-color-secondary);
+        }
+        
+        .dialog-list-item span {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .dialog-actions {
+            display: flex;
+            justify-content: space-between; /* MEJORA V16: Ajustado */
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* (v7) Estilos del Snackbar */
+        .snackbar {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translate(-50%, 150%);
+            min-width: 288px;
+            max-width: calc(100% - 3rem);
+            padding: 1rem;
+            background-color: var(--md-sys-color-inverse-surface);
+            color: var(--md-sys-color-inverse-on-surface);
+            border-radius: var(--md-sys-shape-corner-small);
+            box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+            font-family: var(--md-sys-font-family);
+            font-size: var(--md-sys-typescale-body-large-size);
+            z-index: 200;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .snackbar.visible {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+        
+        .snackbar.error {
+            background-color: var(--md-sys-color-error-container);
+            color: var(--md-sys-color-on-error-container);
+        }
+
+        /* (v11) Estilos del Dialog de Ajustes */
+        .settings-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .settings-section-title {
+            font-family: var(--md-sys-typescale-title-small-font);
+            font-weight: var(--md-sys-typescale-title-small-weight);
+            font-size: var(--md-sys-typescale-title-small-size);
+            color: var(--md-sys-color-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        /* (v14) Dialog de Nota */
+        #note-textarea {
+            width: 100%;
+            min-height: 150px;
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-corner-medium);
+            padding: 1rem;
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            resize: vertical;
+            outline: none;
+        }
+        #note-textarea:focus {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- (v10) Estructura de Layout -->
+    <main class="app-container">
+        
+        <!-- Contenido principal (scrollable) -->
+        <div class="main-content" id="main-content">
+            <div id="loading-indicator">
+                <div class="progress-bar"></div>
+            </div>
+            
+            <header class="calendar-header">
+                <div class="logo-container">
+                    <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 15H80C82.7614 15 85 17.2386 85 20V80C85 82.7614 82.7614 85 80 85H20C17.2386 85 15 82.7614 15 80V20C15 17.2386 17.2386 15 20 15Z" stroke="currentColor" stroke-width="8" fill="none"/>
+                        <path d="M15 35H85" stroke="currentColor" stroke-width="8"/>
+                        <path d="M30 50H40L50 65L60 35L70 50H80" stroke="currentColor" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h1>Diario Sónico</h1>
+                </div>
+                
+                <div class="header-controls">
+                    <!-- (v14) Botón de Nota -->
+                    <button id="note-btn" class="md-icon-button" aria-label="Añadir nota" disabled>
+                        <span class="material-symbols-outlined">edit_note</span>
+                    </button>
+                    <button id="settings-btn" class="md-icon-button" aria-label="Abrir ajustes">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                    <div class="header-nav-buttons">
+                        <button id="today-btn" class="md-icon-button" aria-label="Volver al día de hoy">
+                            <span class="material-symbols-outlined">today</span>
+                        </button>
+                        <button id="prev-month-btn" class="md-icon-button" aria-label="Mes anterior">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button id="next-month-btn" class="md-icon-button" aria-label="Mes siguiente">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" id="search-input" placeholder="Buscar por nombre...">
+                </div>
+            </div>
+
+            <h2 id="month-year-display"></h2>
+            <div class="calendar-grid" id="weekdays">
+                <!-- Los días de la semana se insertarán aquí por JS -->
+            </div>
+            <div class="calendar-grid" id="calendar-days" tabindex="0">
+                <!-- Los días del mes se insertarán aquí por JS -->
+            </div>
+
+            <!-- MEJORA V16: Sección de controles eliminada -->
+            
+        </div>
+        
+        <!-- Reproductor (Bottom Bar Fija) -->
+        <div class="player-surface">
+            <div id="current-track-info">Selecciona un día</div>
+            
+            <div class="player-progress">
+                <!-- V18: Canvas Eliminado -->
+                <input type="range" id="progress-bar" value="0" min="0" max="100" disabled>
+            </div>
+            <div class="time-indicators">
+                <span id="current-time">0:00</span>
+                <span id="total-time">0:00</span>
+            </div>
+            
+            <div class="player">
+                <button id="prev-track-btn" class="md-icon-button" aria-label="Pista anterior" disabled>
+                    <span class="material-symbols-outlined">skip_previous</span>
+                </button>
+                <button id="play-pause-btn" class="md-button filled" disabled>
+                    <span id="play-pause-icon" class="material-symbols-outlined">play_arrow</span>
+                </button>
+                <button id="next-track-btn" class="md-icon-button" aria-label="Pista siguiente" disabled>
+                    <span class="material-symbols-outlined">skip_next</span>
+                </button>
+                <button id="playback-speed-btn" class="md-button text speed-control" aria-label="Velocidad de reproducción" disabled>
+                    1x
+                </button>
+            </div>
+        </div>
+
+    </main>
+    
+    <audio id="audio-player" crossOrigin="anonymous"></audio>
+    
+    <!-- MEJORA V17: Input de archivo clásico, oculto -->
+    <input type="file" id="manual-file-input" class="hidden" multiple accept="audio/*">
+    
+    <!-- Dialog de Audios (v10) -->
+    <div class="dialog-scrim" id="dialog-scrim">
+        <div class="md-dialog" id="audio-dialog" role="dialog" aria-labelledby="dialog-title" aria-modal="true">
+            <h2 class="dialog-title" id="dialog-title">Audios del día</h2>
+            <ul class="dialog-list" id="dialog-list" role="listbox">
+                <!-- Los items de la lista se insertarán aquí por JS -->
+            </ul>
+            <div class="dialog-actions">
+                <!-- MEJORA V16: Botón para añadir audio manualmente -->
+                <button class="md-button filled" id="dialog-add-audio-btn">
+                    <span class="material-symbols-outlined">add</span>
+                    Añadir Audio
+                </button>
+                <button class="md-button text" id="dialog-cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- (v11) Dialog de Ajustes -->
+    <div class="dialog-scrim" id="settings-scrim">
+        <div class="md-dialog" id="settings-dialog" role="dialog" aria-labelledby="settings-dialog-title" aria-modal="true">
+            <h2 class="dialog-title" id="settings-dialog-title">Ajustes</h2>
+            
+            <section class="settings-section">
+                <h3 class="settings-section-title">Modo de Apariencia</h3>
+                <div class="md-segmented-button-group" role="group" aria-label="Modo de apariencia">
+                    <button class="md-segmented-button" id="theme-system-btn" data-theme-mode="system">
+                        <span class="material-symbols-outlined">brightness_auto</span>
+                        Sistema
+                    </button>
+                    <button class="md-segmented-button" id="theme-light-btn" data-theme-mode="light">
+                        <span class="material-symbols-outlined">light_mode</span>
+                        Claro
+                    </button>
+                    <button class="md-segmented-button" id="theme-dark-btn" data-theme-mode="dark">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                        Oscuro
+                    </button>
+                </div>
+            </section>
+            
+            <div class="dialog-actions">
+                <button class="md-button text" id="settings-close-btn">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- (v14) Dialog de Nota -->
+    <div class="dialog-scrim" id="note-scrim">
+        <div class="md-dialog" id="note-dialog" role="dialog" aria-labelledby="note-dialog-title" aria-modal="true">
+            <h2 class="dialog-title" id="note-dialog-title">Nota del Día</h2>
+            <textarea id="note-textarea" placeholder="Escribe tus pensamientos..."></textarea>
+            <div class="dialog-actions">
+                <button class="md-button text" id="note-cancel-btn">Cancelar</button>
+                <button class="md-button text" id="note-save-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- (v7) Snackbar para notificaciones -->
+    <div id="snackbar" class="snackbar" role="status"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- STATE MANAGEMENT ---
+            let currentDate = new Date();
+            let focusedDate = new Date(); 
+            let audioFiles = {}; // MEJORA V17: Almacena objetos { name, type, data: ArrayBuffer }
+            let journalNotes = {}; 
+            let selectedDateElement = null;
+            let currentAudioURL = null;
+            const audioExtensions = ['.mp3', '.wav', '.ogg', '.m4a'];
+            let isSeeking = false;
+            
+            let currentPlaylist = [];
+            let currentPlaylistIndex = 0;
+            let playingDateElement = null;
+            let snackbarTimeout = null;
+            let elementFocusedBeforeDialog = null;
+            let lastTimeUpdateSave = 0;
+            
+            // V18: Estado del visualizador eliminado
+            
+            const playbackSpeeds = [1.0, 1.5, 2.0, 0.5];
+            let currentSpeedIndex = 0;
+
+            // --- DOM ELEMENTS ---
+            const docElement = document.documentElement;
+            const mainContent = document.getElementById('main-content');
+            const monthYearDisplay = document.getElementById('month-year-display');
+            const calendarDays = document.getElementById('calendar-days');
+            const weekdaysContainer = document.getElementById('weekdays');
+            const prevMonthBtn = document.getElementById('prev-month-btn');
+            const nextMonthBtn = document.getElementById('next-month-btn');
+            const todayBtn = document.getElementById('today-btn');
+            const settingsBtn = document.getElementById('settings-btn');
+            const noteBtn = document.getElementById('note-btn');
+            
+            const manualFileInput = document.getElementById('manual-file-input'); // V17
+            
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const playPauseIcon = document.getElementById('play-pause-icon');
+            const currentTrackInfo = document.getElementById('current-track-info');
+            const audioPlayer = document.getElementById('audio-player');
+            
+            const prevTrackBtn = document.getElementById('prev-track-btn');
+            const nextTrackBtn = document.getElementById('next-track-btn');
+            const playbackSpeedBtn = document.getElementById('playback-speed-btn');
+            
+            const progressBar = document.getElementById('progress-bar');
+            const currentTimeDisplay = document.getElementById('current-time');
+            const totalTimeDisplay = document.getElementById('total-time');
+            
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const snackbar = document.getElementById('snackbar');
+
+            // Dialog de Audio
+            const dialogScrim = document.getElementById('dialog-scrim');
+            const audioDialog = document.getElementById('audio-dialog');
+            const dialogTitle = document.getElementById('dialog-title');
+            const dialogList = document.getElementById('dialog-list');
+            const dialogCancelBtn = document.getElementById('dialog-cancel-btn');
+            const dialogAddAudioBtn = document.getElementById('dialog-add-audio-btn'); // V16
+            
+            // Dialog de Ajustes
+            const settingsScrim = document.getElementById('settings-scrim');
+            const settingsDialog = document.getElementById('settings-dialog');
+            const settingsCloseBtn = document.getElementById('settings-close-btn');
+            const themeSystemBtn = document.getElementById('theme-system-btn');
+            const themeLightBtn = document.getElementById('theme-light-btn');
+            const themeDarkBtn = document.getElementById('theme-dark-btn');
+            const themeButtons = [themeSystemBtn, themeLightBtn, themeDarkBtn];
+            
+            // Dialog de Nota
+            const noteScrim = document.getElementById('note-scrim');
+            const noteDialog = document.getElementById('note-dialog');
+            const noteDialogTitle = document.getElementById('note-dialog-title');
+            const noteTextarea = document.getElementById('note-textarea');
+            const noteSaveBtn = document.getElementById('note-save-btn');
+            const noteCancelBtn = document.getElementById('note-cancel-btn');
+            
+            const searchInput = document.getElementById('search-input');
+            
+            // V18: Elementos del visualizador eliminados
+
+            
+            // --- Lógica de IndexedDB (Actualizada V17.1) ---
+            const DB_NAME = 'AudioCalendarDB_v17_1'; // V17.1
+            const STORES = {
+                SETTINGS: 'Settings',
+                PLAYBACK: 'Playback',
+                NOTES: 'Notes',
+                AUDIO_MAP: 'AudioMap' // Almacena { name, type, data: ArrayBuffer }
+            };
+            const DB_VERSION = 1;
+
+            const openDB = () => {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    request.onerror = (event) => reject('Error al abrir IndexedDB');
+                    request.onsuccess = (event) => resolve(event.target.result);
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(STORES.SETTINGS)) {
+                            db.createObjectStore(STORES.SETTINGS);
+                        }
+                        if (!db.objectStoreNames.contains(STORES.PLAYBACK)) {
+                            db.createObjectStore(STORES.PLAYBACK);
+                        }
+                        if (!db.objectStoreNames.contains(STORES.NOTES)) {
+                            db.createObjectStore(STORES.NOTES);
+                        }
+                        if (!db.objectStoreNames.contains(STORES.AUDIO_MAP)) { 
+                            db.createObjectStore(STORES.AUDIO_MAP);
+                        }
+                    };
+                });
+            };
+
+            const dbGet = (storeName, key) => {
+                return openDB().then(db => {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(storeName, 'readonly');
+                        const store = transaction.objectStore(storeName);
+                        const request = store.get(key);
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => reject(request.error);
+                    });
+                });
+            };
+            
+            const dbGetAllKeys = (storeName) => {
+                return openDB().then(db => {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(storeName, 'readonly');
+                        const store = transaction.objectStore(storeName);
+                        const request = store.getAllKeys();
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => reject(request.error);
+                    });
+                });
+            };
+
+            const dbSet = (storeName, key, value) => {
+                return openDB().then(db => {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(storeName, 'readwrite');
+                        const store = transaction.objectStore(storeName);
+                        const request = store.put(value, key);
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => reject(request.error);
+                    });
+                });
+            };
+            
+            // --- Lógica de UI y Servicios ---
+
+            const showSnackbar = (message, isError = false) => {
+                clearTimeout(snackbarTimeout);
+                snackbar.textContent = message;
+                snackbar.classList.toggle('error', isError);
+                snackbar.classList.add('visible');
+                snackbarTimeout = setTimeout(() => {
+                    snackbar.classList.remove('visible');
+                }, 3000);
+            };
+
+            // --- MEJORA V17.1: Lógica de carga de archivos ---
+            
+            const loadAudioMap = async () => {
+                try {
+                    audioFiles = await dbGet(STORES.AUDIO_MAP, 'mainMap') || {};
+                    console.log('Mapa de audios cargado desde IDB:', audioFiles);
+                } catch (e) {
+                    console.error('Error al cargar mapa de audios:', e);
+                    audioFiles = {};
+                }
+            };
+            
+            const saveAudioMap = async () => {
+                try {
+                    await dbSet(STORES.AUDIO_MAP, 'mainMap', audioFiles);
+                    console.log('Mapa de audios guardado en IDB.');
+                } catch (e) {
+                    console.error('Error al guardar mapa de audios:', e);
+                    showSnackbar('Error al guardar la asociación de audios.', true);
+                }
+            };
+
+            // V17: Se activa con el click en el botón
+            const handleAddAudioClick = () => {
+                manualFileInput.click(); // Dispara el input oculto
+            };
+            
+            // V17.1: Corregido el almacenamiento a ArrayBuffer
+            const handleManualFileSelect = async (event) => {
+                const dateStr = audioDialog.dataset.currentDate;
+                if (!dateStr) return;
+                
+                const files = event.target.files;
+                if (!files || files.length === 0) return;
+
+                loadingIndicator.classList.add('visible'); // Show loader
+                showSnackbar(`Procesando ${files.length} archivo(s)...`);
+
+                if (!audioFiles[dateStr]) {
+                    audioFiles[dateStr] = [];
+                }
+                
+                const existingNames = audioFiles[dateStr].map(f => f.name);
+                const newFiles = Array.from(files).filter(f => !existingNames.includes(f.name));
+                
+                let filesAddedCount = 0;
+                for (const file of newFiles) {
+                    try {
+                        // V17.1: Convertir a ArrayBuffer para almacenamiento robusto
+                        const arrayBuffer = await file.arrayBuffer();
+                        const audioData = {
+                            name: file.name,
+                            type: file.type,
+                            data: arrayBuffer // Guardamos el buffer, no el File
+                        };
+                        audioFiles[dateStr].push(audioData);
+                        filesAddedCount++;
+                    } catch (err) {
+                        console.error(`Error procesando ${file.name}:`, err);
+                        showSnackbar(`Error al leer ${file.name}`, true);
+                    }
+                }
+                
+                if (filesAddedCount > 0) {
+                    await saveAudioMap();
+                    renderCalendar(); // Actualizar indicador del día
+                }
+                
+                // Refrescar el diálogo
+                showAudioDialog(dateStr);
+                loadingIndicator.classList.remove('visible'); // Hide loader
+                showSnackbar(`${filesAddedCount} audio(s) añadido(s) al día ${dateStr}.`);
+                
+                manualFileInput.value = '';
+            };
+            
+            // --- (V11) Lógica de Ajustes (Tema) ---
+            
+            const applyThemeMode = (mode) => {
+                docElement.setAttribute('data-theme', mode);
+                themeButtons.forEach(button => {
+                    button.classList.toggle('selected', button.dataset.themeMode === mode);
+                });
+            };
+
+            const openSettingsDialog = () => {
+                elementFocusedBeforeDialog = document.activeElement;
+                settingsScrim.classList.add('visible');
+            };
+            
+            const closeSettingsDialog = () => {
+                settingsScrim.classList.remove('visible');
+                if (elementFocusedBeforeDialog) {
+                    elementFocusedBeforeDialog.focus();
+                }
+            };
+            
+            const initializeSettings = async () => {
+                const savedMode = await dbGet(STORES.SETTINGS, 'themeMode') || 'system';
+                applyThemeMode(savedMode);
+            };
+            
+            // --- V18: Lógica del Visualizador eliminada ---
+            
+            // --- (V12) Lógica de Búsqueda ---
+            
+            const filterCalendar = (searchTerm) => {
+                const lowerTerm = searchTerm.toLowerCase().trim();
+                const allDays = calendarDays.querySelectorAll('.day[data-date]');
+                
+                if (lowerTerm === '') {
+                    allDays.forEach(day => day.classList.remove('filtered'));
+                    return;
+                }
+                
+                allDays.forEach(day => {
+                    const dateStr = day.dataset.date;
+                    const files = audioFiles[dateStr];
+                    const note = journalNotes[dateStr]; 
+                    
+                    let hasMatch = false;
+                    
+                    if (files && files.length > 0) {
+                        hasMatch = files.some(file => // V17.1: file.name sigue funcionando
+                            getCleanFileName(file.name).toLowerCase().includes(lowerTerm)
+                        );
+                    }
+                    
+                    if (!hasMatch && note) { 
+                        hasMatch = note.toLowerCase().includes(lowerTerm);
+                    }
+                    
+                    day.classList.toggle('filtered', !hasMatch);
+                });
+            };
+            
+            // --- (V14) Lógica de Notas ---
+            
+            const loadAllNotes = async () => {
+                try {
+                    const keys = await dbGetAllKeys(STORES.NOTES);
+                    journalNotes = {};
+                    keys.forEach(key => journalNotes[key] = true); 
+                } catch (e) {
+                    console.error("Error al cargar llaves de notas", e);
+                }
+            };
+            
+            const openNoteDialog = async () => {
+                const dateStr = selectedDateElement.dataset.date;
+                noteDialogTitle.textContent = `Nota del ${dateStr}`;
+                
+                try {
+                    const noteText = await dbGet(STORES.NOTES, dateStr);
+                    noteTextarea.value = noteText || '';
+                } catch (e) {
+                    noteTextarea.value = '';
+                }
+                
+                elementFocusedBeforeDialog = document.activeElement;
+                noteScrim.classList.add('visible');
+                noteTextarea.focus();
+            };
+            
+            const closeNoteDialog = () => {
+                noteScrim.classList.remove('visible');
+                if (elementFocusedBeforeDialog) {
+                    elementFocusedBeforeDialog.focus();
+                }
+            };
+            
+            const saveNote = async () => {
+                const dateStr = selectedDateElement.dataset.date;
+                const noteText = noteTextarea.value;
+                try {
+                    await dbSet(STORES.NOTES, dateStr, noteText);
+                    if (noteText) {
+                        journalNotes[dateStr] = true;
+                    } else {
+                        delete journalNotes[dateStr];
+                    }
+                    selectedDateElement.classList.toggle('has-note', !!noteText);
+                    showSnackbar('Nota guardada.');
+                    closeNoteDialog();
+                } catch (e) {
+                    showSnackbar('Error al guardar la nota.', true);
+                }
+            };
+
+            // --- CORE FUNCTIONS (Actualizadas) ---
+            
+            const formatTime = (seconds) => {
+                if (isNaN(seconds) || seconds === 0) return '0:00';
+                const minutes = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${minutes}:${String(secs).padStart(2, '0')}`;
+            };
+            
+            const formatDate = (date) => {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            };
+            
+            const getCleanFileName = (fileName) => {
+                let cleanName = fileName;
+                const lastDotIndex = cleanName.lastIndexOf('.');
+                if (lastDotIndex > 0) {
+                    cleanName = cleanName.substring(0, lastDotIndex);
+                }
+                return cleanName || "Audio sin nombre";
+            };
+            
+            const updateFocus = () => {
+                const prevFocused = calendarDays.querySelector('.day.focused');
+                if (prevFocused) prevFocused.classList.remove('focused');
+                const dateStr = formatDate(focusedDate);
+                const dayToFocus = calendarDays.querySelector(`.day[data-date="${dateStr}"]`);
+                if (dayToFocus) dayToFocus.classList.add('focused');
+            };
+            
+            const renderCalendar = () => {
+                calendarDays.innerHTML = '';
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+
+                monthYearDisplay.textContent = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(currentDate);
+
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
+                const adjustedFirstDay = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1; 
+                const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+                const lastDateOfPrevMonth = new Date(year, month, 0).getDate();
+
+                for (let i = adjustedFirstDay; i > 0; i--) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('day', 'prev-month');
+                    dayElement.textContent = lastDateOfPrevMonth - i + 1;
+                    calendarDays.appendChild(dayElement);
+                }
+
+                for (let i = 1; i <= lastDateOfMonth; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('day');
+                    dayElement.textContent = i;
+                    
+                    const date = new Date(year, month, i);
+                    const dateStr = formatDate(date);
+                    dayElement.dataset.date = dateStr;
+                    dayElement.setAttribute('tabindex', '-1'); 
+
+                    const today = new Date();
+                    if (i === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+                        dayElement.classList.add('today');
+                    }
+                    
+                    if (journalNotes[dateStr]) {
+                        dayElement.classList.add('has-note');
+                    }
+                    
+                    const hasAudio = audioFiles[dateStr] && audioFiles[dateStr].length > 0;
+                    if (hasAudio) {
+                        dayElement.classList.add('has-audio');
+                        
+                        const prevDateStr = formatDate(new Date(year, month, i - 1));
+                        const nextDateStr = formatDate(new Date(year, month, i + 1));
+                        const hasPrevAudio = audioFiles[prevDateStr] && audioFiles[prevDateStr].length > 0;
+                        const hasNextAudio = audioFiles[nextDateStr] && audioFiles[nextDateStr].length > 0;
+
+                        if (hasPrevAudio && hasNextAudio) {
+                            dayElement.classList.add('streak-mid');
+                        } else if (hasPrevAudio) {
+                            dayElement.classList.add('streak-end');
+                        } else if (hasNextAudio) {
+                            dayElement.classList.add('streak-start');
+                        }
+                    }
+                    
+                    dayElement.addEventListener('click', () => handleDayClick(dayElement, dateStr));
+                    calendarDays.appendChild(dayElement);
+                }
+
+                const totalDaysRendered = calendarDays.children.length;
+                const nextDays = 42 - totalDaysRendered; 
+                for (let i = 1; i <= nextDays; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('day', 'next-month');
+                    dayElement.textContent = i;
+                    calendarDays.appendChild(dayElement);
+                }
+                
+                if (playingDateElement) {
+                    const playingDateStr = playingDateElement.dataset.date;
+                    const newPlayingEl = calendarDays.querySelector(`.day[data-date="${playingDateStr}"]`);
+                    if (newPlayingEl) {
+                        playingDateElement = newPlayingEl;
+                        playingDateElement.classList.add('playing');
+                    } else {
+                        playingDateElement = null;
+                    }
+                }
+
+                updateFocus();
+                
+                if (searchInput.value) {
+                    filterCalendar(searchInput.value);
+                }
+            };
+            
+            const renderWeekdays = () => {
+                const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+                weekdaysContainer.innerHTML = '';
+                weekdays.forEach(day => {
+                    const weekdayEl = document.createElement('div');
+                    weekdayEl.classList.add('weekday');
+                    weekdayEl.textContent = day;
+                    weekdaysContainer.appendChild(weekdayEl);
+                });
+            };
+            
+            const resetPlayer = (notify = false, message = 'Selecciona un día') => {
+                audioPlayer.pause();
+                audioPlayer.src = '';
+                if(currentAudioURL) URL.revokeObjectURL(currentAudioURL);
+                currentAudioURL = null;
+                
+                playPauseBtn.disabled = true;
+                playPauseIcon.textContent = 'play_arrow';
+                prevTrackBtn.disabled = true;
+                nextTrackBtn.disabled = true;
+                playbackSpeedBtn.disabled = true;
+                
+                currentTrackInfo.textContent = 'Selecciona un día';
+                
+                progressBar.value = 0;
+                progressBar.disabled = true;
+                progressBar.style.setProperty('--progress-percent', '0%'); // V18
+                currentTimeDisplay.textContent = '0:00';
+                totalTimeDisplay.textContent = '0:00';
+                
+                currentPlaylist = [];
+                currentPlaylistIndex = 0;
+                
+                clearPlayingIndicator();
+                
+                dbSet(STORES.PLAYBACK, 'lastPosition', null);
+                
+                if (notify) {
+                    showSnackbar(message);
+                }
+                
+                // V18: Visualizador eliminado
+            };
+            
+            // --- Lógica del Dialog (Actualizada V17.1) ---
+            
+            const handleDialogKeyNavigation = (e) => {
+                const focusableElements = Array.from(
+                    audioDialog.querySelectorAll('.dialog-list-item:not(.empty-state), .md-button')
+                );
+                if (focusableElements.length === 0) return;
+
+                const currentIndex = focusableElements.indexOf(document.activeElement);
+                let nextIndex = -1;
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    nextIndex = (currentIndex + 1) % focusableElements.length;
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+                } else if (e.key === 'Escape') {
+                    hideAudioDialog();
+                }
+
+                if (nextIndex !== -1) {
+                    focusableElements[nextIndex].focus();
+                }
+            };
+            
+            const handleScrimClick = (e) => {
+                if (e.target === dialogScrim) {
+                    hideAudioDialog();
+                }
+            };
+            
+            const showAudioDialog = (dateStr) => {
+                dialogTitle.textContent = `Audios del ${dateStr}`;
+                audioDialog.dataset.currentDate = dateStr; 
+                dialogList.innerHTML = '';
+                elementFocusedBeforeDialog = document.activeElement;
+                
+                const audioDataList = audioFiles[dateStr]; // V17.1
+                
+                if (audioDataList && audioDataList.length > 0) {
+                    audioDataList.forEach((audioData, index) => { // V17.1: 'audioData'
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('dialog-list-item');
+                        listItem.setAttribute('role', 'option');
+                        listItem.setAttribute('tabindex', '-1');
+                        
+                        const icon = document.createElement('span');
+                        icon.classList.add('material-symbols-outlined');
+                        icon.textContent = 'audio_file';
+                        
+                        const name = document.createElement('span');
+                        name.textContent = getCleanFileName(audioData.name);
+                        
+                        listItem.appendChild(icon);
+                        listItem.appendChild(name);
+                        
+                        const isPlayingThisTrack = playingDateElement && 
+                                                 playingDateElement.dataset.date === dateStr && 
+                                                 currentPlaylist[currentPlaylistIndex] === audioData;
+                                                 
+                        if (isPlayingThisTrack) {
+                            listItem.classList.add('playing');
+                            icon.textContent = 'volume_up';
+                        }
+                        
+                        listItem.addEventListener('click', () => {
+                            startPlaylist(audioDataList, index);
+                            hideAudioDialog();
+                        });
+                        
+                        listItem.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                startPlaylist(audioDataList, index);
+                                hideAudioDialog();
+                            }
+                        });
+                        
+                        dialogList.appendChild(listItem);
+                    });
+                } else {
+                    dialogList.innerHTML = '<li class="dialog-list-item empty-state">No hay audios para este día.</li>';
+                }
+                
+                dialogScrim.classList.add('visible');
+                
+                const firstItem = dialogList.querySelector('.dialog-list-item:not(.empty-state)');
+                if (firstItem) {
+                    firstItem.setAttribute('tabindex', '0');
+                    firstItem.focus();
+                } else {
+                    dialogAddAudioBtn.focus();
+                }
+
+                audioDialog.addEventListener('keydown', handleDialogKeyNavigation);
+                dialogCancelBtn.addEventListener('click', hideAudioDialog, { once: true });
+                dialogScrim.addEventListener('click', handleScrimClick, { once: true });
+            };
+            
+            const hideAudioDialog = () => {
+                audioDialog.removeEventListener('keydown', handleDialogKeyNavigation);
+                dialogScrim.removeEventListener('click', handleScrimClick);
+                dialogScrim.classList.remove('visible');
+                
+                if (elementFocusedBeforeDialog) {
+                    elementFocusedBeforeDialog.focus();
+                    elementFocusedBeforeDialog = null;
+                }
+            };
+            
+            // --- Lógica de Reproducción (Actualizada V17.1 / V18) ---
+            
+            const clearPlayingIndicator = () => {
+                if (playingDateElement) {
+                    playingDateElement.classList.remove('playing');
+                    playingDateElement = null;
+                }
+            };
+            
+            const startPlaylist = (audioDataList, startIndex) => { // V17.1
+                currentPlaylist = audioDataList;
+                currentPlaylistIndex = startIndex;
+                
+                clearPlayingIndicator();
+                if (selectedDateElement) {
+                    playingDateElement = selectedDateElement;
+                    playingDateElement.classList.add('playing');
+                }
+                
+                playAudio(currentPlaylist[currentPlaylistIndex]);
+            };
+
+            const updatePlaylistControls = () => {
+                prevTrackBtn.disabled = (currentPlaylistIndex === 0);
+                nextTrackBtn.disabled = (currentPlaylistIndex === currentPlaylist.length - 1);
+            };
+            
+            // V18: Eliminada getAudioTags
+            
+            // V17.1: Acepta 'audioData' y reconstruye el File/Blob
+            // V17.2: Añadido autoplay
+            // V18: Eliminado getAudioTags
+            const loadAudio = async (audioData, startTime = 0, autoplay = false) => {
+                try {
+                    // V17.1: Reconstruir el Blob/File desde el ArrayBuffer
+                    const audioBlob = new Blob([audioData.data], { type: audioData.type });
+
+                    if (currentAudioURL) {
+                        URL.revokeObjectURL(currentAudioURL);
+                    }
+                    currentAudioURL = URL.createObjectURL(audioBlob); // Usar el Blob para playback
+                    audioPlayer.src = currentAudioURL;
+                    audioPlayer.playbackRate = playbackSpeeds[currentSpeedIndex];
+                    
+                    audioPlayer.addEventListener('loadedmetadata', () => {
+                        if (startTime > 0 && startTime < audioPlayer.duration) {
+                            audioPlayer.currentTime = startTime;
+                        }
+                        totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+                        progressBar.max = audioPlayer.duration;
+
+                        // V17.2: Mover el play() aquí
+                        if (autoplay) {
+                            audioPlayer.play();
+                        }
+                    }, { once: true });
+                    
+                    // V18: Eliminado getAudioTags
+                    currentTrackInfo.textContent = getCleanFileName(audioData.name);
+                    
+                    progressBar.disabled = false;
+                    playPauseBtn.disabled = false;
+                    playbackSpeedBtn.disabled = false;
+                    
+                    updatePlaylistControls();
+                    
+                } catch (err) {
+                     console.error('Error al cargar el archivo:', err);
+                     showSnackbar('Error al cargar audio.', true);
+                     resetPlayer();
+                }
+            };
+
+            const playAudio = async (audioData) => { // V17.1
+                await loadAudio(audioData, 0, true); // V17.2: Pasar autoplay=true
+            };
+            
+            const savePlaybackPosition = () => {
+                if (audioPlayer.currentTime > 0 && currentPlaylist.length > 0) {
+                    const currentAudio = currentPlaylist[currentPlaylistIndex]; // V17.1
+                    const position = {
+                        fileName: currentAudio.name, // V17.1
+                        time: audioPlayer.currentTime,
+                        dateStr: playingDateElement ? playingDateElement.dataset.date : null
+                    };
+                    dbSet(STORES.PLAYBACK, 'lastPosition', position);
+                }
+            };
+            
+            const loadPlaybackPosition = async () => {
+                const position = await dbGet(STORES.PLAYBACK, 'lastPosition');
+                if (!position || !position.fileName) return;
+
+                let foundAudio = null; // V17.1
+                let foundDateStr = null;
+
+                if (position.dateStr && audioFiles[position.dateStr]) {
+                    foundAudio = audioFiles[position.dateStr].find(f => f.name === position.fileName); // V17.1
+                    if (foundAudio) foundDateStr = position.dateStr;
+                }
+
+                if (!foundAudio) {
+                    for (const [dateStr, audios] of Object.entries(audioFiles)) { // V17.1
+                        foundAudio = audios.find(f => f.name === position.fileName); // V17.1
+                        if (foundAudio) {
+                            foundDateStr = dateStr;
+                            break;
+                        }
+                    }
+                }
+
+                if (foundAudio) {
+                    currentPlaylist = audioFiles[foundDateStr];
+                    currentPlaylistIndex = currentPlaylist.indexOf(foundAudio);
+                    
+                    const dayEl = calendarDays.querySelector(`.day[data-date="${foundDateStr}"]`);
+                    if (dayEl) {
+                        playingDateElement = dayEl;
+                        playingDateElement.classList.add('playing');
+                    }
+                    
+                    await loadAudio(foundAudio, position.time);
+                    showSnackbar(`Cargado: ${getCleanFileName(position.fileName)} en ${formatTime(position.time)}`);
+                } else {
+                    dbSet(STORES.PLAYBACK, 'lastPosition', null);
+                }
+            };
+
+
+            const handleDayClick = async (element, dateStr) => {
+                if (selectedDateElement) {
+                    selectedDateElement.classList.remove('selected');
+                }
+                selectedDateElement = element;
+                selectedDateElement.classList.add('selected');
+                
+                noteBtn.disabled = false; 
+                
+                focusedDate = new Date(dateStr + 'T12:00:00');
+                updateFocus();
+                calendarDays.focus();
+
+                showAudioDialog(dateStr);
+            };
+            
+            const handleKeyNavigation = (e) => {
+                if (document.activeElement === searchInput || 
+                    dialogScrim.classList.contains('visible') || 
+                    settingsScrim.classList.contains('visible') ||
+                    noteScrim.classList.contains('visible') 
+                ) {
+                    return;
+                }
+                
+                let newFocusedDate = new Date(focusedDate);
+                switch (e.key) {
+                    case 'ArrowRight': newFocusedDate.setDate(newFocusedDate.getDate() + 1); break;
+                    case 'ArrowLeft': newFocusedDate.setDate(newFocusedDate.getDate() - 1); break;
+                    case 'ArrowUp': newFocusedDate.setDate(newFocusedDate.getDate() - 7); break;
+                    case 'ArrowDown': newFocusedDate.setDate(newFocusedDate.getDate() + 7); break;
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault();
+                        const dateStr = formatDate(focusedDate);
+                        const el = calendarDays.querySelector(`.day[data-date="${dateStr}"]`);
+                        if (el) el.click();
+                        return;
+                    case 'Escape':
+                         return;
+                    default: return;
+                }
+                e.preventDefault();
+                if (newFocusedDate.getMonth() !== focusedDate.getMonth()) {
+                    currentDate = new Date(newFocusedDate);
+                    focusedDate = newFocusedDate;
+                    renderCalendar();
+                } else {
+                    focusedDate = newFocusedDate;
+                    updateFocus();
+                }
+            };
+
+            // --- EVENT LISTENERS ---
+            prevMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                focusedDate.setMonth(focusedDate.getMonth() - 1);
+                renderCalendar();
+            });
+            nextMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                focusedDate.setMonth(focusedDate.getMonth() + 1);
+                renderCalendar();
+            });
+            
+            todayBtn.addEventListener('click', () => {
+                const today = new Date();
+                currentDate = new Date(today.getFullYear(), today.getMonth(), 1); 
+                focusedDate = today; 
+                renderCalendar();
+                
+                const todayEl = calendarDays.querySelector('.day.today');
+                if (todayEl) {
+                    requestAnimationFrame(() => {
+                        todayEl.click();
+                    });
+                }
+            });
+            
+            manualFileInput.addEventListener('change', handleManualFileSelect); // V17
+            
+            document.addEventListener('keydown', handleKeyNavigation); 
+
+            playPauseBtn.addEventListener('click', () => {
+                // V18: Eliminada la lógica de AudioContext
+                if (audioPlayer.paused) audioPlayer.play();
+                else audioPlayer.pause();
+            });
+            
+            prevTrackBtn.addEventListener('click', () => {
+                if (currentPlaylistIndex > 0) {
+                    currentPlaylistIndex--;
+                    playAudio(currentPlaylist[currentPlaylistIndex]);
+                }
+            });
+            
+            nextTrackBtn.addEventListener('click', () => {
+                if (currentPlaylistIndex < currentPlaylist.length - 1) {
+                    currentPlaylistIndex++;
+                    playAudio(currentPlaylist[currentPlaylistIndex]);
+                }
+            });
+            
+            playbackSpeedBtn.addEventListener('click', () => {
+                currentSpeedIndex = (currentSpeedIndex + 1) % playbackSpeeds.length;
+                const newSpeed = playbackSpeeds[currentSpeedIndex];
+                audioPlayer.playbackRate = newSpeed;
+                playbackSpeedBtn.textContent = newSpeed.toFixed(1) + 'x';
+            });
+            
+            audioPlayer.addEventListener('play', () => { 
+                playPauseIcon.textContent = 'pause';
+                // V18: Visualizador eliminado
+            });
+            audioPlayer.addEventListener('pause', () => { 
+                playPauseIcon.textContent = 'play_arrow'; 
+                savePlaybackPosition();
+                // V18: Visualizador eliminado
+            });
+            
+            audioPlayer.addEventListener('timeupdate', () => {
+                const now = Date.now();
+                if (!isSeeking) {
+                    const currentTime = audioPlayer.currentTime;
+                    const duration = audioPlayer.duration;
+                    currentTimeDisplay.textContent = formatTime(currentTime);
+                    progressBar.value = currentTime;
+                    
+                    // V18: Actualizar el CSS de la barra
+                    const progressPercent = (duration > 0) ? (currentTime / duration) * 100 : 0;
+                    progressBar.style.setProperty('--progress-percent', `${progressPercent}%`);
+                    
+                    if (now - lastTimeUpdateSave > 3000) {
+                        savePlaybackPosition();
+                        lastTimeUpdateSave = now;
+                    }
+                }
+            });
+            
+            audioPlayer.addEventListener('ended', () => {
+                dbSet(STORES.PLAYBACK, 'lastPosition', null);
+                // V18: Visualizador eliminado
+                
+                if (!nextTrackBtn.disabled) {
+                    nextTrackBtn.click();
+                } else {
+                    resetPlayer(true, 'Playlist terminada.');
+                }
+            });
+            
+            progressBar.addEventListener('input', () => {
+                isSeeking = true;
+                const progressPercent = (audioPlayer.duration > 0) ? (progressBar.value / audioPlayer.duration) * 100 : 0;
+                progressBar.style.setProperty('--progress-percent', `${progressPercent}%`);
+                currentTimeDisplay.textContent = formatTime(progressBar.value);
+            });
+            progressBar.addEventListener('change', () => {
+                audioPlayer.currentTime = progressBar.value;
+                isSeeking = false;
+            });
+            
+            dialogAddAudioBtn.addEventListener('click', handleAddAudioClick);
+            
+            settingsBtn.addEventListener('click', openSettingsDialog);
+            settingsCloseBtn.addEventListener('click', closeSettingsDialog);
+            settingsScrim.addEventListener('click', (e) => {
+                if (e.target === settingsScrim) closeSettingsDialog();
+            });
+            
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const mode = button.dataset.themeMode;
+                    applyThemeMode(mode);
+                    dbSet(STORES.SETTINGS, 'themeMode', mode);
+                });
+            });
+            
+            searchInput.addEventListener('input', () => filterCalendar(searchInput.value));
+            
+            noteBtn.addEventListener('click', openNoteDialog);
+            noteCancelBtn.addEventListener('click', closeNoteDialog);
+            noteSaveBtn.addEventListener('click', saveNote);
+            noteScrim.addEventListener('click', (e) => {
+                if (e.target === noteScrim) closeNoteDialog();
+            });
+            
+            // --- INITIALIZATION ---
+            const initializeApp = async () => {
+                renderWeekdays();
+                await initializeSettings(); 
+                await loadAllNotes(); 
+                await loadAudioMap(); // V17
+                renderCalendar(); 
+                await loadPlaybackPosition(); 
+            };
+
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
+

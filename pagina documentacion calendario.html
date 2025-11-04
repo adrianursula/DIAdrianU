@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Completa - Audio Calendario</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        /* --- Reseteo Básico y Estilos Globales --- */
+        :root {
+            /* Tokens Generales */
+            --color-background: #f8f9fa;
+            --color-surface: #ffffff;
+            --color-text-primary: #212529;
+            --color-text-secondary: #6c757d;
+            --color-accent-versions: #005fcc; /* Azul para bitácora */
+            --color-accent-prompts: #0d6efd; /* Azul diferente para prompts */
+            --color-border: #dee2e6;
+            --color-code-bg: #282c34;
+            --color-code-text: #abb2bf;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+            /* --- ESTILOS V1-V8: PALETA AZUL (LIGHT) --- */
+            --md-ref-palette-primary-40: #3B5BA9;
+            --md-ref-palette-primary-90: #D8E2FF;
+            --md-ref-palette-primary-100: #FFFFFF;
+            --md-ref-palette-secondary-40: #585E71; 
+            --md-ref-palette-secondary-90: #E1E2EC; 
+            --md-ref-palette-secondary-10: #161B2C; /* (V10) */
+            --md-ref-palette-neutral-0: #000000; 
+            --md-ref-palette-neutral-10: #1B1B1F;
+            --md-ref-palette-neutral-20: #303033;
+            --md-ref-palette-neutral-90: #E3E2E6;
+            --md-ref-palette-neutral-94: #F3F0F4; 
+            --md-ref-palette-neutral-95: #F5F3F7; 
+            --md-ref-palette-neutral-99: #FDFBFF;
+            --md-ref-palette-neutral-variant-30: #45464F;
+            --md-ref-palette-neutral-variant-50: #757780;
+            --md-ref-palette-neutral-variant-80: #C5C6D0;
+            --md-ref-palette-neutral-variant-90: #E1E2EC;
+            --md-ref-palette-error-10: #410E0B;
+            --md-ref-palette-error-90: #F9DEDC;
+
+            /* --- TOKENS V1-V8 (LIGHT) --- */
+            --md-sys-color-primary-light: var(--md-ref-palette-primary-40);
+            --md-sys-color-on-primary-light: var(--md-ref-palette-primary-100);
+            --md-sys-color-primary-container-light: var(--md-ref-palette-primary-90);
+            --md-sys-color-on-primary-container-light: var(--md-ref-palette-primary-10); /* (V10) */
+            --md-sys-color-secondary-light: var(--md-ref-palette-secondary-40); 
+            --md-sys-color-secondary-container-light: var(--md-ref-palette-secondary-90);
+            --md-sys-color-on-secondary-container-light: var(--md-ref-palette-secondary-10); /* (V10) */
+            --md-sys-color-surface-light: var(--md-ref-palette-neutral-99);
+            --md-sys-color-on-surface-light: var(--md-ref-palette-neutral-10);
+            --md-sys-color-on-surface-variant-light: var(--md-ref-palette-neutral-variant-30);
+            --md-sys-color-surface-container-highest-light: var(--md-ref-palette-neutral-90);
+            --md-sys-color-surface-container-light: var(--md-ref-palette-neutral-94);
+            --md-sys-color-surface-variant-light: var(--md-ref-palette-neutral-variant-90);
+            --md-sys-color-scrim-light: var(--md-ref-palette-neutral-0); 
+            --md-sys-color-surface-container-low-light: var(--md-ref-palette-neutral-95); 
+            --md-sys-color-outline-light: var(--md-ref-palette-neutral-variant-50); 
+            --md-sys-color-inverse-surface-light: var(--md-ref-palette-neutral-20);
+            --md-sys-color-inverse-on-surface-light: var(--md-ref-palette-neutral-95);
+            --md-sys-color-error-container-light: var(--md-ref-palette-error-90);
+            --md-sys-color-on-error-container-light: var(--md-ref-palette-error-10);
+
+            /* --- ESTILOS V1-V8: PALETA AZUL (DARK) --- */
+            --md-ref-palette-primary-80-dark: #ADC6FF;
+            --md-ref-palette-primary-20-dark: #001A43;
+            --md-ref-palette-primary-30-dark: #002E6C;
+            --md-ref-palette-secondary-80-dark: #C5C6D9; 
+            --md-ref-palette-secondary-30-dark: #41475A;
+            --md-ref-palette-secondary-90-dark: #E1E2EC; /* (V10) */
+            --md-ref-palette-neutral-6-dark: #121316;
+            --md-ref-palette-neutral-10-dark: #1B1B1F;
+            --md-ref-palette-neutral-20-dark: #303033;
+            --md-ref-palette-neutral-90-dark: #E3E2E6;
+            --md-ref-palette-neutral-variant-30-dark: #45464F;
+            --md-ref-palette-neutral-variant-60-dark: #8F909A; 
+            --md-ref-palette-neutral-variant-70-dark: #A9AABC;
+            --md-ref-palette-error-30-dark: #8C1D18;
+            --md-ref-palette-error-80-dark: #F2B8B5;
+
+            /* --- TOKENS V1-V8 (DARK) --- */
+            --md-sys-color-primary-dark: var(--md-ref-palette-primary-80-dark);
+            --md-sys-color-on-primary-dark: var(--md-ref-palette-primary-20-dark);
+            --md-sys-color-primary-container-dark: var(--md-ref-palette-primary-30-dark);
+            --md-sys-color-on-primary-container-dark: var(--md-ref-palette-primary-90-dark); /* (V10) */
+            --md-sys-color-secondary-dark: var(--md-ref-palette-secondary-80-dark); 
+            --md-sys-color-secondary-container-dark: var(--md-ref-palette-secondary-30-dark);
+            --md-sys-color-on-secondary-container-dark: var(--md-ref-palette-secondary-90-dark); /* (V10) */
+            --md-sys-color-surface-dark: var(--md-ref-palette-neutral-6-dark);
+            --md-sys-color-on-surface-dark: var(--md-ref-palette-neutral-90-dark);
+            --md-sys-color-on-surface-variant-dark: var(--md-ref-palette-neutral-variant-70-dark);
+            --md-sys-color-surface-container-highest-dark: var(--md-ref-palette-neutral-20-dark);
+            --md-sys-color-surface-container-dark: var(--md-ref-palette-neutral-10-dark);
+            --md-sys-color-surface-variant-dark: var(--md-ref-palette-neutral-variant-30-dark);
+            --md-sys-color-scrim-dark: var(--md-ref-palette-neutral-0); 
+            --md-sys-color-surface-container-low-dark: var(--md-ref-palette-neutral-10-dark); 
+            --md-sys-color-outline-dark: var(--md-ref-palette-neutral-variant-60-dark); 
+            --md-sys-color-inverse-surface-dark: var(--md-ref-palette-neutral-90-dark);
+            --md-sys-color-inverse-on-surface-dark: var(--md-ref-palette-neutral-20-dark);
+            --md-sys-color-error-container-dark: var(--md-ref-palette-error-30-dark);
+            --md-sys-color-on-error-container-dark: var(--md-ref-palette-error-80-dark);
+
+            /* --- TOKENS DE FORMA Y TIPO (Unificados) --- */
+            --md-sys-shape-corner-small: 8px;
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-shape-corner-large: 16px;
+            --md-sys-shape-corner-extra-large: 28px; 
+            --md-sys-shape-corner-full: 999px;
+            
+            --md-sys-typescale-label-medium-font: "Roboto", sans-serif;
+            --md-sys-typescale-label-medium-size: 0.75rem; 
+            --md-sys-typescale-label-medium-weight: 500;
+            --md-sys-typescale-headline-small-font: "Roboto", sans-serif;
+            --md-sys-typescale-headline-small-size: 1.5rem; 
+            --md-sys-typescale-headline-small-weight: 400;
+            --md-sys-typescale-title-medium-font: "Roboto", sans-serif;
+            --md-sys-typescale-title-medium-size: 1rem; 
+            --md-sys-typescale-title-medium-weight: 500;
+            --md-sys-typescale-title-small-font: "Roboto", sans-serif; /* (V11) */
+            --md-sys-typescale-title-small-size: 0.875rem; /* (V11) */
+            --md-sys-typescale-title-small-weight: 500; /* (V11) */
+            --md-sys-typescale-label-large-font: "Roboto", sans-serif; 
+            --md-sys-typescale-label-large-size: 0.875rem; 
+            --md-sys-typescale-label-large-weight: 500;
+            --md-sys-typescale-body-large-font: "Roboto", sans-serif;
+            --md-sys-typescale-body-large-size: 1rem;
+            --md-sys-typescale-body-large-weight: 400;
+            --md-sys-typescale-body-medium-font: "Roboto", sans-serif; /* (V14) */
+            --md-sys-typescale-body-medium-size: 0.875rem; /* (V14) */
+            --md-sys-typescale-body-medium-weight: 400; /* (V14) */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+        }
+
+        /* --- Estructura Principal y Contenedor --- */
+        .container {
+            max-width: 900px; 
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- Encabezado --- */
+        .site-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 10px; /* Reducido para acercar el menú */
+        }
+
+        .site-header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: var(--color-text-primary); /* Color de texto normal */
+        }
+
+        /* --- Menú de Navegación --- */
+        .main-nav {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            background-color: var(--color-surface);
+            color: var(--color-text-secondary);
+            border-radius: 20px; /* Más redondeado */
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--color-border);
+        }
+
+        .nav-button.active {
+            background-color: var(--color-accent-versions); /* Usar azul de bitácora como activo */
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-accent-versions);
+        }
+
+        .nav-button:hover:not(.active) {
+            background-color: #e9ecef; /* Un gris claro para hover */
+            color: var(--color-text-primary);
+        }
+
+        /* --- Contenido Principal --- */
+        main h2 {
+            font-size: 1.8rem;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            border-bottom-width: 2px;
+            border-bottom-style: solid;
+        }
+
+        /* Títulos específicos de sección */
+        #versions-section h2 { border-bottom-color: var(--color-accent-versions); }
+        #prompts-section h2 { border-bottom-color: var(--color-accent-prompts); }
+
+        /* Ocultar secciones inactivas */
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+
+        /* --- ESTILOS DE BITÁCORA (VERSIONS) --- */
+        .version-entry {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--color-accent-versions);
+        }
+
+        .version-entry h3 { margin-top: 0; margin-bottom: 5px; font-size: 1.5rem; color: var(--color-text-primary); }
+        .version-entry .date { color: var(--color-text-secondary); font-style: italic; font-size: 0.9rem; margin-bottom: 20px; }
+        .version-entry ul { padding-left: 20px; margin-bottom: 20px; }
+        .version-entry li { margin-bottom: 8px; }
+        .version-entry p { margin-bottom: 15px; }
+        .version-entry h4 { margin-top: 20px; }
+        .version-entry .notes { font-style: italic; color: var(--color-text-secondary); border-left: 3px solid var(--color-border); padding-left: 15px; }
+        .version-visual .caption { font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 15px; font-style: italic; text-align: center; }
+
+        /* --- ESTILOS DE PROMPTS --- */
+        .prompt-section {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--color-accent-prompts);
+        }
+
+        .prompt-section h3 { margin-top: 0; margin-bottom: 15px; font-size: 1.5rem; color: var(--color-text-primary); }
+
+
+        /* --- ESTILOS COMUNES (PRE, CODE) --- */
+         pre { 
+            background-color: var(--color-code-bg); color: var(--color-code-text); padding: 15px; 
+            border-radius: 6px; overflow-x: auto; 
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; 
+            font-size: 0.9em; 
+        }
+        .prompt-section pre { 
+             white-space: pre-wrap; /* Ajuste específico para prompts */
+             word-wrap: break-word; 
+        }
+        code { font-family: inherit; }
+
+        /* --- ESTILOS PARA LA PREVIEW DE LA APP (Unificados) --- */
+         .app-preview-box {
+            font-family: "Roboto", sans-serif;
+            width: 100%; max-width: 420px; border-radius: var(--md-sys-shape-corner-large);
+            box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+            margin: 20px auto 0; box-sizing: border-box; position: relative; overflow: hidden;
+            /* Default to Light Blue Theme */
+            background-color: var(--md-sys-color-surface-container-highest-light);
+            color: var(--md-sys-color-on-surface-light);
+            /* Padding se maneja por data-layout */
+        }
+        /* --- (V1-V9) Layout Original --- */
+         .app-preview-box:not([data-layout="app"]) {
+            padding: 1.5rem;
+         }
+
+        /* --- (V10) Estilos de Layout --- */
+        .app-preview-box[data-layout="app"] {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            max-height: 700px; /* Simula altura de app */
+        }
+        .app-preview-box[data-layout="app"] .main-content-preview {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            position: relative; /* (V11) Para el loading indicator */
+        }
+
+        .app-preview-box.dark-mode {
+             background-color: var(--md-sys-color-surface-container-highest-dark);
+             color: var(--md-sys-color-on-surface-dark);
+        }
+        .app-preview-box * { box-sizing: border-box; }
+        .app-preview-box .calendar-header { 
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; 
+            gap: 0.5rem; /* Añadido para V6 preview */
+        }
+        /* (V11-V14) Botón de Ajustes en Header */
+        .app-preview-box[data-version="v11"] .calendar-header,
+        .app-preview-box[data-version="v14"] .calendar-header {
+             /* El botón de ajustes fuerza justificación diferente */
+             justify-content: space-between;
+        }
+        .app-preview-box .month-year-display { 
+             /* (V11-V14) Encogerse si es necesario */
+             flex-shrink: 1;
+             white-space: nowrap;
+             overflow: hidden;
+             text-overflow: ellipsis;
+             font-size: 1.5rem; font-weight: 400; 
+             padding: 0 0.5rem;
+             text-align: center;
+        }
+        /* (V1-V10) Centrado del título cuando no hay settings */
+         .app-preview-box:not([data-version="v11"]):not([data-version="v14"]) .month-year-display {
+            flex-grow: 1;
+         }
+
+        .app-preview-box .header-nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-shrink: 0; /* No encoger los botones */
+        }
+        .app-preview-box .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; }
+        .app-preview-box .weekday { 
+            font-weight: 500; font-size: 0.875rem; color: var(--md-sys-color-on-surface-variant-light);
+        }
+        .app-preview-box.dark-mode .weekday { color: var(--md-sys-color-on-surface-variant-dark); }
+        .app-preview-box .day { 
+            display: flex; justify-content: center; align-items: center; height: 40px; border-radius: var(--md-sys-shape-corner-full); position: relative;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            cursor: default;
+        }
+        .app-preview-box .day.prev-month, .app-preview-box .day.next-month { 
+            opacity: 0.6; color: var(--md-sys-color-on-surface-variant-light);
+        }
+        .app-preview-box.dark-mode .day.prev-month, .app-preview-box.dark-mode .day.next-month { color: var(--md-sys-color-on-surface-variant-dark); }
+        .app-preview-box .day.today { 
+            font-weight: bold; border: 1px solid var(--md-sys-color-primary-light); 
+        }
+        .app-preview-box.dark-mode .day.today { border-color: var(--md-sys-color-primary-dark); }
+        
+        /* (V7) Estilo .playing */
+        .app-preview-box .day.playing { box-shadow: inset 0 0 0 2px var(--md-sys-color-secondary-light); }
+        .app-preview-box.dark-mode .day.playing { box-shadow: inset 0 0 0 2px var(--md-sys-color-secondary-dark); }
+
+        .app-preview-box .day.selected { 
+            background-color: var(--md-sys-color-primary-light); color: var(--md-sys-color-on-primary-light); 
+        }
+        .app-preview-box.dark-mode .day.selected {
+             background-color: var(--md-sys-color-primary-dark); color: var(--md-sys-color-on-primary-dark); 
+        }
+        
+        /* (V7) .playing y .selected combinados */
+        .app-preview-box .day.playing.selected { box-shadow: inset 0 0 0 2px var(--md-sys-color-on-primary-light); }
+        .app-preview-box.dark-mode .day.playing.selected { box-shadow: inset 0 0 0 2px var(--md-sys-color-on-primary-dark); }
+        
+        .app-preview-box .day.has-audio::after { content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background-color: var(--md-sys-color-primary-light); }
+        .app-preview-box.dark-mode .day.has-audio::after { background-color: var(--md-sys-color-primary-dark); }
+        .app-preview-box .day.selected.has-audio::after { background-color: var(--md-sys-color-on-primary-light); }
+        .app-preview-box.dark-mode .day.selected.has-audio::after { background-color: var(--md-sys-color-on-primary-dark); }
+        .app-preview-box .day.playing.has-audio::after { background-color: var(--md-sys-color-secondary-light); }
+        .app-preview-box.dark-mode .day.playing.has-audio::after { background-color: var(--md-sys-color-secondary-dark); }
+        .app-preview-box .day.playing.selected.has-audio::after { background-color: var(--md-sys-color-on-primary-light); }
+        .app-preview-box.dark-mode .day.playing.selected.has-audio::after { background-color: var(--md-sys-color-on-primary-dark); }
+        #calendar-days:focus-visible .day.focused.has-audio::after { display: none; }
+
+        /* (V14) Indicador de Nota */
+        .app-preview-box .day.has-note::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: var(--md-sys-color-secondary-light);
+        }
+        .app-preview-box.dark-mode .day.has-note::before {
+            background-color: var(--md-sys-color-secondary-dark);
+        }
+        .app-preview-box .day.selected.has-note::before {
+            background-color: var(--md-sys-color-on-primary-light);
+        }
+
+        .app-preview-box .md-icon-button { 
+            width: 40px; height: 40px; padding: 0; border-radius: var(--md-sys-shape-corner-full); 
+            background-color: transparent; border: none; display: inline-flex; align-items: center; justify-content: center;
+            color: var(--md-sys-color-on-surface-variant-light);
+            cursor: default; /* No son interactivos en el mock */
+            flex-shrink: 0; /* (V11) No encoger */
+        }
+        .app-preview-box.dark-mode .md-icon-button { color: var(--md-sys-color-on-surface-variant-dark); }
+        .app-preview-box .material-symbols-outlined { font-size: 24px; }
+        
+        /* (V7) Estado deshabilitado */
+        .app-preview-box .md-icon-button[disabled] {
+            color: var(--md-sys-color-on-surface-variant-light); opacity: 0.38;
+        }
+        .app-preview-box.dark-mode .md-icon-button[disabled] {
+            color: var(--md-sys-color-on-surface-variant-dark); opacity: 0.38;
+        }
+        .app-preview-box .md-button[disabled] { opacity: 0.38; } 
+
+        .app-preview-box .controls-section { 
+            display: flex; flex-direction: column; 
+            gap: 1rem; 
+        }
+        /* (V1-V9) Layout Original */
+        .app-preview-box:not([data-layout="app"]) .controls-section {
+             margin-top: 1.5rem; padding-top: 0; border-top: none; 
+        }
+        /* (V10) Mover .controls-section al main-content */
+        .app-preview-box[data-layout="app"] .controls-section {
+             margin-top: 1.5rem; padding-top: 0; border-top: none; 
+        }
+
+        .app-preview-box .md-button { 
+            display: inline-flex; align-items: center; justify-content: center; padding: 0 1rem; height: 40px; 
+            border-radius: var(--md-sys-shape-corner-full); border: none; font-size: 0.875rem; font-weight: 500; 
+            width: 100%; 
+        }
+        .app-preview-box .md-button.filled {
+             background-color: var(--md-sys-color-primary-light); color: var(--md-sys-color-on-primary-light); 
+        }
+         .app-preview-box.dark-mode .md-button.filled {
+             background-color: var(--md-sys-color-primary-dark); color: var(--md-sys-color-on-primary-dark); 
+        }
+        .app-preview-box .md-button.text {
+            background-color: transparent; color: var(--md-sys-color-primary-light);
+            padding: 0 0.75rem; width: auto; 
+        }
+        .app-preview-box.dark-mode .md-button.text { color: var(--md-sys-color-primary-dark); }
+        
+        /* (V10) Layout del Player */
+        .app-preview-box[data-layout="app"] .player-surface {
+            flex-shrink: 0;
+            background-color: var(--md-sys-color-surface-container-light);
+            border-radius: 0; 
+            padding: 1rem 1.5rem;
+            box-shadow: none;
+            border-top: 1px solid var(--md-sys-color-outline-light);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .app-preview-box[data-layout="app"].dark-mode .player-surface {
+             background-color: var(--md-sys-color-surface-container-dark);
+             border-top-color: var(--md-sys-color-outline-dark);
+        }
+
+        /* (V10) Título de la pista */
+        .app-preview-box[data-layout="app"] .current-track-info {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            color: var(--md-sys-color-on-surface-light);
+            text-align: center;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-bottom: 0.5rem;
+        }
+        .app-preview-box[data-layout="app"].dark-mode .current-track-info {
+            color: var(--md-sys-color-on-surface-dark);
+        }
+        
+        /* (V10) Controles del Player */
+        .app-preview-box[data-layout="app"] .player { 
+            display: flex; align-items: center; justify-content: center; 
+            gap: 1rem; min-height: 40px; margin: 0 auto;
+        }
+        .app-preview-box[data-layout="app"] .player .md-button.filled { 
+            width: auto; padding: 0; width: 52px; /* Botón play/pause */
+        }
+        .app-preview-box[data-layout="app"] .player-progress {
+            margin-top: -0.25rem; /* Acercar la barra de progreso */
+        }
+
+        /* (V7-V9) Player layout (original) */
+        .app-preview-box:not([data-layout="app"]) .player { 
+            display: flex; align-items: center; gap: 0.5rem; min-height: 40px; 
+        }
+        .app-preview-box:not([data-layout="app"]) .player .md-button.filled { 
+            width: auto; padding: 0; width: 52px; /* Botón play/pause */
+        }
+        .app-preview-box:not([data-layout="app"]) .current-track-info { 
+            flex-grow: 1; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            color: var(--md-sys-color-on-surface-variant-light);
+            margin: 0 0.5rem;
+        }
+        .app-preview-box.dark-mode:not([data-layout="app"]) .current-track-info { color: var(--md-sys-color-on-surface-variant-dark); }
+        .app-preview-box:not([data-layout="app"]) .player .md-button[disabled] { background-color: var(--md-ref-palette-neutral-variant-80); } 
+        
+        .app-preview-box:not([data-layout="app"]) .player-surface {
+            border-radius: var(--md-sys-shape-corner-medium); padding: 1rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; gap: 0.75rem;
+            background-color: var(--md-sys-color-surface-container-light);
+        }
+         .app-preview-box.dark-mode:not([data-layout="app"]) .player-surface { background-color: var(--md-sys-color-surface-container-dark); }
+        
+        .app-preview-box .day.focused {
+            outline-offset: 1px;
+            background-color: var(--md-sys-color-primary-container-light); 
+            outline: 2px solid var(--md-sys-color-primary-light); 
+        }
+         .app-preview-box.dark-mode .day.focused {
+             background-color: var(--md-sys-color-primary-container-dark); 
+             outline-color: var(--md-sys-color-primary-dark); 
+        }
+        
+        .app-preview-box .player-progress { width: 100%; }
+        .app-preview-box .time-indicators {
+            display: flex; justify-content: space-between;
+            font-family: var(--md-sys-typescale-label-medium-font); font-weight: var(--md-sys-typescale-label-medium-weight);
+            font-size: var(--md-sys-typescale-label-medium-size); padding: 0 4px;
+            color: var(--md-sys-color-on-surface-variant-light);
+        }
+        .app-preview-box.dark-mode .time-indicators { color: var(--md-sys-color-on-surface-variant-dark); }
+        
+        .app-preview-box #progress-bar {
+            -webkit-appearance: none; appearance: none; width: 100%; height: 4px; 
+            border-radius: var(--md-sys-shape-corner-full); outline: none; cursor: default; margin: 8px 0;
+            background: var(--md-sys-color-surface-variant-light);
+        }
+        .app-preview-box.dark-mode #progress-bar { background: var(--md-sys-color-surface-variant-dark); }
+        
+        .app-preview-box #progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 20px; height: 20px; 
+            border-radius: 50%; border: none; background: var(--md-sys-color-primary-light);
+        }
+        .app-preview-box.dark-mode #progress-bar::-webkit-slider-thumb { background: var(--md-sys-color-primary-dark); }
+        
+        .app-preview-box #progress-bar::-moz-range-thumb {
+            width: 20px; height: 20px; border-radius: 50%; border: none; cursor: default;
+            background: var(--md-sys-color-primary-light);
+        }
+         .app-preview-box.dark-mode #progress-bar::-moz-range-thumb { background: var(--md-sys-color-primary-dark); }
+         
+         .app-preview-box #progress-bar::-moz-range-track {
+            width: 100%; height: 4px; border-radius: var(--md-sys-shape-corner-full);
+            background: var(--md-sys-color-surface-variant-light);
+        }
+        .app-preview-box.dark-mode #progress-bar::-moz-range-track { background: var(--md-sys-color-surface-variant-dark); }
+        
+        .app-preview-box .dialog-scrim-preview {
+            position: absolute; inset: 0; background-color: var(--md-sys-color-scrim-light);
+            opacity: 0.4; display: flex; justify-content: center; align-items: center; z-index: 10;
+        }
+         .app-preview-box.dark-mode .dialog-scrim-preview { background-color: var(--md-sys-color-scrim-dark); }
+        
+        .app-preview-box .md-dialog-preview {
+            border-radius: var(--md-sys-shape-corner-extra-large); padding: 1.5rem; width: calc(100% - 3rem); 
+            max-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            background-color: var(--md-sys-color-surface-container-low-light);
+            color: var(--md-sys-color-on-surface-light);
+        }
+        .app-preview-box.dark-mode .md-dialog-preview {
+            background-color: var(--md-sys-color-surface-container-low-dark);
+            color: var(--md-sys-color-on-surface-dark);
+        }
+
+        .app-preview-box .dialog-title-preview {
+            font-family: var(--md-sys-typescale-headline-small-font); font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight); margin-bottom: 1rem;
+        }
+        .app-preview-box .dialog-list-preview { list-style: none; margin: 0 -1rem; }
+        .app-preview-box .dialog-list-item-preview {
+            display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem;
+            border-radius: var(--md-sys-shape-corner-full); cursor: default;
+            outline: none; /* (V8) */
+        }
+        /* (V8) Foco en Dialog */
+        .app-preview-box .dialog-list-item-preview.focused {
+             background-color: var(--md-sys-color-surface-container-highest-light);
+             outline: 2px solid var(--md-sys-color-primary-light);
+             outline-offset: -2px;
+        }
+        .app-preview-box.dark-mode .dialog-list-item-preview.focused {
+             background-color: var(--md-sys-color-surface-container-highest-dark);
+             outline-color: var(--md-sys-color-primary-dark);
+        }
+        /* (V10) Pista activa en Dialog */
+        .app-preview-box .dialog-list-item-preview.playing {
+            background-color: var(--md-sys-color-secondary-container-light);
+        }
+        .app-preview-box.dark-mode .dialog-list-item-preview.playing {
+            background-color: var(--md-sys-color-secondary-container-dark);
+        }
+        .app-preview-box .dialog-list-item-preview.playing .material-symbols-outlined {
+            color: var(--md-sys-color-on-secondary-container-light);
+        }
+        .app-preview-box.dark-mode .dialog-list-item-preview.playing .material-symbols-outlined {
+             color: var(--md-sys-color-on-secondary-container-dark);
+        }
+        .app-preview-box .dialog-list-item-preview.playing span {
+            color: var(--md-sys-color-on-secondary-container-light);
+            font-weight: 500;
+        }
+        .app-preview-box.dark-mode .dialog-list-item-preview.playing span {
+            color: var(--md-sys-color-on-secondary-container-dark);
+        }
+
+        .app-preview-box .dialog-list-item-preview .material-symbols-outlined { color: var(--md-sys-color-secondary-light); }
+         .app-preview-box.dark-mode .dialog-list-item-preview .material-symbols-outlined { color: var(--md-sys-color-secondary-dark); }
+        .app-preview-box .dialog-list-item-preview span {
+            font-family: var(--md-sys-typescale-title-medium-font); font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .app-preview-box .dialog-actions-preview { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
+
+        .app-preview-box .loading-indicator-preview {
+             position: absolute; top: 0; left: 0; right: 0; height: 4px;
+             background-color: var(--md-sys-color-surface-variant-light); overflow: hidden;
+        }
+         .app-preview-box.dark-mode .loading-indicator-preview { background-color: var(--md-sys-color-surface-variant-dark); }
+        .app-preview-box .loading-indicator-preview .progress-bar-preview {
+            width: 100%; height: 100%; background-color: var(--md-sys-color-primary-light);
+            transform: translateX(-50%); 
+        }
+         .app-preview-box.dark-mode .loading-indicator-preview .progress-bar-preview { background-color: var(--md-sys-color-primary-dark); }
+         
+        /* (V7) Estilos del Snackbar */
+        .snackbar-preview {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 200px;
+            padding: 1rem;
+            background-color: var(--md-sys-color-inverse-surface-light);
+            color: var(--md-sys-color-inverse-on-surface-light);
+            border-radius: var(--md-sys-shape-corner-small);
+            box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: 0.9rem;
+            z-index: 20;
+        }
+        /* (V10) Ajuste del Snackbar para el nuevo layout */
+        .app-preview-box[data-layout="app"] .snackbar-preview {
+            bottom: 10.5rem; /* Sube por encima de la barra del reproductor */
+        }
+        .app-preview-box.dark-mode .snackbar-preview {
+             background-color: var(--md-sys-color-inverse-surface-dark);
+             color: var(--md-sys-color-inverse-on-surface-dark);
+        }
+        .snackbar-preview.error {
+            background-color: var(--md-sys-color-error-container-light);
+            color: var(--md-sys-color-on-error-container-light);
+        }
+         .app-preview-box.dark-mode .snackbar-preview.error {
+            background-color: var(--md-sys-color-error-container-dark);
+            color: var(--md-sys-color-on-error-container-dark);
+        }
+
+        /* --- (V9) TEMA TERRACOTA OVERRIDE --- */
+        .app-preview-box[data-version="v9"],
+        .app-preview-box[data-version="v10"],
+        .app-preview-box[data-version="v11"],
+        .app-preview-box[data-version="v14"] {
+            /* Primary */
+            --md-sys-color-primary-light: #B94639;
+            --md-sys-color-on-primary-light: #FFFFFF;
+            --md-sys-color-primary-container-light: #FFDAD6;
+            --md-sys-color-on-primary-container-light: #410002;
+            /* Secondary */
+            --md-sys-color-secondary-light: #775651;
+            --md-sys-color-on-secondary-container-light: #2C1512;
+            --md-sys-color-secondary-container-light: #FFDAD6;
+            /* Surface */
+            --md-sys-color-surface-light: #FFFBFF;
+            --md-sys-color-on-surface-light: #201A19;
+            --md-sys-color-on-surface-variant-light: #534341;
+            --md-sys-color-outline-light: #857370;
+            --md-sys-color-surface-container-highest-light: #F0E0DE;
+            --md-sys-color-surface-container-light: #F6E6E4;
+            --md-sys-color-surface-variant-light: #E7E0DE;
+            --md-sys-color-surface-container-low-light: #FCEEED;
+            /* Inverse */
+            --md-sys-color-inverse-surface-light: #362F2E;
+            --md-sys-color-inverse-on-surface-light: #FCEEED;
+            /* Error */
+            --md-sys-color-error-container-light: #F9DEDC;
+            --md-sys-color-on-error-container-light: #410E0B;
+        }
+        
+        .app-preview-box[data-version="v9"].dark-mode,
+        .app-preview-box[data-version="v10"].dark-mode,
+        .app-preview-box[data-version="v11"].dark-mode,
+        .app-preview-box[data-version="v14"].dark-mode {
+             /* Primary */
+            --md-sys-color-primary-dark: #FFB4AB;
+            --md-sys-color-on-primary-dark: #690005;
+            --md-sys-color-primary-container-dark: #93000A;
+            --md-sys-color-on-primary-container-dark: #FFDAD6;
+             /* Secondary */
+            --md-sys-color-secondary-dark: #E7BDB6;
+            --md-sys-color-on-secondary-container-dark: #2C1512; /* Corregido de V10 */
+            --md-sys-color-secondary-container-dark: #5D3F3B;
+             /* Surface */
+            --md-sys-color-surface-dark: #141212;
+            --md-sys-color-on-surface-dark: #F0E0DE;
+            --md-sys-color-on-surface-variant-dark: #BAA6A4;
+            --md-sys-color-outline-dark: #9F8C8A;
+            --md-sys-color-surface-container-highest-dark: #362F2E;
+            --md-sys-color-surface-container-dark: #201A19;
+            --md-sys-color-surface-variant-dark: #534341;
+            --md-sys-color-surface-container-low-dark: #201A19;
+             /* Inverse */
+            --md-sys-color-inverse-surface-dark: #F0E0DE;
+            --md-sys-color-inverse-on-surface-dark: #362F2E;
+            /* Error */
+            --md-sys-color-error-container-dark: #8C1D18;
+            --md-sys-color-on-error-container-dark: #F2B8B5;
+        }
+
+        /* --- (V11) Estilos de Ajustes --- */
+        .app-preview-box .settings-section {
+            display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;
+        }
+        .app-preview-box .settings-section-title {
+            font-family: var(--md-sys-typescale-title-small-font); font-weight: var(--md-sys-typescale-title-small-weight);
+            font-size: var(--md-sys-typescale-title-small-size); color: var(--md-sys-color-primary-light);
+            margin-bottom: 0.25rem;
+        }
+        .app-preview-box.dark-mode .settings-section-title { color: var(--md-sys-color-primary-dark); }
+        
+        .app-preview-box .md-segmented-button-group {
+            display: flex; border: 1px solid var(--md-sys-color-outline-light);
+            border-radius: var(--md-sys-shape-corner-full); overflow: hidden;
+        }
+        .app-preview-box.dark-mode .md-segmented-button-group { border-color: var(--md-sys-color-outline-dark); }
+        
+        .app-preview-box .md-segmented-button {
+            flex-grow: 1; display: inline-flex; align-items: center; justify-content: center;
+            gap: 0.5rem; height: 40px; padding: 0 1rem;
+            background-color: var(--md-sys-color-surface-container-light);
+            color: var(--md-sys-color-on-surface-variant-light);
+            border: none; border-left: 1px solid var(--md-sys-color-outline-light);
+            font-family: var(--md-sys-typescale-label-large-font); font-weight: var(--md-sys-typescale-label-large-weight);
+            font-size: var(--md-sys-typescale-label-large-size);
+        }
+        .app-preview-box.dark-mode .md-segmented-button {
+            background-color: var(--md-sys-color-surface-container-dark);
+            color: var(--md-sys-color-on-surface-variant-dark);
+            border-left-color: var(--md-sys-color-outline-dark);
+        }
+        .app-preview-box .md-segmented-button:first-child { border-left: none; }
+        
+        .app-preview-box .md-segmented-button.selected {
+            background-color: var(--md-sys-color-secondary-container-light);
+            color: var(--md-sys-color-on-secondary-container-light);
+        }
+        .app-preview-box.dark-mode .md-segmented-button.selected {
+            background-color: var(--md-sys-color-secondary-container-dark);
+            color: var(--md-sys-color-on-secondary-container-dark);
+        }
+        
+        .app-preview-box .color-swatch-group { display: flex; gap: 1rem; }
+        .app-preview-box .color-swatch {
+            width: 40px; height: 40px; border-radius: 50%; cursor: default;
+            border: 2px solid var(--md-sys-color-outline-light);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .app-preview-box.dark-mode .color-swatch { border-color: var(--md-sys-color-outline-dark); }
+        
+        .app-preview-box .color-swatch.selected {
+            border-width: 4px; border-color: var(--md-sys-color-primary-light);
+        }
+        .app-preview-box.dark-mode .color-swatch.selected { border-color: var(--md-sys-color-primary-dark); }
+
+        .app-preview-box .color-swatch .material-symbols-outlined {
+             color: var(--md-sys-color-primary-light);
+        }
+        .app-preview-box.dark-mode .color-swatch .material-symbols-outlined {
+             color: var(--md-sys-color-primary-dark);
+        }
+        .app-preview-box .color-swatch .material-symbols-outlined.hidden { display: none; }
+
+        /* --- (V14) Estilos del Editor de Notas --- */
+        .app-preview-box .note-editor-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .app-preview-box .note-editor-preview textarea {
+            width: 100%;
+            min-height: 120px;
+            border-radius: var(--md-sys-shape-corner-medium);
+            border: 1px solid var(--md-sys-color-outline-light);
+            background-color: var(--md-sys-color-surface-container-low-light);
+            color: var(--md-sys-color-on-surface-light);
+            padding: 1rem;
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            resize: none;
+        }
+        .app-preview-box.dark-mode .note-editor-preview textarea {
+            border-color: var(--md-sys-color-outline-dark);
+            background-color: var(--md-sys-color-surface-container-low-dark);
+            color: var(--md-sys-color-on-surface-dark);
+        }
+
+
+        /* --- Pie de Página --- */
+        .site-footer { 
+            text-align: center; padding: 25px 0; margin-top: 40px; 
+            border-top: 1px solid var(--color-border); font-size: 0.9rem; color: var(--color-text-secondary); 
+        }
+        
+        /* --- Diseño Responsivo --- */
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .site-header h1 { font-size: 1.8rem; }
+            main h2 { font-size: 1.5rem; }
+            .version-entry, .prompt-section { padding: 20px; }
+            pre { font-size: 0.85em; }
+            .nav-button { margin: 5px; } /* Mejor espaciado en móviles */
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <h1>Documentación del Proyecto: Audio Calendario</h1>
+        </div>
+    </header>
+
+    <nav class="main-nav container">
+        <button class="nav-button active" data-target="versions-section">Registro de Versiones</button>
+        <button class="nav-button" data-target="prompts-section">Prompts Principales</button>
+    </nav>
+
+    <main class="container">
+
+        <section id="versions-section" class="content-section active">
+            <h2>Registro de Versiones</h2>
+
+            <article class="version-entry">
+                <h3>Versión 0.14: Metadatos ID3 y Editor de Notas (Diario)</h3>
+                <p class="date">3 de noviembre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Lectura de Metadatos (ID3):</strong> Se integró la librería <code>jsmediatags</code> para leer metadatos de archivos MP3. Al reproducir una pista, la app ahora intenta leer sus tags ID3 (título, artista) y los muestra en el reproductor (<code>#current-track-info</code>) en lugar del nombre del archivo.</li>
+                    <li><strong>Nuevo Diálogo de Notas:</strong> Se añadió un nuevo icono (<code>edit_note</code>) a la cabecera del calendario que abre un diálogo modal para escribir notas sobre el día actualmente seleccionado (<code>focusedDate</code>).</li>
+                    <li><strong>Persistencia de Notas (IndexedDB):</strong> Se creó un nuevo "Store" (<code>Notes</code>) en IndexedDB. Las notas de texto se guardan automáticamente (con "debounce") a medida que el usuario escribe, asociadas a una clave de fecha (<code>YYYY-MM-DD</code>).</li>
+                    <li><strong>Indicador de Notas:</strong> Los días que tienen una nota guardada ahora muestran un pequeño indicador visual (<code>.has-note::before</code>) en la esquina superior, similar al indicador de audio.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    La integración de <code>jsmediatags</code> fue sencilla para la lectura de tags básicos. La lógica de guardado de notas requirió implementar un "debounce" para no escribir en IndexedDB en cada pulsación de tecla, optimizando el rendimiento. Esta versión sienta las bases funcionales completas del "Diario Sónico".
+                </p>
+
+                <h4>Visualización de la Versión (Diálogo de Notas):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v14" data-layout="app">
+                        <div class="main-content-preview">
+                            <header class="calendar-header">
+                                <button class="md-icon-button"><span class="material-symbols-outlined">edit_note</span></button>
+                                <h2 class="month-year-display">octubre 2025</h2>
+                                <div class="header-nav-buttons">
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">settings</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                                </div>
+                            </header>
+                            <div class="calendar-grid">
+                                 <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                                <div class="day has-note selected">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                                <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                            </div>
+                            <section class="controls-section">
+                                <button class="md-button filled">Seleccionar Carpeta</button>
+                            </section>
+                             <div class="dialog-scrim-preview">
+                                 <div class="md-dialog-preview">
+                                     <h2 class="dialog-title-preview">Nota del 2025-10-06</h2>
+                                     
+                                     <section class="note-editor-preview">
+                                        <textarea placeholder="Escribe tus pensamientos para este día...">Hoy ha sido un día productivo. La reunión de la mañana fue bien y...</textarea>
+                                     </section>
+
+                                     <div class="dialog-actions-preview">
+                                         <button class="md-button text">Cerrar</button>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                        
+                        <div class="player-surface">
+                            <div id="current-track-info" class="current-track-info">Selecciona un día</div>
+                            <div class="player-progress">
+                                <input type="range" id="progress-bar" value="0" min="0" max="100" disabled>
+                                <div class="time-indicators">
+                                    <span>0:00</span>
+                                    <span>0:00</span>
+                                </div>
+                            </div>
+                            <div class="player">
+                                <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_previous</span></button>
+                                <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_next</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="caption">Visualización de V0.14: El nuevo diálogo de "Notas" abierto para el día 6, que ahora muestra un indicador de nota (punto superior).</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.11: Memoria de Reproducción y Selector de Tema</h3>
+                <p class="date">31 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Memoria de Reproducción (IndexedDB):</strong> La aplicación ahora guarda la última pista y el segundo exacto (<code>currentTime</code>) en IndexedDB al pausar o cada 3 segundos. Al recargar la app (<code>tryLoadSavedFolder</code>), restaura automáticamente la pista y el tiempo donde se dejó.</li>
+                    <li><strong>Diálogo de Ajustes:</strong> Añadido un nuevo icono de "Ajustes" (<code>settings</code>) en la cabecera que abre un diálogo modal.</li>
+                    <li><strong>Selector de Modo (Claro/Oscuro/Sistema):</strong> Dentro de Ajustes, el usuario puede forzar el modo claro (<code>light</code>), modo oscuro (<code>dark</code>) o respetar la configuración del sistema (<code>system</code>). La preferencia se guarda en IndexedDB.</li>
+                    <li><strong>Selector de Color de Acento:</strong> El usuario puede elegir entre múltiples temas de color (ej. Terracota, Azul, Verde). La paleta seleccionada se aplica dinámicamente y se guarda en IndexedDB.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    Esta fue una gran actualización de IndexedDB. Se creó un nuevo <code>store</code> ("Playback") para la memoria de reproducción y se expandió el <code>store</code> "Settings" para el tema. La lógica de <code>loadPlaybackPosition</code> fue compleja, ya que debía buscar el archivo por nombre en todas las listas de fechas de <code>audioFiles</code>.
+                </p>
+
+                <h4>Visualización de la Versión (Diálogo de Ajustes):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v11" data-layout="app">
+                        <div class="main-content-preview">
+                            <header class="calendar-header">
+                                <button class="md-icon-button"><span class="material-symbols-outlined">settings</span></button>
+                                <h2 class="month-year-display">octubre 2025</h2>
+                                <div class="header-nav-buttons">
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                                </div>
+                            </header>
+                            <div class="calendar-grid">
+                                 <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                                <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                                <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                                <div class="day has-audio">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day">26</div>
+                            </div>
+                            <section class="controls-section">
+                                <button class="md-button filled">Seleccionar Carpeta</button>
+                            </section>
+                             <div class="dialog-scrim-preview">
+                                 <div class="md-dialog-preview">
+                                     <h2 class="dialog-title-preview">Ajustes</h2>
+                                     
+                                     <section class="settings-section">
+                                         <h3 class="settings-section-title">Modo de Apariencia</h3>
+                                         <div class="md-segmented-button-group">
+                                             <button class="md-segmented-button selected"><span class="material-symbols-outlined">brightness_auto</span>Sistema</button>
+                                             <button class="md-segmented-button"><span class="material-symbols-outlined">light_mode</span>Claro</button>
+                                             <button class="md-segmented-button"><span class="material-symbols-outlined">dark_mode</span>Oscuro</button>
+                                         </div>
+                                     </section>
+                                     
+                                     <section class="settings-section">
+                                         <h3 class="settings-section-title">Color de Acento</h3>
+                                         <div class="color-swatch-group">
+                                             <button class="color-swatch selected" style="background-color: #B94639;">
+                                                  <span class="material-symbols-outlined">check</span>
+                                             </button>
+                                             <button class="color-swatch" style="background-color: #3B5BA9;">
+                                                  <span class="material-symbols-outlined hidden">check</span>
+                                             </button>
+                                             <button class="color-swatch" style="background-color: #386A20;">
+                                                  <span class="material-symbols-outlined hidden">check</span>
+                                             </button>
+                                         </div>
+                                     </section>
+
+                                     <div class="dialog-actions-preview">
+                                         <button class="md-button text">Cerrar</button>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                        
+                        <div class="player-surface">
+                            <div id="current-track-info" class="current-track-info">Selecciona un día</div>
+                            <div class="player-progress">
+                                <input type="range" id="progress-bar" value="0" min="0" max="100" disabled>
+                                <div class="time-indicators">
+                                    <span>0:00</span>
+                                    <span>0:00</span>
+                                </div>
+                            </div>
+                            <div class="player">
+                                <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_previous</span></button>
+                                <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_next</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="caption">Visualización de V0.11: El nuevo diálogo de "Ajustes" superpuesto, con los controles para el Modo de Apariencia y el Color de Acento.</p>
+                </div>
+            </article>
+            
+            <article class="version-entry">
+                <h3>Versión 0.10: Layout de App (Bottom Bar) y Rediseño del Reproductor</h3>
+                <p class="date">30 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Layout de App (Bottom Bar):</strong> Se reestructuró el HTML y CSS. El calendario y los controles de carpeta ahora están en <code>.main-content</code> (scrollable), y el <code>.player-surface</code> actúa como una barra de reproductor fija en la parte inferior.</li>
+                    <li><strong>Rediseño del Reproductor:</strong> El reproductor ahora sigue un layout de "bottom app bar" de MD3. El nombre de la pista tiene jerarquía de título, y los controles están centrados debajo.</li>
+                    <li><strong>Indicador de Pista Activa (Diálogo):</strong> Al abrir el diálogo, la pista que se está reproduciendo actualmente se resalta con el color <code>secondary-container</code> y el icono <code>volume_up</code>.</li>
+                    <li><strong>Robustez (Error NotFoundError):</strong> La aplicación ahora maneja el error <code>NotFoundError</code> (ej. si la carpeta guardada fue eliminada), limpia el handle de IndexedDB y notifica al usuario con un snackbar.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    Este cambio de layout fue significativo. Se usó Flexbox en <code>.app-container</code> para separar el contenido principal (flexible y scrollable) de la barra del reproductor (fija). Esto hace que la app se sienta mucho más nativa y permite que el reproductor esté siempre visible.
+                </p>
+
+                <h4>Visualización de la Versión (Nuevo Layout de App):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v10" data-layout="app">
+                        <div class="main-content-preview">
+                            <div class="loading-indicator-preview"><div class="progress-bar-preview" style="width: 100%;"></div></div>
+                            <header class="calendar-header">
+                                <h2 class="month-year-display">octubre 2025</h2>
+                                <div class="header-nav-buttons">
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                                </div>
+                            </header>
+                            <div class="calendar-grid">
+                                 <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                                <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                                <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                                <div class="day has-audio">20</div><div class="day has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day selected playing has-audio">26</div>
+                            </div>
+                            <section class="controls-section">
+                                <button class="md-button filled">Seleccionar Carpeta</button>
+                            </section>
+                             <div class="snackbar-preview error">Carpeta no encontrada.</div>
+                        </div>
+                        
+                        <div class="player-surface">
+                            <div id="current-track-info" class="current-track-info">Audio de la Reunión</div>
+                            <div class="player-progress">
+                                <input type="range" id="progress-bar" value="30" min="0" max="100">
+                                <div class="time-indicators">
+                                    <span>0:45</span>
+                                    <span>2:30</span>
+                                </div>
+                            </div>
+                            <div class="player">
+                                <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_previous</span></button>
+                                <button class="md-button filled"><span class="material-symbols-outlined">pause</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">skip_next</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="caption">Visualización de V0.10: Nuevo layout de app con el calendario en <code>.main-content</code> y el reproductor rediseñado como <code>.player-surface</code> fijo en la parte inferior.</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.9: Theming de Material 3 y Tema "Terracota"</h3>
+                <p class="date">29 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Cambio de Tema (Theming):</strong> Se reemplazó la paleta de colores azul por defecto por un tema personalizado "Terracota" (<code>Primary: #B94639</code>).</li>
+                    <li><strong>Paleta Dinámica:</strong> Se generó una paleta completa (Claro y Oscuro) basada en el nuevo color primario, afectando a todos los componentes (fondos, botones, indicadores) para una apariencia cohesiva.</li>
+                    <li><strong>Tokens Neutrales Cálidos:</strong> Se ajustaron los tokens neutrales (fondos, superficies) para tener un tono más cálido, complementando el color terracota principal.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    El uso de tokens de CSS de Material 3 desde el inicio hizo que este cambio de tema fuera increíblemente fácil. Simplemente se actualizaron las variables <code>--md-ref-palette-</code> en la raíz (<code>:root</code>) y todo el diseño de la aplicación se adaptó automáticamente.
+                </p>
+
+                <h4>Visualización de la Versión (Nuevo Tema Terracota):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v9">
+                        <header class="calendar-header">
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <div class="header-nav-buttons">
+                                <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                            </div>
+                        </header>
+                        <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                            <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                            <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                            <div class="day has-audio">20</div><div class="day has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day selected playing has-audio">26</div>
+                        </div>
+                        <section class="controls-section">
+                            <button class="md-button filled">Seleccionar Carpeta</button>
+                            <div class="player-surface">
+                                <div class="player">
+                                     <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_previous</span></button>
+                                    <button class="md-button filled"><span class="material-symbols-outlined">pause</span></button>
+                                    <button class="md-icon-button"><span class="material-symbols-outlined">skip_next</span></button>
+                                    <div class="current-track-info">Audio de la Reunión</div>
+                                </div>
+                                <div class="player-progress">
+                                    <input type="range" id="progress-bar" value="30" min="0" max="100">
+                                    <div class="time-indicators">
+                                        <span>0:45</span>
+                                        <span>2:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <p class="caption">Visualización de V0.9: El nuevo tema "Terracota" aplicado a toda la interfaz.</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.8: Mejoras de UI (Limpieza de Nombres) y Accesibilidad (A11y)</h3>
+                <p class="date">28 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Limpieza de Nombres (UI):</strong> Creada la función <code>getCleanFileName()</code> para eliminar extensiones (ej: <code>.mp3</code>) y fechas (<code>YYYY-MM-DD</code>) de los nombres de archivos en el reproductor y el diálogo.</li>
+                    <li><strong>Sincronización de Foco (UX):</strong> Al avanzar la playlist automáticamente (evento <code>ended</code>), el foco del calendario (`.focused`) ahora salta al día correspondiente a la nueva pista que se está reproduciendo.</li>
+                    <li><strong>Gestión de Foco en Diálogo (A11y):</strong> Al abrir el diálogo de audios, el foco del teclado se "atrapa" dentro y se mueve automáticamente al primer ítem de la lista (<code>.focus()</code>).</li>
+                    <li><strong>Navegación por Teclado en Diálogo (A11y):</strong> Añadido soporte completo para navegar la lista del diálogo con <code>ArrowUp</code>/<code>ArrowDown</code> y cerrarlo con <code>Escape</code>.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    Esta versión se centró en pulir la experiencia. La gestión del foco (A11y) fue la parte más compleja, requiriendo guardar el elemento enfocado antes de abrir el diálogo y restaurarlo al cerrar (<code>elementFocusedBeforeDialog</code>). La limpieza de nombres mejora mucho la legibilidad.
+                </p>
+
+                <h4>Visualización de la Versión (Diálogo con Foco):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v8-dialog">
+                         <header class="calendar-header">
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <div class="header-nav-buttons">
+                                <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                            </div>
+                        </header>
+                        <div class="calendar-grid">
+                            <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                             <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                             <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                             <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                             <div class="day has-audio">20</div><div class="day has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day selected has-audio">25</div><div class="day">26</div>
+                        </div>
+                        <section class="controls-section">
+                             <button class="md-button filled">Seleccionar Carpeta</button>
+                             <div class="player-surface">
+                                <div class="player">
+                                    <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_previous</span></button>
+                                    <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                    <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_next</span></button>
+                                    <div class="current-track-info">Selecciona un día</div>
+                                </div>
+                                <div class="player-progress">
+                                    <input type="range" id="progress-bar" value="0" min="0" max="100" disabled>
+                                    <div class="time-indicators">
+                                        <span>0:00</span>
+                                        <span>0:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                         <div class="dialog-scrim-preview">
+                             <div class="md-dialog-preview">
+                                 <h2 class="dialog-title-preview">Audios del 2025-10-25</h2>
+                                 <ul class="dialog-list-preview">
+                                     <li class="dialog-list-item-preview focused">
+                                         <span class="material-symbols-outlined">audio_file</span>
+                                         <span>reunion_importante</span>
+                                     </li>
+                                     <li class="dialog-list-item-preview">
+                                         <span class="material-symbols-outlined">audio_file</span>
+                                         <span>idea_rapida</span>
+                                     </li>
+                                 </ul>
+                                 <div class="dialog-actions-preview">
+                                     <button class="md-button text">Cancelar</button>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                    <p class="caption">Visualización de V0.8: El diálogo ahora gestiona el foco del teclado (indicado en azul).</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.7: Controles de Playlist, Indicador 'Playing' y Snackbar</h3>
+                <p class="date">27 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Controles de Playlist:</strong> Añadidos botones "Pista Anterior" (<code>skip_previous</code>) y "Pista Siguiente" (<code>skip_next</code>) al reproductor.</li>
+                    <li><strong>Indicador 'Playing':</strong> El día del calendario que se está reproduciendo activamente ahora recibe un borde distintivo (clase <code>.playing</code>) para feedback visual.</li>
+                    <li><strong>Notificaciones (Snackbar):</strong> Implementado un componente Snackbar de MD3 para feedback no intrusivo (ej: "Playlist terminada", "Error al cargar", "Carpeta cargada").</li>
+                    <li><strong>Lógica de Playlist:</strong> Habilitada la lógica de los botones <code>prev</code>/<code>next</code> para navegar la cola de reproducción (<code>currentPlaylist</code>).</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    El estado <code>.playing</code> requería un manejo cuidadoso, asegurándose de que se limpiara (<code>clearPlayingIndicator</code>) al parar la música o cambiar de mes, y se restaurara si el mes se volvía a renderizar. El snackbar mejora mucho la comunicación con el usuario.
+                </p>
+
+                <h4>Visualización de la Versión (Nuevos Controles del Reproductor):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v7">
+                        <header class="calendar-header">
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <div class="header-nav-buttons">
+                                <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                            </div>
+                        </header>
+                        <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                             <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                             <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                             <div class="day has-audio">20</div><div class="day selected playing has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day">26</div>
+                        </div>
+                        <section class="controls-section">
+                            <button class="md-button filled">Seleccionar Carpeta</button>
+                            <div class="player-surface">
+                                <div class="player">
+                                    <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_previous</span></button>
+                                    <button class="md-button filled"><span class="material-symbols-outlined">pause</span></button>
+                                    <button class="md-icon-button" disabled><span class="material-symbols-outlined">skip_next</span></button>
+                                    <div class="current-track-info">2025-10-21.mp3</div>
+                                </div>
+                                <div class="player-progress">
+                                    <input type="range" id="progress-bar" value="50" min="0" max="100">
+                                    <div class="time-indicators">
+                                        <span>1:15</span>
+                                        <span>2:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <div class="snackbar-preview">Playlist terminada.</div>
+                    </div>
+                    <p class="caption">Visualización de V0.7: Nuevos controles de playlist (prev/next), indicador <code>.playing</code> en el día 21, y un snackbar de notificación.</p>
+                </div>
+            </article>
+            
+            <article class="version-entry">
+                <h3>Versión 0.6: Reproducción Continua, Botón "Hoy" y Regex Flexible</h3>
+                <p class="date">26 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Reproducción Continua (Cola de Reproducción):</strong> Al seleccionar un audio desde el diálogo de múltiples archivos, la aplicación ahora crea una "cola de reproducción". Al finalizar un audio, (<code>ended</code> event), se reproduce automáticamente el siguiente de la lista para ese día.</li>
+                    <li><strong>Botón "Hoy" (Navegación Rápida):</strong> Se añadió un botón "Hoy" (icono <code>today</code>) en la cabecera del calendario. Al pulsarlo, la vista salta inmediatamente al mes actual y selecciona (hace clic) en el día de hoy.</li>
+                    <li><strong>Flexibilidad en Nomenclatura (Regex Mejorado):</strong> Se actualizó la expresión regular (Regex) para detectar fechas. Ahora busca el patrón <code>YYYY-MM-DD</code> en *cualquier parte* del nombre del archivo (<code>.match(/(\d{4}-\d{2}-\d{2})/)</code>), en lugar de exigir que esté solo al principio.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    Esta versión se centra enteramente en la calidad de vida y la robustez. La reproducción continua era la pieza que faltaba para la gestión de múltiples audios. El botón "Hoy" es un estándar de UX en cualquier calendario. Finalmente, el Regex flexible hace que la aplicación sea 10 veces más útil en un escenario real, donde los usuarios no nombran sus archivos de forma tan estricta.
+                </p>
+
+                <h4>Visualización de la Versión (Nuevo Encabezado):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v6">
+                        <header class="calendar-header">
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <div class="header-nav-buttons">
+                                <button class="md-icon-button"><span class="material-symbols-outlined">today</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                                <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                            </div>
+                        </header>
+                        <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div classV11="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                            <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                            <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                            <div class="day has-audio">20</div><div class="day has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day selected">26</div>
+                        </div>
+                        <section class="controls-section">
+                            <button class="md-button filled">Seleccionar Carpeta</button>
+                            <div class="player-surface">
+                                <div class="player">
+                                    <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                    <div class="current-track-info">Selecciona un día</div>
+                                </div>
+                                <div class="player-progress">
+                                    <input type="range" id="progress-bar" value="0" min="0" max="100" disabled>
+                                    <div class="time-indicators">
+                                        <span>0:00</span>
+                                        <span>0:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <p class="caption">Visualización de V0.6: Se añade el botón "Hoy" a la cabecera para navegación rápida.</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.5: Modo Oscuro, Múltiples Audios y Feedback de Carga</h3>
+                <p class="date">25 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Modo Oscuro (Dark Mode):</strong> Añadido soporte completo para el modo oscuro (<code>prefers-color-scheme: dark</code>). Se creó una paleta de colores oscuros de MD3 y se aplicó a todos los componentes.</li>
+                    <li><strong>Gestión de Múltiples Audios (Diálogo):</strong> Si un día tiene varios audios, ahora se abre un diálogo modal (<code>.md-dialog</code>) que lista todos los audios de ese día para que el usuario elija cuál reproducir.</li>
+                    <li><strong>Feedback de Carga:</strong> Se añadió un indicador de progreso lineal (<code>#loading-indicator</code>) en la parte superior que se muestra mientras se procesa la carpeta de audios.</li>
+                    <li><strong>Estructura de Datos:</strong> <code>audioFiles</code> ahora es un mapa de arrays (<code>{"YYYY-MM-DD": [handle1, handle2]}</code>) para soportar múltiples archivos por día.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    El modo oscuro requirió duplicar todos los tokens de color del sistema (<code>--md-sys-color-*</code>) dentro de un <code>@media query</code>. La lógica del diálogo fue compleja, implicando un <code>.dialog-scrim</code> para el fondo y la generación dinámica de la lista (<code>.dialog-list</code>).
+                </p>
+
+                <h4>Visualización de la Versión (Modo Oscuro y Diálogo):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box dark-mode" data-version="v5">
+                        <div class="loading-indicator-preview"><div class="progress-bar-preview"></div></div>
+                        <header class="calendar-header">
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                        </header>
+                         <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                             <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                             <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                             <div class="day has-audio">20</div><div class="day has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day selected has-audio">25</div><div class="day">26</div>
+                        </div>
+                        <section class="controls-section">
+                             <button class="md-button filled">Seleccionar Carpeta</button>
+                             <div class="player-surface">
+                                <div class="player">
+                                    <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                    <div class="current-track-info">Selecciona un día</div>
+                                </div>
+                                <div class="player-progress">
+                                    <input type="range" id="progress-bar" value="0" min="0" max="100" disabled>
+                                    <div class="time-indicators">
+                                        <span>0:00</span>
+                                        <span>0:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                         <div class="dialog-scrim-preview">
+                             <div class="md-dialog-preview">
+                                 <h2 class="dialog-title-preview">Audios del 2025-10-25</h2>
+                                 <ul class="dialog-list-preview">
+                                     <li class="dialog-list-item-preview">
+                                         <span class="material-symbols-outlined">audio_file</span>
+                                         <span>reunion_importante.mp3</span>
+                                     </li>
+                                     <li class="dialog-list-item-preview">
+                                         <span class="material-symbols-outlined">audio_file</span>
+                                         <span>idea_rapida.wav</span>
+                                     </li>
+                                 </ul>
+                                 <div class="dialog-actions-preview">
+                                     <button class="md-button text">Cancelar</button>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                    <p class="caption">Visualización de V0.5: Modo Oscuro activado y el nuevo diálogo modal para seleccionar audios múltiples.</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.4: Barra de Progreso Interactiva y Tiempos</h3>
+                <p class="date">24 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Barra de Progreso (Slider):</strong> Añadido un <code>&lt;input type="range"&gt;</code> (<code>#progress-bar</code>) estilizado como un Slider de MD3.</li>
+                    <li><strong>Indicadores de Tiempo:</strong> Añadidos <code>&lt;span&gt;</code> para <code>#current-time</code> y <code>#total-time</code>.</li>
+                    <li><strong>Sincronización de Audio:</strong>
+                        <ul>
+                            <li>El evento <code>loadedmetadata</code> del audio establece la duración total (<code>progressBar.max</code>).</li>
+                            <li>El evento <code>timeupdate</code> actualiza la posición del slider (<code>progressBar.value</code>) y el <code>#current-time</code>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Búsqueda (Seeking):</strong> El usuario ahora puede arrastrar el slider (<code>input</code>) y, al soltarlo (<code>change</code>), el audio salta a ese punto (<code>audioPlayer.currentTime = ...</code>).</li>
+                    <li><strong>Refactorización:</strong> Creada la función <code>resetPlayer()</code> para centralizar la lógica de detención y reinicio de la UI del reproductor.</li>
+                </ul>
+
+                <h4>Visualización de la Versión (Reproductor Avanzado):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v4">
+                        <header class="calendar-header">
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                        </header>
+                         <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                             <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                             <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                             <div class="day has-audio">20</div><div class="day selected has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day">26</div>
+                        </div>
+                        <section class="controls-section">
+                             <button class="md-button filled">Seleccionar Carpeta</button>
+                             <div class="player-surface">
+                                <div class="player">
+                                    <button class="md-button filled"><span class="material-symbols-outlined">pause</span></button>
+                                    <div class="current-track-info">2025-10-21.mp3</div>
+                                </div>
+                                <div class="player-progress">
+                                    <input type="range" id="progress-bar" value="50" min="0" max="100">
+                                    <div class="time-indicators">
+                                        <span>1:15</span>
+                                        <span>2:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <p class="caption">Visualización de V0.4: El <code>.player-surface</code> ahora incluye la barra de progreso y los indicadores de tiempo.</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.3: Persistencia, A11y (Teclado) y Surface Container</h3>
+                <p class="date">23 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Persistencia (IndexedDB + File System Access API):</strong> La aplicación ahora pide permiso para acceder a una carpeta (<code>showDirectoryPicker</code>) y guarda el "handle" de esa carpeta en IndexedDB. Al recargar la página, intenta recuperar el handle y cargar los audios automáticamente.</li>
+                    <li><strong>Accesibilidad (Navegación por Teclado):</strong> Implementada la navegación completa del calendario usando las teclas de flecha. El foco (<code>.focused</code>) se gestiona por JS y se puede seleccionar un día con <code>Enter</code> o <code>Espacio</code>.</li>
+                    <li><strong>UI (Surface Container):</strong> El reproductor de audio ahora está envuelto en un <code>.player-surface</code>, un contenedor de MD3 con un color de fondo (<code>--md-sys-color-surface-container</code>) y elevación, mejorando la jerarquía visual.</li>
+                    <li><strong>Fallback:</strong> Si la <code>File System Access API</code> no es compatible, la app recurre al método anterior (<code>&lt;input type="file" ...&gt;</code>).</li>
+                </ul>
+
+                <h4>Visualización de la Versión (UI Mejorada y Foco):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v3">
+                        <header class="calendar-header">
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                        </header>
+                         <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                             <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                             <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today focused">18</div><div class="day">19</div>
+                             <div class="day has-audio">20</div><div class="day has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day">26</div>
+                        </div>
+                        <section class="controls-section">
+                             <button class="md-button filled">Seleccionar Carpeta</button>
+                             <div class="player-surface">
+                                <div class="player">
+                                    <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                    <div class="current-track-info">Selecciona un día</div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <p class="caption">Visualización de V0.3: El reproductor ahora en un <code>.player-surface</code> y el día 18 con el indicador de foco del teclado (<code>.focused</code>).</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.2: MVP Funcional (Carga de Archivos e Indicadores)</h3>
+                <p class="date">22 de octubre de 2025</p>
+                
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Carga de Archivos:</strong> Implementada la lógica de carga de carpeta (<code>&lt;input type="file" webkitdirectory ...&gt;</code>).</li>
+                    <li><strong>Mapeo de Fechas:</strong> El JavaScript ahora lee los archivos cargados y los mapea a un objeto (<code>audioFiles</code>) usando la fecha <code>YYYY-MM-DD</code> del nombre del archivo como clave.</li>
+                    <li><strong>Reproducción de Audio:</strong> Al hacer clic en un día, la app busca en el mapa <code>audioFiles</code>. Si encuentra una coincidencia, crea una <code>ObjectURL</code> y la reproduce en el <code>&lt;audio&gt;</code> tag.</li>
+                    <li><strong>Indicadores Visuales:</strong> Añadida la función <code>updateAudioIndicators()</code>, que añade un punto (<code>.has-audio::after</code>) a los días del calendario que tienen un audio asociado.</li>
+                    <li><strong>Estado del Reproductor:</strong> El botón Play/Pause ahora se habilita/deshabilita y muestra el nombre del archivo (<code>#current-track-info</code>) según si se encuentra o no un audio.</li>
+                </ul>
+
+                <h4>Visualización de la Versión (MVP Funcional):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v2">
+                        <header class="calendar-header">
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                        </header>
+                         <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div><div class="day prev-month">30</div><div class="day">1</div><div class="day">2</div><div class="day has-audio">3</div><div class="day">4</div><div class="day">5</div>
+                             <div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day has-audio">12</div>
+                             <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day today">18</div><div class="day">19</div>
+                             <div class="day has-audio">20</div><div class="day selected has-audio">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day has-audio">25</div><div class="day">26</div>
+                        </div>
+                        <section class="controls-section">
+                             <button class="md-button filled">Seleccionar Carpeta</button>
+                             <div class="player">
+                                <button class="md-button filled"><span class="material-symbols-outlined">pause</span></button>
+                                <div class="current-track-info">2025-10-21.mp3</div>
+                            </div>
+                        </section>
+                    </div>
+                    <p class="caption">Visualización de V0.2: Día 21 seleccionado, audio reproduciéndose, y puntos (<code>.has-audio</code>) visibles en otros días.</p>
+                </div>
+            </article>
+
+            <article class="version-entry">
+                <h3>Versión 0.1: Estructura Base y Calendario Estilizado (MD3)</h3>
+                <p class="date">21 de octubre de 2025</p>
+
+                <h4>Hitos Clave:</h4>
+                <ul>
+                    <li><strong>Estructura HTML Semántica:</strong> Creado el <code>index.html</code> con <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>, y <code>&lt;section&gt;</code>.</li>
+                    <li><strong>Tokens de Material Design 3 (CSS):</strong> Definida la paleta de colores de MD3 (Tokens de Referencia y de Sistema) y los tokens de Tipografía y Forma (<code>--md-sys-color-*</code>, <code>--md-sys-typescale-*</code>) en <code>:root</code>.</li>
+                    <li><strong>Componentes de MD3 (CSS):</strong> Creados los estilos base para <code>.md-button</code> (filled) y <code>.md-icon-button</code>.</li>
+                    <li><strong>Generación de Calendario (JS):</strong> Implementadas las funciones <code>renderCalendar()</code> y <code>renderWeekdays()</code> para generar dinámicamente la vista del mes.</li>
+                    <li><strong>Navegación de Mes (JS):</strong> Añadidos listeners a los botones <code>#prev-month-btn</code> y <code>#next-month-btn</code> para cambiar el <code>currentDate</code> y volver a renderizar.</li>
+                </ul>
+
+                <h4>Notas o Retos:</h4>
+                <p class="notes">
+                    El mayor reto inicial fue calcular correctamente los días del mes anterior y siguiente para rellenar la cuadrícula de 42 días (6 semanas). Se usó <code>new Date(year, month + 1, 0).getDate()</code> para el último día del mes actual.
+                </p>
+
+                <h4>Visualización de la Versión (Maqueta Inicial):</h4>
+                <div class="version-visual">
+                    <div class="app-preview-box" data-version="v1">
+                        <header class="calendar-header">
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_left</span></button>
+                            <h2 class="month-year-display">octubre 2025</h2>
+                            <button class="md-icon-button"><span class="material-symbols-outlined">chevron_right</span></button>
+                        </header>
+                         <div class="calendar-grid">
+                             <div class="weekday">L</div><div class="weekday">M</div><div class="weekday">X</div><div class="weekday">J</div><div class="weekday">V</div><div class="weekday">S</div><div class="weekday">D</div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day prev-month">29</div>
+                            <div class="day prev-month">30</div>
+                            <div class="day">1</div>
+                            <div class="day">2</div>
+                            <div class="day">3</div>
+                            <div class="day">4</div>
+                            <div class="day">5</div>
+                            <div class="day">6</div>
+                            <div class="day">7</div>
+                            <div class="day">8</div>
+                            <div class="day">9</div>
+                            <div class="day">10</div>
+                            <div class="day">11</div>
+                            <div classV14="day">12</div>
+                            <div class="day">13</div>
+                            <div class="day">14</div>
+                            <div class="day">15</div>
+                            <div class="day">16</div>
+                            <div class="day">17</div>
+                            <div class="day today">18</div>
+                            <div class="day">19</div>
+                            <div class="day">20</div>
+                            <div class="day selected">21</div>
+                            <div class="day">22</div>
+                            <div class="day">23</div>
+                            <div class="day">24</div>
+                            <div class="day">25</div>
+                            <div class="day">26</div>
+                            <div class="day">27</div>
+                            <div class="day">28</div>
+                            <div class="day">29</div>
+                            <div class="day">30</div>
+                            <div class="day">31</div>
+                            <div class="day next-month">1</div>
+                            <div class="next-month day">2</div>
+                            <div class="day next-month">3</div>
+                            <div class="day next-month">4</div>
+                            <div class="day next-month">5</div>
+                            <div class="day next-month">6</div>
+                            <div class="day next-month">7</div>
+                            <div class="day next-month">8</div>
+                            <div class="day next-month">9</div>
+                        </div>
+                        <section class="controls-section">
+                             <button class="md-button filled">Seleccionar Carpeta</button>
+                             <div class="player">
+                                <button class="md-button filled" disabled><span class="material-symbols-outlined">play_arrow</span></button>
+                                <div class="current-track-info">Selecciona un día</div>
+                            </div>
+                        </section>
+                    </div>
+                    <p class="caption">Visualización de V0.1: La maqueta inicial solo con el calendario estilizado y los controles deshabilitados.</p>
+                </div>
+            </article>
+
+        </section>
+
+        <section id="prompts-section" class="content-section">
+            <h2>Prompts Principales</h2>
+
+            <article class="prompt-section">
+                <h3>Prompt 1: Generación de esta Página de Bitácora</h3>
+                <pre><code>"Hola Gemini,
+Necesito tu ayuda como experto desarrollador web front-end.
+Estoy trabajando (en paralelo contigo en otra conversación) en la creación de una aplicación multiplataforma usando tus capacidades. Para documentar este proceso, quiero crear una página web simple que funcione como una bitácora de desarrollo o changelog.
+El objetivo es que esta página registre cada hito, funcionalidad implementada y versión de la aplicación a medida que avanzamos.
+Requisitos de la Página Web:
+
+Tecnología: Genera todo el código en un único archivo index.html. El CSS debe estar incrustado dentro de la etiqueta &lt;style&gt; en el &lt;head&gt;, y el (mínimo) JavaScript, si es necesario, dentro de una etiqueta &lt;script&gt; antes de cerrar el &lt;/body&gt;.
+Estructura General (HTML):
+Un &lt;header&gt; con el título principal (ej: "Bitácora de Desarrollo: Mi App Multiplataforma con Gemini").
+Una sección de &lt;main&gt; que contendrá las entradas del log.
+Un &lt;footer&gt; simple (ej: "Proyecto desarrollado con la asistencia de Gemini").
+Contenido Principal (La Bitácora):
+La sección &lt;main&gt; debe tener un &lt;h2&gt; que diga "Registro de Versiones".
+Quiero que las entradas se muestren en orden cronológico inverso (la más nueva arriba).
+Cada entrada de la bitácora debe estar contenida en un &lt;article&gt; o &lt;section&gt; con una clase (ej: class="version-entry").
+Plantilla para cada Entrada de Versión:
+Un título para la versión (ej: &lt;h3&gt;Versión 0.2: Implementación de UI Login&lt;/h3&gt;).
+Una fecha (ej: &lt;p class="date"&gt;21 de octubre de 2025&lt;/p&gt;).
+Una lista de "Hitos Clave" o "Cambios" (&lt;ul&gt;) que detalle lo que se hizo (ej: "Se creó la estructura base del componente", "Se añadieron validaciones de formulario").
+(Opcional pero preferido) Una sección para "Notas o Retos" (&lt;p&gt;).
+(Opcional pero preferido) Un bloque para "Snippets de Código" usando &lt;pre&gt;&lt;code&gt;...&lt;/code&gt;&lt;/pre&gt; si se implementó algo de código clave.
+Estilo (CSS):
+Usa un diseño limpio, moderno y legible.
+Asegúrate de que la tipografía sea clara (ej: 'Roboto', 'Lato' o 'system-ui').
+Estiliza claramente la separación entre cada entrada de versión (ej: un border-bottom o box-shadow).
+Importante: Da un estilo legible a los bloques &lt;pre&gt;&lt;code&gt; (fondo oscuro, fuente monoespaciada).
+Haz que el diseño sea responsive (que se vea bien en móviles).
+Tu Tarea:
+Genera el código HTML y CSS completo para esta página web en un solo archivo. Incluye una entrada de ejemplo (ficticia) (ej: "Versión 0.1: Configuración Inicial del Proyecto y Estructura Base") para que yo pueda ver cómo se renderiza la plantilla.
+En el futuro, te proporcionaré los detalles de las nuevas versiones (Hitos, Fecha, Código) y tú me ayudarás a generar el nuevo bloque HTML para añadirlo a la página."</code></pre>
+            </article>
+
+            <article class="prompt-section">
+                <h3>Prompt 2: Generación de la Aplicación "Audio Calendario" (V1)</h3>
+                <pre><code>Actúa como un programador senior y diseñador de aplicaciones multiplataforma, experto en UI/UX y en la implementación de sistemas de diseño modernos. Tu especialidad es crear interfaces limpias, funcionales y accesibles.
+Nuestro Proyecto:
+Vamos a construir, paso a paso, una aplicación web que funciona como un reproductor de audios locales integrado con un calendario. El objetivo es que un usuario pueda ver un calendario, hacer clic en un día específico y que la aplicación reproduzca un archivo de audio asociado a esa fecha.
+Pila Tecnológica (Stack):
+
+HTML5 (para la estructura semántica)
+CSS3 (para los estilos)
+JavaScript (ES6+) (para toda la lógica y la interactividad)
+Requisito Fundamental de Diseño:
+Toda la aplicación, desde la estructura HTML hasta el último detalle de CSS, debe basarse estricta e íntegramente en el sistema de diseño Material Design 3 (MD3). Debes usar los principios de MD3 para los colores (paletas dinámicas, tokens), la tipografía, los componentes (botones, cards, superficies) y la iconografía (usando Material Symbols).
+Requisitos Funcionales Clave:
+
+Calendario Interactivo: La interfaz principal mostrará un calendario (mes actual). El usuario debe poder navegar entre meses.
+Selección de Día: El usuario puede hacer clic en cualquier día del calendario.
+Reproducción de Audio: Al hacer clic en un día, la aplicación debe buscar un archivo de audio local correspondiente a esa fecha (p. ej., 2025-10-21.mp3) y reproducirlo.
+Manejo de Archivos Locales: Dado que JavaScript en el navegador tiene restricciones de seguridad para acceder a archivos locales directamente, deberás proponer la mejor arquitectura para esto. Para la Versión 1, podemos empezar usando un elemento &lt;input type="file" webkitdirectory directory multiple&gt; para que el usuario seleccione la carpeta donde almacena sus audios. La aplicación luego mapeará esos archivos a las fechas del calendario.
+Nuestro Proceso de Trabajo (Iterativo):
+Seguiremos un modelo de desarrollo ágil.
+
+Versión 1 (Producto Mínimo Viable):
+Comienza proporcionando el código completo (HTML, CSS y JavaScript) para la Versión 1.
+Esta versión debe incluir:
+Un calendario funcional (HTML/CSS/JS) basado en MD3.
+La lógica para que el usuario seleccione su carpeta de audios.
+La funcionalidad de hacer clic en un día y que el audio correspondiente (si existe en la carpeta seleccionada) se reproduzca.
+Un control de reproducción simple (Play/Pause) que también siga las guías de MD3.
+Explica brevemente la estructura de los archivos y cómo ejecutarlo.
+Análisis y Propuesta de Mejoras:
+Una vez que me entregues la Versión 1 (y cada versión subsiguiente), tú tomarás la iniciativa de analizar el código que acabas de escribir.
+Me propondrás exactamente 3 mejoras concretas para la siguiente versión. Estas mejoras pueden ser de funcionalidad, diseño (adherencia a MD3), rendimiento, accesibilidad o refactorización del código.
+Ejemplos de mejoras: "Mejora 1: Añadir un indicador visual en el calendario para los días que SÍ tienen un audio asociado." "Mejora 2: Implementar un Surface Container de MD3 para el reproductor de audio, mejorando la jerarquía visual." "Mejora 3: Optimizar la función de búsqueda de audio para que sea más rápida."
+Iteración (Versión 2, 3...):
+Esperarás mi feedback. Yo elegiré una (o más) de las mejoras que propusiste, o te pediré una diferente.
+Con mi aprobación, generarás el código completo para la nueva versión que implemente esas mejoras, siempre construyendo sobre la versión anterior y manteniendo la estricta coherencia con Material Design 3.</code></pre>
+            </article>
+
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            Proyecto de documentación generado con la asistencia de Gemini.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Obtener el target
+                    const targetId = button.dataset.target;
+                    const targetSection = document.getElementById(targetId);
+
+                    // Quitar 'active' de todos los botones y secciones
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    contentSections.forEach(section => section.classList.remove('active'));
+
+                    // Añadir 'active' al botón y sección correctos
+                    button.classList.add('active');
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
