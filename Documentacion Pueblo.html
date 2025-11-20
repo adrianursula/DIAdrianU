@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Versiones: Crónicas del Reino</title>
+    
+    <!-- Fuentes RPG (Sincronizadas con la App v3.3) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=Georgia&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Variables del Tema (Idénticas a v3.3) --- */
+        :root {
+            --bg-world: #fdf6e3; 
+            --bg-paper: #fffbf0; 
+            --bg-wood: #8b4513;
+            --text-main: #2c1810; 
+            --text-light: #fdf6e3;
+            
+            --accent-gold: #daa520; 
+            --accent-red: #c0392b; 
+            --accent-green: #27ae60;
+            --accent-blue: #2980b9; 
+            --accent-purple: #8e44ad;
+            
+            --border-color: #5c4033;
+            --shadow-soft: 0 4px 8px rgba(0,0,0,0.15);
+            
+            --font-rpg: 'MedievalSharp', cursive; 
+            --font-ui: 'Cinzel', serif; 
+            --font-body: 'Georgia', serif;
+        }
+
+        /* MODO NOCHE */
+        body.dark-mode {
+            --bg-world: #121212; 
+            --bg-paper: #1e1e24; 
+            --bg-wood: #000000;
+            --text-main: #e0e0e0; 
+            --text-light: #a0a0a0;
+            
+            --accent-gold: #ffd700; 
+            --accent-red: #ff5252; 
+            --accent-green: #69f0ae;
+            --accent-blue: #448aff; 
+            --accent-purple: #e040fb;
+            
+            --border-color: #333333;
+            --shadow-soft: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-world);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-bottom: 4rem;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px; /* Patrón de puntos sutil */
+        }
+
+        /* --- Layout --- */
+        header {
+            background-color: var(--bg-wood);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--accent-gold);
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+        h1 { font-family: var(--font-rpg); font-size: 2.2rem; text-shadow: 2px 2px 0 #000; margin: 0; }
+        h2 { font-family: var(--font-ui); color: var(--accent-gold); border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 3rem; }
+        h3 { font-family: var(--font-rpg); color: var(--accent-blue); margin-top: 0; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--bg-paper);
+            border-top: 2px solid var(--border-color);
+            margin-top: 4rem;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+        }
+
+        /* --- Tabla de Versiones (Estilo Pergamino) --- */
+        .centro-versiones {
+            background-color: var(--bg-paper);
+            border: 3px double var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            overflow-x: auto;
+            margin-bottom: 3rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background-color: var(--bg-wood); color: var(--text-light); font-family: var(--font-ui); }
+        tr:hover { background-color: rgba(0,0,0,0.05); }
+        
+        a { color: var(--accent-blue); text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; color: var(--accent-gold); }
+
+        /* --- Tags --- */
+        .tag {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
+            font-family: var(--font-ui); font-size: 0.75rem; font-weight: bold;
+            text-transform: uppercase; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+        }
+        .tag-major { background-color: var(--accent-purple); border: 1px solid #fff; }
+        .tag-feat { background-color: var(--accent-green); }
+        .tag-style { background-color: var(--accent-gold); color: #2c1810; text-shadow: none; }
+        .tag-db { background-color: var(--accent-blue); }
+        .tag-fix { background-color: var(--accent-red); }
+
+        /* --- Entradas de Versión --- */
+        .version-card {
+            background-color: var(--bg-paper);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+        .version-card::before {
+            content: '📜'; position: absolute; top: -15px; left: 20px; font-size: 2rem; background: var(--bg-world); padding: 0 10px; border-radius: 50%;
+        }
+        
+        .version-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; border-bottom: 1px dashed var(--border-color); padding-bottom: 1rem; }
+        .version-date { font-family: var(--font-ui); font-size: 0.9rem; color: var(--text-main); opacity: 0.7; }
+
+        /* --- Bloques de Código --- */
+        details { margin-top: 1.5rem; border: 1px solid var(--border-color); border-radius: 4px; background-color: rgba(0,0,0,0.02); }
+        summary {
+            padding: 0.8rem; cursor: pointer; background-color: rgba(0,0,0,0.05);
+            font-family: var(--font-ui); font-weight: bold; color: var(--accent-blue);
+            outline: none; list-style: none; user-select: none;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; float: right; font-weight: bold; font-size: 1.2rem; }
+        details[open] summary::after { content: '-'; }
+        
+        pre {
+            margin: 0; padding: 1rem; overflow-x: auto;
+            background-color: #1e1e1e; color: #d4d4d4; /* Tema oscuro para código siempre */
+            font-family: 'Courier New', monospace; font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            max-height: 500px;
+        }
+
+        /* --- Botones --- */
+        .btn-action {
+            background-color: var(--accent-gold); color: #2c1810; border: 2px solid #b8860b;
+            padding: 0.5rem 1rem; font-family: var(--font-ui); font-weight: bold; cursor: pointer;
+            border-radius: 4px; transition: transform 0.1s;
+        }
+        .btn-action:hover { transform: translateY(-2px); }
+        .btn-action:active { transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Crónicas del Reino</h1>
+        <button id="theme-toggle-btn" class="btn-action">🌙 Noche</button>
+    </header>
+
+    <main>
+        
+        <!-- DASHBOARD -->
+        <section class="centro-versiones">
+            <h2 style="margin-top:0; border:none; text-align: left;">Historial de Edictos (Versiones)</h2>
+            <p>Registro oficial de los cambios decretados por el Gremio de Artesanos Digitales.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Versión</th>
+                        <th>Novedades Principales</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: rgba(142, 68, 173, 0.1);">
+                        <td><a href="#v3.3">v3.3</a></td>
+                        <td><strong>Accesibilidad</strong>, Oráculo, Bazar, HUD RPG</td>
+                        <td><span class="tag tag-major">Major</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#v1.1">v1.1</a></td>
+                        <td>Sistema de Favoritos (Persistencia)</td>
+                        <td><span class="tag tag-feat">Funcionalidad</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#v1.0">v1.0</a></td>
+                        <td>Imágenes Reales y Feedback Visual</td>
+                        <td><span class="tag tag-style">Estilo</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#v0.9">v0.9</a></td>
+                        <td>Estilo Pergamino y UI Refinada</td>
+                        <td><span class="tag tag-style">Estilo</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#v0.8">v0.8</a></td>
+                        <td>Buscador en Tiempo Real</td>
+                        <td><span class="tag tag-feat">Funcionalidad</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#v0.7">v0.7</a></td>
+                        <td>Edición de Registros (CRUD Completo)</td>
+                        <td><span class="tag tag-db">Datos</span></td>
+                    </tr>
+                    <!-- Versiones anteriores colapsadas para brevedad -->
+                    <tr>
+                        <td><small>v0.1 - v0.6</small></td>
+                        <td><small>Fundamentos, DB, Mapas Básicos</small></td>
+                        <td><span class="tag tag-fix">Histórico</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- DETALLE DE VERSIONES -->
+        
+        <!-- v3.3 -->
+        <section id="v3.3" class="version-card" style="border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(142, 68, 173, 0.2);">
+            <div class="version-header">
+                <h3 style="margin:0; font-size:1.5rem;">v3.3: La Era de la Accesibilidad</h3>
+                <span class="version-date">20 Noviembre 2025</span>
+            </div>
+            <p>Una actualización masiva que transforma la aplicación en una experiencia RPG completa y accesible para todos los viajeros.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem;">
+                <div>
+                    <h4 style="color:var(--accent-green)">✨ Nuevas Características</h4>
+                    <ul style="padding-left: 1.2rem;">
+                        <li><strong>Modo Accesibilidad:</strong> Alto contraste y fuentes legibles (Arial/Verdana).</li>
+                        <li><strong>Gamificación RPG:</strong> Sistema de XP, Oro, Niveles y Rangos.</li>
+                        <li><strong>Oráculo Interactivo:</strong> Minijuego de preguntas sobre Aranjuez.</li>
+                        <li><strong>El Bazar:</strong> Tienda para comprar títulos y temas con oro virtual.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color:var(--accent-blue)">🛠️ Mejoras Técnicas</h4>
+                    <ul style="padding-left: 1.2rem;">
+                        <li><strong>Leaflet Maps:</strong> Integración completa de mapas interactivos.</li>
+                        <li><strong>Text-to-Speech:</strong> Botón para leer las descripciones en voz alta.</li>
+                        <li><strong>Corrección de Errores:</strong> Scripts encapsulados (IIFE) para evitar conflictos globales.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <details>
+                <summary>📜 Ver Código Fuente Completo (v3.3)</summary>
+                <!-- El código se muestra como texto plano, no se ejecuta -->
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;!-- v3.3: Accesibilidad, Imágenes Reales y UI Pulida --&gt;
+    &lt;title&gt;Crónicas del Reino - v3.3 Accesible&lt;/title&gt;
+    
+    &lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+    &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+    &lt;link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap" rel="stylesheet"&gt;
+    
+    &lt;!-- LEAFLET CSS --&gt;
+    &lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/&gt;
+
+    &lt;style&gt;
+        /* --- VARIABLES BASE (Modo Día) --- */
+        :root {
+            --bg-world: #fdf6e3; 
+            --bg-paper: #fffbf0; 
+            --bg-wood: #8b4513;
+            --text-main: #2c1810; 
+            --text-light: #fdf6e3;
+            
+            --accent-gold: #daa520; 
+            --accent-red: #c0392b; 
+            --accent-green: #27ae60;
+            --accent-blue: #2980b9; 
+            --accent-purple: #8e44ad;
+            
+            --border-color: #5c4033;
+            --shadow-soft: 0 4px 8px rgba(0,0,0,0.15);
+            --map-filter: none;
+            
+            --font-rpg: 'MedievalSharp', cursive; 
+            --font-ui: 'Cinzel', serif; 
+            --font-body: 'Georgia', serif;
+            --ui-scale: 1;
+        }
+        
+        /* ... (Estilos completos de la v3.3 omitidos para brevedad visual, pero en el archivo real irían aquí) ... */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- HUD --&gt;
+    &lt;header class="hud-bar"&gt;
+        &lt;!-- ... Estructura del HUD ... --&gt;
+        &lt;div class="app-title" onclick="app.navigateTo('menu')" role="button" tabindex="0"&gt;Crónicas del Reino&lt;span&gt;v3.3&lt;/span&gt;&lt;/div&gt;
+        &lt;!-- ... --&gt;
+    &lt;/header&gt;
+
+    &lt;main class="main-viewport"&gt;
+        &lt;!-- VISTAS DE LA APLICACIÓN --&gt;
+        &lt;section id="view-menu" class="view-section active" aria-label="Menú Principal"&gt;
+            &lt;!-- ... Contenido del menú ... --&gt;
+        &lt;/section&gt;
+        &lt;!-- ... Otras secciones ... --&gt;
+    &lt;/main&gt;
+
+    &lt;!-- MODALES --&gt;
+    &lt;div id="modal-guild" class="modal-overlay"&gt;
+        &lt;!-- ... --&gt;
+    &lt;/div&gt;
+
+    &lt;script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""&gt;&lt;/script&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"&gt;&lt;/script&gt;
+
+    &lt;script&gt;
+        // Uso de IIFE (Immediately Invoked Function Expression) para aislar el ámbito
+        var app = (function() {
+            const DB_NAME = 'CronicasReinoDB'; const DB_VERSION = 9;
+            // ... (Lógica completa de la aplicación v3.3) ...
+            
+            // Funciones públicas expuestas
+            return {
+                navigateTo, showView, toggleAccessibility, openScribeDesk, toggleDetailMap,
+                selectGuild, confirmGuild, buyItem, equipItem
+            };
+        })();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </details>
+        </section>
+
+        <!-- v1.1 -->
+        <section id="v1.1" class="version-card">
+            <div class="version-header">
+                <h3 style="margin:0; font-size:1.5rem;">v1.1: Los Tesoros Guardados</h3>
+            </div>
+            <p>Sistema de favoritos persistente.</p>
+            <details>
+                <summary>📜 Ver Código Fuente (v1.1)</summary>
+                <pre><code><!-- Aquí iría el código completo de v1.1 --></code></pre>
+            </details>
+        </section>
+        
+        <!-- v1.0 -->
+        <section id="v1.0" class="version-card">
+            <div class="version-header">
+                <h3 style="margin:0; font-size:1.5rem;">v1.0: El Espejo Mágico</h3>
+            </div>
+            <p>Imágenes personalizadas y temas dinámicos.</p>
+            <details>
+                <summary>📜 Ver Código Fuente (v1.0)</summary>
+                <pre><code><!-- Aquí iría el código completo de v1.0 --></code></pre>
+            </details>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Bitácora Real de Aranjuez.</p>
+    </footer>
+
+    <script>
+        // Script de la Bitácora (Lógica Visual Únicamente)
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            const body = document.body;
+            
+            // Recuperar tema de la bitácora
+            if(localStorage.getItem('bitacora_theme') === 'dark') {
+                body.classList.add('dark-mode');
+                themeBtn.textContent = '☀️ Día';
+            }
+
+            themeBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                const isDark = body.classList.contains('dark-mode');
+                themeBtn.textContent = isDark ? '☀️ Día' : '🌙 Noche';
+                localStorage.setItem('bitacora_theme', isDark ? 'dark' : 'light');
+            });
+        });
+    </script>
+</body>
+</html>

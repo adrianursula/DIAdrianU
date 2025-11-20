@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- v3.3: Accesibilidad, Imágenes Reales y UI Pulida -->
+    <title>Crónicas del Reino - v3.3 Accesible</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- LEAFLET CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <style>
+        /* --- VARIABLES BASE (Modo Día) --- */
+        :root {
+            --bg-world: #fdf6e3; 
+            --bg-paper: #fffbf0; 
+            --bg-wood: #8b4513;
+            --text-main: #2c1810; 
+            --text-light: #fdf6e3;
+            
+            --accent-gold: #daa520; 
+            --accent-red: #c0392b; 
+            --accent-green: #27ae60;
+            --accent-blue: #2980b9; 
+            --accent-purple: #8e44ad;
+            
+            --border-color: #5c4033;
+            --shadow-soft: 0 4px 8px rgba(0,0,0,0.15);
+            --map-filter: none;
+            
+            --font-rpg: 'MedievalSharp', cursive; 
+            --font-ui: 'Cinzel', serif; 
+            --font-body: 'Georgia', serif;
+            --ui-scale: 1;
+        }
+        
+        /* MODO NOCHE */
+        body.dark-mode {
+            --bg-world: #121212; 
+            --bg-paper: #1e1e24; 
+            --bg-wood: #000000;
+            --text-main: #e0e0e0; 
+            --text-light: #a0a0a0;
+            
+            --accent-gold: #ffd700; 
+            --accent-red: #ff5252; 
+            --accent-green: #69f0ae;
+            --accent-blue: #448aff; 
+            --accent-purple: #e040fb;
+            
+            --border-color: #333333;
+            --shadow-soft: 0 4px 12px rgba(0,0,0,0.5);
+            --map-filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        /* MODO ACCESIBILIDAD (Alto Contraste) */
+        body.accessibility-mode {
+            --bg-world: #000000;
+            --bg-paper: #000000;
+            --bg-wood: #333333;
+            --text-main: #FFFF00; /* Amarillo sobre negro */
+            --text-light: #FFFFFF;
+            
+            --accent-gold: #00FFFF; /* Cian */
+            --accent-red: #FF0000;
+            --accent-green: #00FF00;
+            --accent-blue: #5599FF;
+            --accent-purple: #FF00FF;
+            
+            --border-color: #FFFFFF;
+            --shadow-soft: none; /* Sin sombras para claridad */
+            --map-filter: grayscale(100%) invert(100%) contrast(200%); /* Mapa alto contraste */
+            
+            /* Fuentes legibles */
+            --font-rpg: 'Arial', sans-serif;
+            --font-ui: 'Verdana', sans-serif;
+            --font-body: 'Arial', sans-serif;
+            --ui-scale: 1.1; /* Texto más grande */
+            
+            line-height: 1.6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body); background-color: var(--bg-world); color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh; padding-bottom: 5rem; overflow-x: hidden;
+            font-size: calc(1rem * var(--ui-scale));
+        }
+
+        /* Scrollbar Personalizado */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-world); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-color); }
+
+        /* --- HUD --- */
+        .hud-bar {
+            background-color: var(--bg-wood); color: var(--text-light); padding: 0.5rem 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 4px solid var(--accent-gold); position: sticky; top: 0; z-index: 3000;
+            box-shadow: var(--shadow-soft);
+        }
+        .hud-stats { display: flex; align-items: center; gap: 0.8rem; font-family: var(--font-ui); cursor: pointer; }
+        .level-badge {
+            background: var(--accent-gold); color: #2c1810; width: 45px; height: 45px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-weight: bold;
+            border: 2px solid var(--text-light); position: relative; font-size: 0.9rem; flex-shrink: 0;
+        }
+        body.accessibility-mode .level-badge { color: #000; border: 2px solid #fff; }
+
+        .xp-container { display: flex; flex-direction: column; width: 90px; gap: 2px; }
+        .xp-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+        body.accessibility-mode .xp-bar-bg { border: 1px solid #fff; background: #000; }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-blue), #a0c4ff); width: 0%; transition: width 0.5s; }
+        body.accessibility-mode .xp-bar-fill { background: var(--accent-green); }
+        
+        .gold-display { font-size: 0.8rem; color: var(--accent-gold); display: flex; align-items: center; gap: 4px; font-weight: bold; margin-top: 2px; }
+        
+        .app-title { font-family: var(--font-rpg); font-size: 1.1rem; text-align: center; flex-grow: 1; line-height: 1.1; cursor: pointer; }
+        .hud-actions { display: flex; gap: 0.8rem; align-items: center; }
+        .icon-btn { background: none; border: 1px solid var(--accent-gold); color: var(--accent-gold); width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        body.accessibility-mode .icon-btn { border: 2px solid #fff; color: #fff; }
+        
+        .mode-badge { font-family: var(--font-ui); font-size: 0.7rem; padding: 2px 6px; border: 1px solid var(--accent-gold); border-radius: 4px; margin-right: 5px; background: rgba(0,0,0,0.2); color: var(--accent-gold); display: none; }
+        @media(min-width: 400px) { .mode-badge { display: inline-block; } }
+
+
+        /* --- VISTAS --- */
+        .main-viewport { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title { font-family: var(--font-rpg); text-align: center; font-size: 2rem; margin-bottom: 1.5rem; color: var(--text-main); border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; display: inline-block; width: 100%; }
+        
+        /* --- GRID MENU --- */
+        .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; }
+        .map-location {
+            background-color: var(--bg-paper); border: 2px solid var(--border-color); border-radius: 12px; overflow: hidden;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
+            box-shadow: var(--shadow-soft);
+        }
+        .map-location:hover { transform: translateY(-5px); border-color: var(--accent-gold); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        
+        body.accessibility-mode .map-location { border: 2px solid #fff; box-shadow: none; }
+        body.accessibility-mode .map-location:hover { transform: none; border: 4px solid var(--accent-gold); }
+
+        .location-icon-area { height: 90px; background: var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 3.5rem; color: rgba(255,255,255,0.9); }
+        .location-info { padding: 0.8rem; text-align: center; }
+        .location-name { font-family: var(--font-ui); font-weight: bold; font-size: 1rem; color: var(--text-main); }
+
+        /* --- CONTROLES --- */
+        .controls-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; background: var(--bg-paper); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); }
+        
+        .btn-rpg {
+            background-color: var(--bg-wood); color: var(--text-light); border: 2px solid var(--border-color);
+            padding: 0.6rem 1.2rem; font-family: var(--font-ui); font-weight: bold; cursor: pointer; border-radius: 6px;
+            display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; text-decoration: none; transition: transform 0.1s;
+        }
+        .btn-rpg:active { transform: scale(0.95); }
+        .btn-rpg.primary { background-color: var(--accent-gold); color: #2c1810; border-color: #b8860b; }
+        .btn-rpg.secondary { background-color: var(--accent-blue); }
+        .btn-rpg.danger { background-color: var(--accent-red); }
+        
+        body.accessibility-mode .btn-rpg { background: #000; border: 2px solid #fff; color: #fff; text-transform: uppercase; }
+        body.accessibility-mode .btn-rpg:hover { background: #333; }
+
+        /* --- QUESTS --- */
+        .quest-board { background: var(--bg-paper); border: 4px double var(--accent-gold); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; position: relative; }
+        body.accessibility-mode .quest-board { border: 2px solid #fff; border-style: solid; }
+        .quest-board::before { content: '📜 EDICTOS REALES'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent-gold); color: #2c1810; padding: 0 10px; font-family: var(--font-ui); font-weight: bold; border-radius: 4px; font-size: 0.8rem; }
+        body.accessibility-mode .quest-board::before { background: #000; color: #fff; border: 1px solid #fff; top: -15px; font-size: 1rem; }
+        
+        .quest-item { display: flex; align-items: center; padding: 0.8rem 0; border-bottom: 1px dashed var(--border-color); }
+        .quest-item.completed { text-decoration: line-through; opacity: 0.6; }
+        .quest-check { margin-right: 10px; font-weight: bold; color: var(--accent-gold); font-size: 1.2rem; }
+
+        /* --- MAPAS --- */
+        .global-map-container, .map-container-rpg { 
+            height: 60vh; width: 100%; border: 4px solid var(--border-color); border-radius: 8px; 
+            overflow: hidden; position: relative; z-index: 1; background: #ddd;
+        }
+        .map-container-rpg { height: 350px; margin-bottom: 1rem; }
+        .leaflet-tile-pane { filter: var(--map-filter); transition: filter 0.5s ease; }
+        .leaflet-popup-content-wrapper { background: var(--bg-paper); color: var(--text-main); font-family: var(--font-body); border-radius: 4px; }
+        body.accessibility-mode .leaflet-popup-content-wrapper { border: 2px solid #fff; font-weight: bold; }
+
+        /* --- ITEMS --- */
+        .items-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media(min-width: 768px) { .items-grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .item-scroll { 
+            background: var(--bg-paper); border: 1px solid var(--border-color); border-radius: 8px; 
+            overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--shadow-soft);
+        }
+        body.accessibility-mode .item-scroll { border: 2px solid #fff; box-shadow: none; margin-bottom: 1rem; }
+        
+        .item-img-container { height: 200px; background: #ccc; position: relative; overflow: hidden; }
+        .item-img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .item-scroll:hover .item-img-container img { transform: scale(1.05); }
+        body.accessibility-mode .item-img-container img { transform: none !important; } /* No zoom in a11y mode */
+        
+        .item-body { padding: 1.2rem; flex-grow: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+        .item-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
+        .action-btn { width: 35px; height: 35px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.9); color: #333; font-weight: bold; }
+        
+        /* --- FORMULARIO --- */
+        .scribe-desk { max-width: 600px; margin: 0 auto; background: var(--bg-paper); padding: 2rem; border: 4px double var(--border-color); border-radius: 8px; }
+        .form-control { width: 100%; padding: 0.8rem; background: var(--bg-world); border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-main); margin-bottom: 1rem; font-family: var(--font-body); font-size: 1rem; }
+        
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .xp-float { position: fixed; color: var(--accent-gold); font-weight: bold; font-size: 1.8rem; pointer-events: none; animation: floatUp 1.5s forwards; z-index: 4000; text-shadow: 2px 2px 0 #000; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.2); } }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-box { background: var(--bg-paper); padding: 2rem; border: 4px solid var(--accent-gold); max-width: 90%; width: 400px; text-align: center; color: var(--text-main); border-radius: 8px; }
+        body.accessibility-mode .modal-box { border: 2px solid #fff; }
+        
+        /* Oracle Styles */
+        .oracle-card { background: var(--bg-paper); border: 4px double var(--accent-purple); padding: 2rem; border-radius: 10px; text-align: center; position: relative; }
+        .oracle-btn { background: var(--bg-world); border: 2px solid var(--border-color); padding: 1rem; width: 100%; margin-bottom: 0.8rem; cursor: pointer; color: var(--text-main); transition: all 0.2s; font-size: 1.1rem; border-radius: 6px; }
+        .oracle-btn:hover:not(.disabled) { background: var(--accent-purple); color: white; transform: translateX(5px); }
+        .oracle-btn.disabled { cursor: default; opacity: 0.7; }
+        .oracle-btn.correct { background: var(--accent-green) !important; color: white !important; border-color: var(--accent-green) !important; font-weight: bold; }
+        .oracle-btn.wrong { background: var(--accent-red) !important; color: white !important; border-color: var(--accent-red) !important; opacity: 0.5; }
+        .streak-counter { position: absolute; top: -15px; right: 10px; background: var(--accent-gold); color: #2c1810; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 2px solid #fff; font-family: var(--font-ui); }
+        
+        /* Audio Player */
+        .audio-btn { width: 100%; margin-top: 0.5rem; background: var(--accent-blue); color: white; border: none; padding: 0.8rem; border-radius: 4px; cursor: pointer; font-family: var(--font-ui); display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; }
+        .audio-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <!-- HUD -->
+    <header class="hud-bar">
+        <div class="hud-stats" onclick="navigateTo('profile')" title="Ver Perfil" role="button" tabindex="0">
+            <div class="level-badge" id="level-display" aria-label="Nivel del jugador">
+                1
+            </div>
+            <div class="xp-container">
+                <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: bold;" id="player-title">Aventurero</div>
+                <!-- Barra XP Restaurada -->
+                <div class="xp-bar-bg" aria-label="Barra de experiencia"><div class="xp-bar-fill" id="xp-bar"></div></div>
+                <div class="gold-display" aria-label="Oro acumulado">🪙 <span id="gold-display">0</span></div>
+            </div>
+        </div>
+        <div class="app-title" onclick="navigateTo('menu')" role="button" tabindex="0">Crónicas del Reino<span>v3.3</span></div>
+        <div class="hud-actions">
+            <span class="mode-badge" id="mode-text">Día</span>
+            <div class="icon-btn" onclick="toggleAccessibility()" title="Accesibilidad (Alto Contraste)" role="button" tabindex="0">♿</div>
+            <div class="icon-btn" onclick="navigateTo('shop')" title="Ir al Bazar" role="button" tabindex="0">🛒</div>
+            <button class="icon-btn" id="theme-toggle" title="Modo Día/Noche" role="button" tabindex="0">🌙</button>
+        </div>
+    </header>
+
+    <main class="main-viewport">
+
+        <!-- VISTA 1: MENU -->
+        <section id="view-menu" class="view-section active" aria-label="Menú Principal">
+            <div class="quest-board" id="quest-board-container">
+                <p style="text-align:center; font-style:italic;">Consultando edictos...</p>
+            </div>
+            
+            <h2 class="section-title">Mapa de Exploración</h2>
+            <button class="btn-rpg primary" style="width:100%; justify-content:center; margin-bottom:1.5rem; font-size:1.1rem;" onclick="navigateTo('global-map')">
+                🌍 ABRIR ATLAS GLOBAL
+            </button>
+
+            <div class="map-grid" role="navigation">
+                <div class="map-location" onclick="navigateTo('oracle')" role="button" tabindex="0">
+                    <div class="location-icon-area" style="background:var(--accent-purple)">🔮</div>
+                    <div class="location-info"><div class="location-name">Oráculo</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('shop')" role="button" tabindex="0">
+                    <div class="location-icon-area" style="background:var(--accent-gold)">🛒</div>
+                    <div class="location-info"><div class="location-name">El Bazar</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('favoritos')" role="button" tabindex="0">
+                    <div class="location-icon-area" style="background:#f1c40f">⭐</div>
+                    <div class="location-info"><div class="location-name">Favoritos</div></div>
+                </div>
+                <!-- Categorías Reales -->
+                <div class="map-location" onclick="navigateTo('palacios')" role="button" tabindex="0">
+                    <div class="location-icon-area">🏛️</div>
+                    <div class="location-info"><div class="location-name">Palacios</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('jardines')" role="button" tabindex="0">
+                    <div class="location-icon-area">🌳</div>
+                    <div class="location-info"><div class="location-name">Jardines</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('posadas')" role="button" tabindex="0">
+                    <div class="location-icon-area">🍺</div>
+                    <div class="location-info"><div class="location-name">Posadas</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('coches')" role="button" tabindex="0">
+                    <div class="location-icon-area">🚂</div>
+                    <div class="location-info"><div class="location-name">Transporte</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('cine')" role="button" tabindex="0">
+                    <div class="location-icon-area">🎭</div>
+                    <div class="location-info"><div class="location-name">Cultura</div></div>
+                </div>
+                <div class="map-location" onclick="navigateTo('pueblo')" role="button" tabindex="0">
+                    <div class="location-icon-area">🏰</div>
+                    <div class="location-info"><div class="location-name">Villa</div></div>
+                </div>
+                 <div class="map-location" onclick="navigateTo('instituto')" role="button" tabindex="0">
+                    <div class="location-icon-area" style="background:var(--accent-green)">📜</div>
+                    <div class="location-info"><div class="location-name">Institutos</div></div>
+                </div>
+                 <div class="map-location" onclick="navigateTo('barrio')" role="button" tabindex="0">
+                    <div class="location-icon-area" style="background:var(--accent-red)">🏘️</div>
+                    <div class="location-info"><div class="location-name">Barrios</div></div>
+                </div>
+                 <div class="map-location" onclick="navigateTo('profile')" role="button" tabindex="0">
+                    <div class="location-icon-area" style="background:var(--accent-blue)">🛡️</div>
+                    <div class="location-info"><div class="location-name">Perfil</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: TIENDA (BAZAR) -->
+        <section id="view-shop" class="view-section">
+            <div class="controls-bar">
+                <button class="btn-rpg" onclick="navigateTo('menu')">⬅ Salir</button>
+                <div style="font-weight:bold; color:var(--accent-gold);">Tus Coronas: <span id="shop-gold">0</span> 🪙</div>
+            </div>
+            <h2 class="section-title" style="color:var(--accent-gold)">El Gran Bazar</h2>
+            <div class="shop-grid" id="shop-container"></div>
+        </section>
+
+        <!-- VISTA 2: MAPA GLOBAL -->
+        <section id="view-global-map" class="view-section">
+            <div class="controls-bar">
+                <button class="btn-rpg" onclick="navigateTo('menu')">⬅ Volver</button>
+                <h3>Atlas Real</h3>
+            </div>
+            <div id="global-map-container" class="global-map-container"></div>
+        </section>
+
+        <!-- VISTA 3: ORÁCULO -->
+        <section id="view-oracle" class="view-section">
+            <div class="controls-bar"><button class="btn-rpg" onclick="navigateTo('menu')">⬅ Salir</button></div>
+            <h2 class="section-title" style="color:var(--accent-purple)">🔮 El Oráculo</h2>
+            <div class="oracle-card">
+                <div class="streak-counter" id="oracle-streak">🔥 Racha: 0</div>
+                <p id="oracle-question" style="font-size:1.3rem; font-weight:bold; margin-bottom:1.5rem; min-height: 3rem;">Cargando...</p>
+                <div id="oracle-options"></div>
+                <div id="oracle-feedback" style="margin-top:1rem; font-weight:bold; min-height:30px; transition: opacity 0.3s;"></div>
+            </div>
+        </section>
+
+        <!-- VISTA 4: LISTA DETALLE -->
+        <section id="view-detail" class="view-section">
+            <div class="controls-bar">
+                <button class="btn-rpg" onclick="navigateTo('menu')">⬅ Volver</button>
+                <button class="btn-rpg primary" onclick="openScribeDesk()">+ Añadir</button>
+            </div>
+            
+            <div class="map-toggle-area">
+                <button class="btn-rpg secondary" id="btn-toggle-detail-map" onclick="toggleDetailMap()">🗺️ Ver Mapa</button>
+            </div>
+            
+            <h2 id="detail-title" class="section-title">Región</h2>
+            
+            <div id="detail-map-container" class="map-container-rpg hidden"></div>
+            <div id="items-container" class="items-grid"></div>
+            <div id="empty-state" class="text-center hidden" style="margin-top:2rem; opacity:0.6;">Vacío...</div>
+        </section>
+
+        <!-- VISTA 5: FORMULARIO -->
+        <section id="view-form" class="view-section">
+            <div class="controls-bar"><button class="btn-rpg" onclick="showView('view-detail')">❌ Cancelar</button></div>
+            <div class="scribe-desk">
+                <h2>Nuevo Registro</h2>
+                <form id="rpg-form">
+                    <input type="hidden" id="inp-id"><input type="hidden" id="inp-category"><input type="hidden" id="inp-lat"><input type="hidden" id="inp-lng">
+                    <label class="form-label">Nombre</label><input type="text" id="inp-name" class="form-control" required>
+                    <label class="form-label">Ubicación</label><div id="form-map" style="height:250px; border:2px solid #ccc; margin-bottom:1rem;"></div>
+                    <label class="form-label">Descripción</label><textarea id="inp-desc" class="form-control" rows="3"></textarea>
+                    <button type="submit" class="btn-rpg primary" style="width:100%">💾 Guardar</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- VISTA 6: PERFIL -->
+        <section id="view-profile" class="view-section">
+            <div class="controls-bar"><button class="btn-rpg" onclick="navigateTo('menu')">⬅ Volver</button></div>
+            <h2 class="section-title">Héroe</h2>
+            <div class="profile-card" style="background:var(--bg-paper); padding:1.5rem; border:2px solid var(--accent-gold); text-align:center;">
+                <h3 style="color:var(--accent-gold)">Título: <span id="profile-title-text">Aventurero</span></h3>
+                <p>Nivel: <span id="profile-level">1</span> | Oro: <span id="profile-gold">0</span> 🪙</p>
+                <h4 style="margin-top:1.5rem; border-bottom:1px solid var(--border-color);">Inventario</h4>
+                <div id="loot-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(60px,1fr)); gap:0.5rem; margin-top:1rem;"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL EVENTO -->
+    <div id="modal-event" class="modal-overlay">
+        <div class="modal-box" style="border-color: var(--accent-blue);">
+            <h2 id="event-title" style="color:var(--accent-blue)">Evento</h2>
+            <div id="event-icon" style="font-size:3rem; margin:1rem 0;">🎲</div>
+            <p id="event-desc">Algo ha sucedido...</p>
+            <button class="btn-rpg primary" onclick="document.getElementById('modal-event').classList.remove('open')">Continuar</button>
+        </div>
+    </div>
+
+    <!-- MODAL GREMIO -->
+    <div id="modal-guild" class="modal-overlay">
+        <div class="modal-box">
+            <h2>⚔️ Elige tu Gremio</h2>
+            <div class="guild-card" onclick="selectGuild('rio')" id="card-rio" style="border:2px solid #ccc; padding:1rem; margin:0.5rem; cursor:pointer;">
+                <span style="font-size:2rem">🌊</span><h3>Orden del Río</h3><p>Exploradores (+XP Mapas)</p>
+            </div>
+            <div class="guild-card" onclick="selectGuild('saber')" id="card-saber" style="border:2px solid #ccc; padding:1rem; margin:0.5rem; cursor:pointer;">
+                <span style="font-size:2rem">🦉</span><h3>Sabios</h3><p>Eruditos (+XP Oráculo)</p>
+            </div>
+            <button class="btn-rpg primary" id="btn-confirm-guild" style="width:100%; margin-top:1rem;" disabled onclick="confirmGuild()">Unirse</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- CONFIGURACIÓN ---
+        const DB_NAME = 'CronicasReinoDB'; const DB_VERSION = 9; // UPDATE DB VERSION FOR IMAGES
+        const ARANJUEZ_COORDS = [40.0333, -3.6028];
+        let db, currentCategory;
+        let globalMap = null, detailMap = null, formMap = null, formMarker = null;
+        let selectedGuildTemp = null;
+        let currentOracleQuestion = null, oracleLocked = false, oracleStreak = 0;
+
+        // --- ESTADO ---
+        let player = { 
+            level: 1, xp: 0, xpToNext: 100, gold: 0, 
+            guild: null, loot: [], quests: [], lastQuestDate: null,
+            unlockedTitles: ['Aventurero'], activeTitle: 'Aventurero',
+            unlockedThemes: ['default'], activeTheme: 'default'
+        };
+        
+        const SHOP_ITEMS = [
+            { id: 'title_escudero', name: 'Título: Escudero', type: 'title', price: 100, val: 'Escudero', icon: '🛡️' },
+            { id: 'title_caballero', name: 'Título: Caballero', type: 'title', price: 500, val: 'Caballero', icon: '⚔️' },
+            { id: 'title_duque', name: 'Título: Duque', type: 'title', price: 2000, val: 'Duque', icon: '👑' },
+            { id: 'theme_royal', name: 'Tema Real', type: 'theme', price: 300, val: 'theme-royal', icon: '🎨' },
+            { id: 'theme_forest', name: 'Tema Bosque', type: 'theme', price: 300, val: 'theme-forest', icon: '🌲' }
+        ];
+
+        const QUEST_TEMPLATES = [
+            { text: 'Visita la Mariblanca', type: 'visit', target: 'pueblo', reward: 40 },
+            { text: 'Busca el Teatro Real', type: 'visit', target: 'cine', reward: 35 },
+            { text: 'Consulta al Oráculo', type: 'action', target: 'oracle', reward: 50 },
+            { text: 'Descubre un Restaurante', type: 'visit', target: 'posadas', reward: 30 }
+        ];
+        
+        const QUIZ_DATA = [
+            { q: "¿Qué río pasa por Aranjuez?", a: ["Tajo", "Ebro", "Duero", "Guadalquivir"], c: 0 },
+            { q: "¿Quién ordenó construir la Casa del Labrador?", a: ["Carlos IV", "Felipe II", "Isabel I", "Alfonso XII"], c: 0 },
+            { q: "¿Cuál es la fruta típica de Aranjuez?", a: ["El Fresón", "La Manzana", "La Uva"], c: 0 },
+            { q: "¿Qué famoso motín ocurrió en 1808?", a: ["Motín de Aranjuez", "Motín de Esquilache", "Dos de Mayo"], c: 0 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            initDB();
+            updateHud();
+            checkDailyQuests();
+            applyTheme(player.activeTheme);
+            
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            if(!player.guild) document.getElementById('modal-guild').classList.add('open');
+        });
+
+        // --- ACCESIBILIDAD ---
+        function toggleAccessibility() {
+            document.body.classList.toggle('accessibility-mode');
+        }
+
+        // --- FUNCIONES CORE ---
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else alert("Tu navegador no soporta la voz real.");
+        }
+
+        function checkRandomEvent() {
+            if(Math.random() < 0.1) {
+                const events = [
+                    { t: "Juglar Callejero", d: "Un músico te canta una balada antigua.", xp: 20, gold: 0 },
+                    { t: "Bolsa Perdida", d: "Encuentras unas monedas en el suelo.", xp: 0, gold: 15 },
+                    { t: "Día Soleado", d: "El sol brilla sobre los jardines.", xp: 30, gold: 0 }
+                ];
+                const ev = events[Math.floor(Math.random() * events.length)];
+                document.getElementById('event-title').textContent = ev.t;
+                document.getElementById('event-desc').textContent = ev.d + (ev.xp>0?` (+${ev.xp} XP)`:'') + (ev.gold>0?` (+${ev.gold} Oro)`:'');
+                document.getElementById('modal-event').classList.add('open');
+                if(ev.xp) gainXP(ev.xp); if(ev.gold) gainGold(ev.gold);
+            }
+        }
+
+        function gainGold(amount) {
+            player.gold += amount; showFloat(`+${amount} 🪙`); saveStats(); updateHud();
+        }
+
+        function renderShop() {
+            const c = document.getElementById('shop-container'); c.innerHTML = '';
+            SHOP_ITEMS.forEach(item => {
+                const owned = (item.type === 'title' && player.unlockedTitles.includes(item.val)) || 
+                              (item.type === 'theme' && player.unlockedThemes.includes(item.val));
+                let btnHtml = `<button class="shop-btn" onclick="buyItem('${item.id}')">Comprar (${item.price} 🪙)</button>`;
+                if(owned) {
+                    if((item.type==='title' && player.activeTitle===item.val) || (item.type==='theme' && player.activeTheme===item.val)) {
+                        btnHtml = `<button class="shop-btn owned">Equipado</button>`;
+                    } else {
+                        btnHtml = `<button class="shop-btn" style="background:var(--accent-blue)" onclick="equipItem('${item.id}')">Equipar</button>`;
+                    }
+                }
+                c.innerHTML += `<div class="shop-item"><div class="shop-icon">${item.icon}</div><div style="font-weight:bold">${item.name}</div>${btnHtml}</div>`;
+            });
+        }
+
+        function buyItem(id) {
+            const item = SHOP_ITEMS.find(i => i.id === id);
+            if(player.gold >= item.price) {
+                player.gold -= item.price;
+                if(item.type === 'title') player.unlockedTitles.push(item.val);
+                if(item.type === 'theme') player.unlockedThemes.push(item.val);
+                confetti({ particleCount: 50, spread: 60 });
+                saveStats(); renderShop(); updateHud();
+            } else showFloat("¡No tienes suficiente oro!");
+        }
+
+        function equipItem(id) {
+            const item = SHOP_ITEMS.find(i => i.id === id);
+            if(item.type === 'title') player.activeTitle = item.val;
+            if(item.type === 'theme') { player.activeTheme = item.val; applyTheme(item.val); }
+            saveStats(); renderShop(); updateHud();
+        }
+
+        function applyTheme(themeClass) {
+            document.body.classList.remove('theme-royal', 'theme-forest');
+            if(themeClass !== 'default') document.body.classList.add(themeClass);
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            if(viewId !== 'view-global-map' && globalMap) { globalMap.remove(); globalMap = null; }
+            if(viewId !== 'view-detail') {
+                if(detailMap) { detailMap.remove(); detailMap = null; }
+                document.getElementById('detail-map-container').classList.add('hidden');
+                document.getElementById('items-container').classList.remove('hidden');
+                const btn = document.getElementById('btn-toggle-detail-map'); if(btn) btn.textContent = "🗺️ Ver Mapa";
+            }
+            if(viewId !== 'view-form' && formMap) { formMap.remove(); formMap = null; }
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function navigateTo(dest) {
+            if(dest === 'menu') showView('view-menu');
+            else if(dest === 'profile') showView('view-profile');
+            else if(dest === 'shop') { showView('view-shop'); renderShop(); }
+            else if(dest === 'global-map') { showView('view-global-map'); initGlobalMap(); }
+            else if(dest === 'oracle') { showView('view-oracle'); initOracle(); }
+            else {
+                currentCategory = dest;
+                document.getElementById('detail-title').textContent = dest.toUpperCase();
+                loadList(dest);
+                showView('view-detail');
+                gainXP(5);
+                checkRandomEvent();
+                checkQuestProgress('visit', dest);
+            }
+        }
+
+        function loadList(cat) {
+            const c = document.getElementById('items-container'); c.innerHTML = '';
+            const empty = document.getElementById('empty-state');
+            if(!db) return;
+            if(cat === 'favoritos') { c.innerHTML = '<p style="text-align:center; grid-column:1/-1">Tus favoritos...</p>'; return; }
+            
+            const tx = db.transaction(cat, 'readonly');
+            tx.objectStore(cat).getAll().onsuccess = e => {
+                const items = e.target.result;
+                if(!items.length) empty.classList.remove('hidden'); else empty.classList.add('hidden');
+                items.forEach(i => {
+                    const img = i.imagenURL || 'https://placehold.co/400x300/8b4513/fff?text=Sin+Imagen';
+                    const audioBtn = `<button class="audio-btn" onclick="event.stopPropagation(); speakText('${i.descripcion.replace(/'/g, "")}')">🔊 Escuchar Historia</button>`;
+                    // Accesibilidad: alt text
+                    c.innerHTML += `<div class="item-scroll"><div class="item-img-container"><img src="${img}" alt="Imagen de ${i.nombre}"></div><div class="item-body"><h3>${i.nombre}</h3><p>${i.descripcion||''}</p>${audioBtn}</div></div>`;
+                });
+            };
+        }
+
+        function loadStats() {
+            const s = localStorage.getItem('rpg_stats_v3.0');
+            if(s) player = JSON.parse(s);
+        }
+        function saveStats() { localStorage.setItem('rpg_stats_v3.0', JSON.stringify(player)); }
+        
+        function gainXP(amount) {
+            player.xp += amount;
+            if(player.xp >= player.xpToNext) {
+                player.level++; player.xp -= player.xpToNext; player.xpToNext = Math.floor(player.xpToNext * 1.5);
+                showFloat("¡NIVEL SUBIDO!");
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
+            saveStats(); updateHud();
+        }
+        
+        function updateHud() {
+            const levelEl = document.getElementById('level-display'); if(levelEl) levelEl.firstChild.textContent = player.level + " ";
+            const xpBar = document.getElementById('xp-bar'); if(xpBar) xpBar.style.width = `${Math.min(100, (player.xp/player.xpToNext)*100)}%`;
+            const playerTitle = document.getElementById('player-title'); if(playerTitle) playerTitle.textContent = player.activeTitle;
+            const goldEl = document.getElementById('gold-display'); if(goldEl) goldEl.textContent = player.gold;
+            const profileTitle = document.getElementById('profile-title-text'); if(profileTitle) profileTitle.textContent = player.activeTitle;
+            const profileGold = document.getElementById('profile-gold'); if(profileGold) profileGold.textContent = player.gold;
+            const profileLevel = document.getElementById('profile-level'); if(profileLevel) profileLevel.textContent = player.level;
+
+            const board = document.getElementById('quest-board-container'); 
+            if(board) {
+                board.innerHTML = '';
+                player.quests.forEach(q => {
+                    board.innerHTML += `<div class="quest-item ${q.completed?'completed':''}"><span class="quest-check">${q.completed?'✔':'⬜'}</span> ${q.text} <span style="margin-left:auto; font-size:0.8rem; color:var(--accent-gold)">+${q.reward}</span></div>`;
+                });
+            }
+            const lootC = document.getElementById('loot-container'); 
+            if(lootC) {
+                lootC.innerHTML = '';
+                player.loot.forEach(l => lootC.innerHTML += `<div style="border:1px solid #ccc; padding:5px; border-radius:4px;">🎁</div>`);
+            }
+        }
+        
+        // --- DB INIT & POPULATION ---
+        function initDB() {
+            const r = indexedDB.open(DB_NAME, DB_VERSION);
+            r.onupgradeneeded = e => {
+                const d = e.target.result;
+                const stores = ['palacios','jardines','posadas','coches','cine','pueblo','instituto','barrio'];
+                stores.forEach(s => { if(!d.objectStoreNames.contains(s)) d.createObjectStore(s, {keyPath:'id', autoIncrement:true}); });
+                
+                const tx = e.target.transaction;
+                
+                // PALACIOS
+                const sPal = tx.objectStore('palacios');
+                sPal.put({ nombre: 'Palacio Real de Aranjuez', descripcion: 'Residencia primaveral de los reyes de España, Patrimonio de la Humanidad.', lat: 40.0364, lng: -3.6089, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Palacio_Real_de_Aranjuez_%2880017%29.jpg/640px-Palacio_Real_de_Aranjuez_%2880017%29.jpg' });
+                sPal.put({ nombre: 'Casa del Labrador', descripcion: 'Palacete neoclásico en el Jardín del Príncipe.', lat: 40.0436, lng: -3.5961, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Casa_del_Labrador_%28Aranjuez%29_02.jpg/640px-Casa_del_Labrador_%28Aranjuez%29_02.jpg' });
+                sPal.put({ nombre: 'Palacio de Godoy', descripcion: 'Antigua residencia de Manuel Godoy.', lat: 40.0339, lng: -3.6095, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Palacio_de_Godoy_%28Aranjuez%29_01.jpg/640px-Palacio_de_Godoy_%28Aranjuez%29_01.jpg' });
+                sPal.put({ nombre: 'Palacio de Medinaceli', descripcion: 'Edificio histórico del siglo XVIII.', lat: 40.0350, lng: -3.6050, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Palacio_de_Medinaceli_%28Aranjuez%29_02.jpg/640px-Palacio_de_Medinaceli_%28Aranjuez%29_02.jpg' });
+
+                // JARDINES
+                const sJard = tx.objectStore('jardines');
+                sJard.put({ nombre: 'Jardín del Príncipe', descripcion: 'El jardín vallado más grande de Europa.', lat: 40.0400, lng: -3.5900, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Jard%C3%ADn_del_Pr%C3%ADncipe%2C_Aranjuez_02.jpg/640px-Jard%C3%ADn_del_Pr%C3%ADncipe%2C_Aranjuez_02.jpg' });
+                sJard.put({ nombre: 'Jardín de la Isla', descripcion: 'Jardín renacentista rodeado por el Tajo.', lat: 40.0380, lng: -3.6090, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Fuente_de_H%C3%A9rcules_y_la_Hidra%2C_Jard%C3%ADn_de_la_Isla_%28Aranjuez%29.jpg/640px-Fuente_de_H%C3%A9rcules_y_la_Hidra%2C_Jard%C3%ADn_de_la_Isla_%28Aranjuez%29.jpg' });
+                sJard.put({ nombre: 'Jardín de Isabel II', descripcion: 'Jardín de la estatua de la Reina Niña.', lat: 40.0330, lng: -3.6050, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Estatua_de_Isabel_II_%28Aranjuez%29_02.jpg/640px-Estatua_de_Isabel_II_%28Aranjuez%29_02.jpg' });
+                sJard.put({ nombre: 'Jardín del Rey', descripcion: 'Jardín privado anexo al palacio.', lat: 40.0360, lng: -3.6080, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Jard%C3%ADn_del_Rey_%28Aranjuez%29_02.jpg/640px-Jard%C3%ADn_del_Rey_%28Aranjuez%29_02.jpg' });
+
+                // POSADAS
+                const sPos = tx.objectStore('posadas');
+                sPos.put({ nombre: 'El Rana Verde', descripcion: 'Restaurante centenario junto al Tajo.', lat: 40.0365, lng: -3.6100, imagenURL: 'https://visita.aranjuez.es/wp-content/uploads/2020/06/rana-verde-1.jpg' });
+                sPos.put({ nombre: 'Casa Pablo', descripcion: 'Clásico de la gastronomía local.', lat: 40.0300, lng: -3.6030, imagenURL: 'https://visita.aranjuez.es/wp-content/uploads/2020/06/casa-pablo-1.jpg' });
+                sPos.put({ nombre: 'Mercado de Abastos', descripcion: 'Mercado histórico y gastronómico.', lat: 40.0320, lng: -3.6040, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Mercado_de_Abastos_de_Aranjuez_01.jpg/640px-Mercado_de_Abastos_de_Aranjuez_01.jpg' });
+                sPos.put({ nombre: 'Aguatinta', descripcion: 'Cocina moderna.', lat: 40.0310, lng: -3.6040, imagenURL: 'https://media-cdn.tripadvisor.com/media/photo-s/0f/63/5a/76/fachada.jpg' });
+                sPos.put({ nombre: 'El Corral de la Abuela', descripcion: 'Asador tradicional.', lat: 40.0290, lng: -3.6010, imagenURL: 'https://media-cdn.tripadvisor.com/media/photo-s/0d/6e/3c/5c/fachada.jpg' });
+                sPos.put({ nombre: 'Gastrobar Almíbar', descripcion: 'Tapas creativas.', lat: 40.0300, lng: -3.6020, imagenURL: 'https://media-cdn.tripadvisor.com/media/photo-s/16/a9/38/8e/fachada.jpg' });
+
+                // PUEBLO
+                const sPue = tx.objectStore('pueblo');
+                sPue.put({ nombre: 'Plaza de la Mariblanca', descripcion: 'Plaza de San Antonio.', lat: 40.0330, lng: -3.6050, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Fuente_de_la_Mariblanca_%28Aranjuez%29_03.jpg/640px-Fuente_de_la_Mariblanca_%28Aranjuez%29_03.jpg' });
+                sPue.put({ nombre: 'Estación de Ferrocarril', descripcion: 'Edificio neomudéjar.', lat: 40.0380, lng: -3.6150, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Estaci%C3%B3n_de_Aranjuez_-_Vest%C3%ADbulo.jpg/640px-Estaci%C3%B3n_de_Aranjuez_-_Vest%C3%ADbulo.jpg' });
+                sPue.put({ nombre: 'Ayuntamiento', descripcion: 'Casa Consistorial.', lat: 40.0290, lng: -3.6030, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Ayuntamiento_de_Aranjuez_01.jpg/640px-Ayuntamiento_de_Aranjuez_01.jpg' });
+                sPue.put({ nombre: 'Plaza de Toros', descripcion: 'Plaza histórica del s.XVIII.', lat: 40.0250, lng: -3.6000, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Plaza_de_Toros_de_Aranjuez_01.jpg/640px-Plaza_de_Toros_de_Aranjuez_01.jpg' });
+                
+                // CINE
+                const sCine = tx.objectStore('cine');
+                sCine.put({ nombre: 'Teatro Real Carlos III', descripcion: 'Teatro histórico.', lat: 40.0340, lng: -3.6060, imagenURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Teatro_Real_Carlos_III_%28Aranjuez%29_02.jpg/640px-Teatro_Real_Carlos_III_%28Aranjuez%29_02.jpg' });
+                
+                // INSTITUTO
+                const sInst = tx.objectStore('instituto');
+                sInst.put({ nombre: 'IES Domenico Scarlatti', descripcion: 'Instituto histórico.', lat: 40.0310, lng: -3.6020, imagenURL: 'https://pbs.twimg.com/profile_images/1103224839283695616/p_X9Z4_4_400x400.jpg' });
+                sInst.put({ nombre: 'Colegio Sagrada Familia', descripcion: 'Centro educativo.', lat: 40.0330, lng: -3.6000, imagenURL: 'https://lh3.googleusercontent.com/p/AF1QipM-X-X-X-X-X-X-X-X-X-X=s1600-w400' }); // Placeholder updated
+                
+                // COCHES
+                const sCoch = tx.objectStore('coches');
+                sCoch.put({ nombre: 'Museo de Falúas Reales', descripcion: 'Barcas reales.', lat: 40.0420, lng: -3.6000, imagenURL: 'https://visita.aranjuez.es/wp-content/uploads/2020/06/museo-faluas-1.jpg' });
+                sCoch.put({ nombre: 'Chiquitren', descripcion: 'Tren turístico.', lat: 40.0360, lng: -3.6085, imagenURL: 'https://visita.aranjuez.es/wp-content/uploads/2020/06/chiquitren-1.jpg' });
+
+                // BARRIO
+                const sBar = tx.objectStore('barrio');
+                sBar.put({ nombre: 'Barrio de la Montaña', descripcion: 'Zona residencial moderna.', lat: 40.0500, lng: -3.6000, imagenURL: 'https://lh3.googleusercontent.com/p/AF1QipM-X-X-X-X-X-X-X-X-X-X=s1600-w400' }); // Placeholder
+                sBar.put({ nombre: 'Nuevo Aranjuez', descripcion: 'Barrio popular.', lat: 40.0250, lng: -3.6050, imagenURL: 'https://lh3.googleusercontent.com/p/AF1QipM-X-X-X-X-X-X-X-X-X-X=s1600-w400' }); // Placeholder
+            };
+            r.onsuccess = e => db = e.target.result;
+        }
+
+        // --- MAPAS & FORMS (Same as v2.8) ---
+        function initGlobalMap() {
+            if(globalMap) globalMap.remove();
+            setTimeout(() => {
+                globalMap = L.map('global-map-container').setView(ARANJUEZ_COORDS, 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(globalMap);
+                loadMapMarkers(globalMap, 'all');
+            }, 100);
+        }
+        
+        function loadMapMarkers(mapInstance, category) {
+            if(!db) return;
+            const stores = category === 'all' ? ['palacios','jardines','posadas','coches','cine','pueblo','instituto'] : [category];
+            stores.forEach(storeName => {
+                if(db.objectStoreNames.contains(storeName)){
+                    const tx = db.transaction(storeName, 'readonly');
+                    tx.objectStore(storeName).getAll().onsuccess = e => {
+                        e.target.result.forEach(item => {
+                            if(item.lat && item.lng) {
+                                L.marker([item.lat, item.lng]).addTo(mapInstance).bindPopup(`<b>${item.nombre}</b><br><i>${storeName}</i>`);
+                            }
+                        });
+                    };
+                }
+            });
+        }
+
+        function toggleDetailMap() {
+            const mapCont = document.getElementById('detail-map-container');
+            const listCont = document.getElementById('items-container');
+            const btn = document.getElementById('btn-toggle-detail-map');
+            if(mapCont.classList.contains('hidden')) {
+                mapCont.classList.remove('hidden'); listCont.classList.add('hidden'); btn.textContent = "📜 Ver Lista";
+                if(detailMap) detailMap.remove();
+                setTimeout(() => {
+                    detailMap = L.map('detail-map-container').setView(ARANJUEZ_COORDS, 14);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(detailMap);
+                    loadMapMarkers(detailMap, currentCategory);
+                }, 100);
+            } else {
+                mapCont.classList.add('hidden'); listCont.classList.remove('hidden'); btn.textContent = "🗺️ Ver Mapa";
+            }
+        }
+
+        function openScribeDesk() {
+            document.getElementById('rpg-form').reset();
+            document.getElementById('inp-category').value = currentCategory;
+            showView('view-form');
+            if(formMap) formMap.remove();
+            setTimeout(() => {
+                formMap = L.map('form-map').setView(ARANJUEZ_COORDS, 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(formMap);
+                formMap.on('click', e => {
+                    if(formMarker) formMap.removeLayer(formMarker);
+                    formMarker = L.marker(e.latlng).addTo(formMap);
+                    document.getElementById('inp-lat').value = e.latlng.lat;
+                    document.getElementById('inp-lng').value = e.latlng.lng;
+                });
+            }, 100);
+        }
+
+        document.getElementById('rpg-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const item = {
+                nombre: document.getElementById('inp-name').value,
+                descripcion: document.getElementById('inp-desc').value,
+                lat: parseFloat(document.getElementById('inp-lat').value),
+                lng: parseFloat(document.getElementById('inp-lng').value)
+            };
+            const tx = db.transaction(currentCategory, 'readwrite');
+            tx.objectStore(currentCategory).add(item).onsuccess = () => {
+                gainXP(30); showView('view-detail'); loadList(currentCategory);
+            };
+        });
+        
+        // --- ORÁCULO (Same as v2.8) ---
+        function initOracle() {
+            oracleLocked = false;
+            document.getElementById('oracle-streak').textContent = `🔥 Racha: ${oracleStreak}`;
+            let newQ;
+            do { newQ = QUIZ_DATA[Math.floor(Math.random() * QUIZ_DATA.length)]; } while (newQ === currentOracleQuestion && QUIZ_DATA.length > 1);
+            currentOracleQuestion = newQ;
+            document.getElementById('oracle-question').textContent = newQ.q;
+            document.getElementById('oracle-feedback').textContent = '';
+            const ops = document.getElementById('oracle-options'); ops.innerHTML = '';
+            newQ.a.forEach((ans, idx) => {
+                const b = document.createElement('div'); b.className = 'oracle-btn'; b.textContent = ans;
+                b.onclick = () => handleAnswer(idx, b);
+                ops.appendChild(b);
+            });
+        }
+        
+        function handleAnswer(idx, btn) {
+            if(oracleLocked) return; oracleLocked = true;
+            const isCorrect = idx === currentOracleQuestion.c;
+            document.querySelectorAll('.oracle-btn').forEach(b => b.classList.add('disabled'));
+            if(isCorrect) {
+                btn.classList.add('correct');
+                document.getElementById('oracle-feedback').textContent = '¡CORRECTO! +20 XP +10 Oro';
+                gainXP(20); gainGold(10); oracleStreak++; checkQuestProgress('action','oracle');
+            } else {
+                btn.classList.add('wrong');
+                document.getElementById('oracle-feedback').textContent = 'Incorrecto...';
+                oracleStreak = 0;
+            }
+            setTimeout(() => { if(document.getElementById('view-oracle').classList.contains('active')) initOracle(); }, 2500);
+        }
+
+        // --- SYSTEM ---
+        function checkDailyQuests() {
+            const today = new Date().toDateString();
+            if(player.lastQuestDate !== today) {
+                const pool = [...QUEST_TEMPLATES].sort(() => 0.5 - Math.random());
+                player.quests = pool.slice(0, 3).map(q => ({...q, completed: false}));
+                player.lastQuestDate = today;
+                saveStats();
+            }
+        }
+        function checkQuestProgress(type, target) {
+            let changed = false;
+            player.quests.forEach(q => {
+                if(!q.completed && q.type === type && q.target === target) {
+                    q.completed = true; gainXP(q.reward); gainGold(15); changed = true;
+                    showFloat("¡Misión Cumplida!");
+                }
+            });
+            if(changed) { saveStats(); updateHud(); }
+        }
+        function selectGuild(g) {
+            selectedGuildTemp = g;
+            document.querySelectorAll('.guild-card').forEach(c => c.style.borderColor = '#ccc');
+            document.getElementById(`card-${g}`).style.borderColor = 'var(--accent-gold)';
+            document.getElementById('btn-confirm-guild').disabled = false;
+        }
+        function confirmGuild() {
+            player.guild = selectedGuildTemp; saveStats(); updateHud();
+            document.getElementById('modal-guild').classList.remove('open');
+        }
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('rpg_theme', document.body.classList.contains('dark-mode')?'dark':'light');
+            updateThemeUI();
+        }
+        function updateThemeUI() {
+            const isDark = document.body.classList.contains('dark-mode');
+            const modeText = document.getElementById('mode-text');
+            if (modeText) modeText.textContent = isDark ? 'Noche' : 'Día';
+            
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) themeBtn.textContent = isDark ? '☀️' : '🌙';
+        }
+        function showFloat(t) {
+            const d = document.createElement('div'); d.className = 'xp-float'; d.innerText = t;
+            d.style.left = '50%'; d.style.top = '50%'; document.body.appendChild(d);
+            setTimeout(() => d.remove(), 1500);
+        }
+    </script>
+</body>
+</html>
