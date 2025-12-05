@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación ProjectFlow - Trello Clone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0079bf;
+            /* Trello Blue */
+            --primary-dark: #055a8c;
+            --bg-sidebar: #f4f5f7;
+            --bg-content: #ffffff;
+            --text-main: #172b4d;
+            --text-secondary: #5e6c84;
+            --border: #dfe1e6;
+            --code-bg: #f4f5f7;
+            --code-text: #091e42;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-content);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .nav-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            padding-left: 0.75rem;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background-color: #e4f0f6;
+            /* Trello hover tint */
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background-color: #e4f0f6;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 4rem;
+            scroll-behavior: smooth;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        p {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        /* Prompts & Code */
+        .prompt-box {
+            background-color: #fff;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 0.25rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -0.75rem;
+            left: 1rem;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .prompt-text {
+            font-style: italic;
+            color: var(--text-main);
+            font-size: 1.05rem;
+            white-space: pre-line;
+            margin-bottom: 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .tag-arch {
+            background: #eae6ff;
+            color: #403294;
+        }
+
+        .tag-feat {
+            background: #e4f7eb;
+            color: #006644;
+        }
+
+        .tag-fix {
+            background: #ffebe6;
+            color: #bf2600;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                overflow: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .sidebar-nav {
+                display: none;
+            }
+
+            .main {
+                padding: 1.5rem;
+            }
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                    <rect width="3" height="9" x="7" y="7" />
+                    <rect width="3" height="5" x="14" y="7" />
+                </svg>
+                ProjectFlow Docs
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-group">
+                <div class="nav-title">General</div>
+                <a href="#intro" class="nav-item active" onclick="showSection('intro')">Resumen del Proyecto</a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Fase 1: Arquitectura</div>
+                <a href="#v4-0" class="nav-item" onclick="showSection('v4-0')">v4.0 - Refactor Contexto</a>
+                <a href="#v4-2" class="nav-item" onclick="showSection('v4-2')">v4.2 - Layout & Funcionalidad</a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Fase 2: Funcionalidades</div>
+                <a href="#v4-4" class="nav-item" onclick="showSection('v4-4')">v4.4 - Edición Inline</a>
+                <a href="#v4-5" class="nav-item" onclick="showSection('v4-5')">v4.5 - Adjuntos & Fechas</a>
+                <a href="#v4-6" class="nav-item" onclick="showSection('v4-6')">v4.6/4.7 - Plantillas</a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Fase 3: Ecosistema</div>
+                <a href="#v4-8" class="nav-item" onclick="showSection('v4-8')">v4.8 - Espacios de Trabajo</a>
+                <a href="#v4-9" class="nav-item" onclick="showSection('v4-9')">v4.9 - Vista de Espacio</a>
+                <a href="#v4-10" class="nav-item" onclick="showSection('v4-10')">v4.10 - Buscador Contextual</a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Fase 4: Usuarios & Seguridad</div>
+                <a href="#v5-0" class="nav-item" onclick="showSection('v5-0')">v5.0 - Perfiles & Miembros</a>
+                <a href="#v5-2" class="nav-item" onclick="showSection('v5-2')">v5.2 - Segregación de Datos</a>
+                <a href="#v5-3" class="nav-item" onclick="showSection('v5-3')">v5.3 - Permisos & Admin</a>
+                <a href="#v5-3-2" class="nav-item" onclick="showSection('v5-3-2')">v5.3.2 - Autenticación Real</a>
+                <a href="#v5-3-3" class="nav-item" onclick="showSection('v5-3-3')">v5.3.3 - Estabilidad Auth</a>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">Fase 5: Detalles Finales</div>
+                <a href="#v5-5" class="nav-item" onclick="showSection('v5-5')">v5.5 - App Switcher</a>
+                <a href="#v5-5-1" class="nav-item" onclick="showSection('v5-5-1')">v5.5.1 - Hotfix Compilación</a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="content-wrapper">
+
+            <!-- INTRODUCCIÓN -->
+            <section id="intro" class="section active">
+                <h1>Registro de Cambios (Changelog)</h1>
+                <p>Documentación detallada de la evolución de <strong>Trello Clone (ProjectFlow)</strong>, desde una
+                    aplicación monolítica básica hasta un ecosistema multi-usuario y multi-espacio completo.</p>
+                <p>Este documento ha sido generado dinámicamente basado en la conversación de desarrollo.</p>
+            </section>
+
+            <!-- V4.0 -->
+            <section id="v4-0" class="section">
+                <h2>Versión 4.0: Arquitectura "Full Clone"</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"basado en este prompt y a partir de esta version de la aplicacion, copia la
+                        aplicacion de Trello como un clon de la aplicacion, ve poco a poco..."</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-arch">ARQUITECTURA</span> Refactorización Masiva
+                    </div>
+                    <p>Se migró de un estado local simple a un <code>AppContext</code> global complejo. Se implementó un
+                        enrutamiento simulado para manejar vistas sin recargas y se diseñó el Sidebar colapsable al
+                        estilo Trello.</p>
+                </div>
+            </section>
+
+            <!-- V4.2 -->
+            <section id="v4-2" class="section">
+                <h2>Versión 4.2: Layout y Funcionalidad Core</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"vale, esta sera la version 4.2, elimina el scroll horizontal y vamos
+                        implementando funcionalidad a todo, ya que ahora mismo es hay muchos botones sin funcionalidad"
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Funcionalidad de Botones</div>
+                    <p>Conexión de la lógica para los botones "Mover", "Copiar" y "Archivar" en el modal de tareas.
+                        Implementación real del menú de acciones de lista (Ordenar, Eliminar).</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-fix">FIX</span> Layout Robusto</div>
+                    <p>Corrección del desbordamiento horizontal (scroll) y ajuste del layout <code>100dvh</code> para
+                        móviles.</p>
+                </div>
+            </section>
+
+            <!-- V4.4 -->
+            <section id="v4-4" class="section">
+                <h2>Versión 4.4: Detalles de Interacción</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"implementa otra funcionalidad" (Enfoque en edición y etiquetas)</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Edición en Línea</div>
+                    <p>Capacidad para renombrar listas haciendo clic directamente en el título.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Selector de Etiquetas</div>
+                    <p>Implementación de un Popover real para añadir/quitar etiquetas de colores a las tareas.</p>
+                </div>
+            </section>
+
+            <!-- V4.5 -->
+            <section id="v4-5" class="section">
+                <h2>Versión 4.5: Modal Rico</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"implementa otra funcionalidad" (Enfoque en adjuntos y fechas)</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Sistema de Adjuntos</div>
+                    <p>Capacidad para subir archivos reales (simulado en memoria), visualizarlos en lista y usar
+                        imágenes como <strong>Portada (Cover)</strong> de la tarjeta.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Fechas de Vencimiento</div>
+                    <p>Integración de selector de fecha nativo y lógica visual para fechas cumplidas (verde) o
+                        pendientes.</p>
+                </div>
+            </section>
+
+            <!-- V4.6 / 4.7 -->
+            <section id="v4-6" class="section">
+                <h2>Versión 4.6 / 4.7: Sistema de Plantillas</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"implementa ahora las plantillas por favor" y posteriormente "ahora que pueda
+                        acceder mediante su boton..."</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Galería de Plantillas</div>
+                    <p>Nueva vista dedicada con tableros pre-configurados (Gestión de Proyectos, Kanban Simple, etc.).
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-arch">LOGIC</span> Instanciación</div>
+                    <p>Lógica para clonar una plantilla completa (columnas, tareas, etiquetas) en un nuevo tablero
+                        funcional.</p>
+                </div>
+            </section>
+
+            <!-- V4.8 / 4.9 -->
+            <section id="v4-8" class="section">
+                <h2>Versión 4.8 / 4.9: Espacios de Trabajo</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"implementa los espacios de trabajo" y "ahora como puedo acceder a ese
+                        espacio de trabajo?"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-arch">ARQUITECTURA</span> Jerarquía de Datos</div>
+                    <p>Introducción de la entidad <code>Workspace</code>. Los tableros ahora pertenecen a un espacio, no
+                        flotan libremente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Vista de Espacio</div>
+                    <p>Nueva página dashboard que muestra los tableros agrupados en cuadrícula, miembros del espacio y
+                        configuración.</p>
+                </div>
+            </section>
+
+            <!-- V4.10 -->
+            <section id="v4-10" class="section">
+                <h2>Versión 4.10: Buscador Contextual</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"para que se usa el buscador?, por que quiero buscar algo y no funciona"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-fix">FIX</span> Lógica de Búsqueda</div>
+                    <p>Se arregló el buscador para que sea sensible al contexto: filtra tableros si estás en el Espacio
+                        de Trabajo, y filtra tareas si estás dentro de un Tablero.</p>
+                </div>
+            </section>
+
+            <!-- V5.0 / 5.2 -->
+            <section id="v5-0" class="section">
+                <h2>Versión 5.0 / 5.2: Usuarios y Aislamiento</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"añade el sistema de perfiles y usuarios" y "haz que con cada perfil, sea
+                        diferente para cada usuario"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Cambio de Usuario</div>
+                    <p>Capacidad para cambiar entre usuarios predefinidos (Admin, Ana, Carlos, Luisa) instantáneamente.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-arch">SEGURIDAD</span> Segregación de Datos</div>
+                    <p>Implementación de filtros estrictos. Los usuarios ahora solo ven los espacios y tableros a los
+                        que han sido invitados.</p>
+                </div>
+            </section>
+
+            <!-- V5.3 -->
+            <section id="v5-3" class="section">
+                <h2>Versión 5.3: Roles y Permisos</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"haz que el admin pueda ver todo de todos y luego cada usuario propio solo
+                        pueda ver sus tableros..."</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Superadmin</div>
+                    <p>Creación del rol <code>isAdmin</code>. El usuario Admin tiene acceso de lectura/escritura global
+                        a todos los espacios, ignorando las restricciones de membresía.</p>
+                </div>
+            </section>
+
+            <!-- V5.3.2 / 5.3.3 -->
+            <section id="v5-3-2" class="section">
+                <h2>Versión 5.3.2 / 5.3.3: Autenticación Real</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"añade una ventana de inicio de sesion... y luego para registrar un nuevo
+                        usuario..."</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Flujo Auth</div>
+                    <p>Pantalla de Login y Registro funcional. Validación de credenciales y creación de nuevos usuarios
+                        en tiempo real.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-fix">FIX</span> Estabilidad</div>
+                    <p>Corrección de errores críticos en la inicialización del estado (<code>useAppWrapper</code> error)
+                        y lógica de creación automática de espacios personales al registrarse.</p>
+                </div>
+            </section>
+
+            <!-- V5.5 -->
+            <section id="v5-5" class="section">
+                <h2>Versión 5.5: App Switcher</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"...solo implementa lo del menu de los 9 puntos..."</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-feat">FEATURE</span> Menú Atlassian</div>
+                    <p>Implementación del menú desplegable de 9 puntos en el header, simulando la navegación entre
+                        productos de Atlassian (Jira, Confluence, Bitbucket).</p>
+                </div>
+            </section>
+
+            <!-- V5.5.1 -->
+            <section id="v5-5-1" class="section">
+                <h2>Versión 5.5.1: Hotfix</h2>
+                <div class="prompt-box">
+                    <span class="prompt-label">Prompt</span>
+                    <p class="prompt-text">"arregla este error: The symbol 'AppSwitcher' has already been declared"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title"><span class="tag tag-fix">FIX</span> Compilación</div>
+                    <p>Eliminación de código duplicado generado accidentalmente en la versión anterior para restaurar la
+                        estabilidad de la aplicación.</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById(id).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Encuentra el enlace que apunta a este ID y actívalo
+            const activeLink = document.querySelector(`.nav-item[href="#${id}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            document.querySelector('.main').scrollTop = 0;
+        }
+    </script>
+</body>
+
+</html>

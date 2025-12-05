@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello Clone - Documentación de Versiones</title>
+    <meta name="description" content="Documentación completa de todas las versiones del proyecto Trello Clone">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="7" height="18" rx="2" fill="currentColor" opacity="0.8" />
+                    <rect x="14" y="3" width="7" height="12" rx="2" fill="currentColor" opacity="0.6" />
+                </svg>
+                <h1 class="logo-text">Trello Clone</h1>
+            </div>
+            <nav class="nav">
+                <a href="#overview" class="nav-link">Visión General</a>
+                <a href="#timeline" class="nav-link">Timeline</a>
+                <a href="#prompts" class="nav-link">Prompts</a>
+                <a href="#changelog" class="nav-link">Changelog Detallado</a>
+                <a href="#versions" class="nav-link">Versiones</a>
+                <a href="#stats" class="nav-link">Estadísticas</a>
+            </nav>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" />
+                    <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" />
+                    <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" />
+                    <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" />
+                    <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-badge">Evolución del Proyecto</span>
+                <h2 class="hero-title">De la Versión 1.0 a la 7.3</h2>
+                <p class="hero-description">
+                    Un viaje a través de 40+ versiones y mejoras iterativas que transformaron
+                    un simple gestor de tareas en un clon completo de Trello con arquitectura profesional,
+                    desde desarrollo con Gemini hasta refinamiento con Antigravity.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">40+</span>
+                        <span class="stat-label">Versiones</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">7</span>
+                        <span class="stat-label">Major Releases</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">2</span>
+                        <span class="stat-label">AI Assistants</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-gradient"></div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section overview-section">
+        <div class="container">
+            <h2 class="section-title">Visión General del Proyecto</h2>
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="card-icon">📋</div>
+                    <h3>Propósito</h3>
+                    <p>Crear un clon pixel-perfect de Trello con todas las funcionalidades principales y arquitectura
+                        moderna.</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">⚛️</div>
+                    <h3>Stack Tecnológico</h3>
+                    <p>React, TypeScript, Tailwind CSS, @dnd-kit, Zustand, React Router, Framer Motion.</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">🎨</div>
+                    <h3>UX/UI</h3>
+                    <p>Interfaz fluida con drag & drop, animaciones sutiles, y diseño responsivo.</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">🔄</div>
+                    <h3>Evolución</h3>
+                    <p>De archivo monolítico a arquitectura modular con separación de responsabilidades.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="timeline" class="section timeline-section">
+        <div class="container">
+            <h2 class="section-title">Timeline de Desarrollo</h2>
+            <div class="timeline">
+                <div class="timeline-item" data-version="1.0">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version">v1.0</span>
+                        <h3>Versión Inicial</h3>
+                        <p>Primera implementación básica del gestor de tareas</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-version="2.0">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version">v2.0 - v2.9</span>
+                        <h3>Serie 2.x</h3>
+                        <p>Mejoras iterativas en funcionalidad y UI</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-version="3.0">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version">v3.0 - v3.3</span>
+                        <h3>Serie 3.x</h3>
+                        <p>Implementación de drag & drop y persistencia</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-version="4.0">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version">v4.0 - v4.10</span>
+                        <h3>Serie 4.x - Full Trello Clone</h3>
+                        <p>Arquitectura modular, routing y funcionalidades avanzadas</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-version="5.0">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version">v5.0 - v5.3</span>
+                        <h3>Serie 5.x</h3>
+                        <p>Mejoras en UX y nuevas características</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-version="6.0">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version">v6.0 - v6.1</span>
+                        <h3>Serie 6.x - Production Ready</h3>
+                        <p>Refactorización final y pulido para producción</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-version="7.0" style="border-left: 3px solid var(--accent);">
+                    <div class="timeline-marker" style="background: var(--accent);"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-version" style="color: var(--accent);">v7.0 - v7.3</span>
+                        <h3>Serie 7.x - Antigravity Era 🚀</h3>
+                        <p>Desarrollo con Antigravity: Zustand, Calendar View, y características avanzadas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prompts Engineering Section -->
+    <section id="prompts" class="section prompts-section">
+        <div class="container">
+            <h2 class="section-title">Prompts Engineering con Gemini</h2>
+            <p class="section-description">
+                Prompts clave que guiaron el desarrollo iterativo del proyecto usando Gemini AI
+            </p>
+            <div class="prompts-grid" id="promptsContainer">
+                <!-- Prompts will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Changelog Detallado Section -->
+    <section id="changelog" class="section changelog-section">
+        <div class="container">
+            <h2 class="section-title">Changelog Detallado - Series 4.x y 5.x</h2>
+            <p class="section-description">
+                Registro de cambios detallado con los prompts exactos y características implementadas
+                durante las fases de arquitectura completa y sistema multi-usuario.
+            </p>
+            <div id="changelogContainer" class="changelog-content">
+                <!-- Changelog entries will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Versions Section -->
+    <section id="versions" class="section versions-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Todas las Versiones</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Todas</button>
+                    <button class="filter-btn" data-filter="1">Serie 1.x</button>
+                    <button class="filter-btn" data-filter="2">Serie 2.x</button>
+                    <button class="filter-btn" data-filter="3">Serie 3.x</button>
+                    <button class="filter-btn" data-filter="4">Serie 4.x</button>
+                    <button class="filter-btn" data-filter="5">Serie 5.x</button>
+                    <button class="filter-btn" data-filter="6">Serie 6.x</button>
+                    <button class="filter-btn" data-filter="7">Serie 7.x 🚀</button>
+                </div>
+            </div>
+
+            <div id="versionsContainer" class="versions-grid">
+                <!-- Versions will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="section stats-section">
+        <div class="container">
+            <h2 class="section-title">Estadísticas del Proyecto</h2>
+            <div class="stats-grid">
+                <div class="stats-card">
+                    <canvas id="versionsChart"></canvas>
+                    <p class="stats-caption">Distribución de versiones por serie</p>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-list">
+                        <div class="stats-item">
+                            <span class="stats-label">Líneas de código finales</span>
+                            <span class="stats-value">~3,500+</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="stats-label">Componentes</span>
+                            <span class="stats-value">25+</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="stats-label">Características principales</span>
+                            <span class="stats-value">50+</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="stats-label">Tiempo de desarrollo</span>
+                            <span class="stats-value">Iterativo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Trello Clone - Documentación de Versiones. Proyecto educativo de desarrollo iterativo.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="changelog-data.js"></script>
+</body>
+
+</html>
