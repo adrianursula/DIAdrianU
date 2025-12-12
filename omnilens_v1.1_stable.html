@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniLens v1.1 - Visor y Conversor Universal</title>
+    <meta name="description" content="Visor universal de archivos 100% client-side. Soporta 50+ formatos.">
+
+    <!-- CDN Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        /* ========================================
+           RESET & VARIABLES
+        ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Colors */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #151520;
+            --bg-glass: rgba(21, 21, 32, 0.85);
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --text-primary: #e4e4e7;
+            --text-secondary: #a1a1aa;
+            --border-color: rgba(99, 102, 241, 0.3);
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            /* Typography */
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            /* Effects */
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        /* ========================================
+           BASE STYLES
+        ======================================== */
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           HEADER
+        ======================================== */
+        .header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .header__content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header__brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header__logo {
+            width: 45px;
+            height: 45px;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .header__logo:hover {
+            transform: rotate(180deg) scale(1.1);
+        }
+
+        .header__title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header__subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        .header__badge {
+            background: var(--accent-gradient);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .header__actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .header__btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .header__btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* ========================================
+           MAIN LAYOUT
+        ======================================== */
+        .main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* ========================================
+           DROP ZONE
+        ======================================== */
+        .dropzone {
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border: 2px dashed var(--border-color);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            text-align: center;
+            transition: var(--transition);
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .dropzone:hover,
+        .dropzone--active {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .dropzone--dragover {
+            border-color: var(--accent-secondary);
+            background: rgba(139, 92, 246, 0.1);
+            transform: scale(1.01);
+        }
+
+        .dropzone--hidden {
+            display: none;
+        }
+
+        .dropzone__icon {
+            width: 70px;
+            height: 70px;
+            opacity: 0.8;
+        }
+
+        .dropzone__title {
+            font-size: 1.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dropzone__text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .dropzone__btn {
+            background: var(--accent-gradient);
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dropzone__btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .dropzone__input {
+            display: none;
+        }
+
+        /* ========================================
+           VIEWER
+        ======================================== */
+        .viewer {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .viewer--active {
+            display: block;
+        }
+
+        .viewer__header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .viewer__file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .viewer__file-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .viewer__file-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .viewer__file-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        .viewer__actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        .btn--warning {
+            background: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .btn--warning:hover {
+            background: #d97706;
+        }
+
+        .viewer__content {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 450px;
+            overflow: auto;
+        }
+
+        /* ========================================
+           CONVERSION PANEL
+        ======================================== */
+        .convert-panel {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .convert-panel--active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .convert-panel__title {
+            color: var(--warning);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .convert-panel__options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .convert-option {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .convert-option:hover {
+            border-color: var(--warning);
+            transform: translateY(-2px);
+        }
+
+        .convert-option--selected {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .convert-option__icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .convert-option__name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .convert-panel__btn {
+            width: 100%;
+            background: var(--warning);
+            border: none;
+            padding: 0.875rem;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .convert-panel__btn:hover {
+            background: #d97706;
+        }
+
+        .convert-panel__btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* ========================================
+           CONTENT VIEWERS
+        ======================================== */
+        .content-viewer {
+            display: none;
+            width: 100%;
+        }
+
+        .content-viewer--active {
+            display: block;
+        }
+
+        /* Image */
+        .image-viewer {
+            text-align: center;
+        }
+
+        .image-viewer--active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .image-viewer__img {
+            max-width: 100%;
+            max-height: 550px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--bg-secondary);
+            padding: 0.75rem;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .controls__btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .controls__btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* Text/Code */
+        .text-viewer pre {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        .text-viewer code {
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* PDF */
+        .pdf-viewer__info {
+            text-align: center;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .pdf-viewer__canvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        /* DOCX */
+        .docx-viewer__content {
+            background: white;
+            color: #1a1a1a;
+            padding: 2rem;
+            border-radius: 8px;
+            min-height: 350px;
+            line-height: 1.7;
+        }
+
+        /* Excel */
+        .excel-viewer table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+        }
+
+        .excel-viewer th,
+        .excel-viewer td {
+            border: 1px solid var(--border-color);
+            padding: 0.6rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .excel-viewer th {
+            background: var(--accent-primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .excel-viewer tr:hover {
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        /* Markdown */
+        .markdown-viewer__content {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            line-height: 1.8;
+        }
+
+        .markdown-viewer__content h1,
+        .markdown-viewer__content h2,
+        .markdown-viewer__content h3 {
+            color: var(--accent-primary);
+            margin: 1.25rem 0 0.75rem;
+        }
+
+        .markdown-viewer__content code {
+            background: var(--bg-primary);
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            color: var(--accent-secondary);
+        }
+
+        .markdown-viewer__content pre {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        /* Media */
+        .media-viewer {
+            text-align: center;
+        }
+
+        .media-viewer audio,
+        .media-viewer video {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Loading & Error */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading--active {
+            display: block;
+        }
+
+        .loading__spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .error {
+            display: none;
+            color: var(--error);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error--active {
+            display: block;
+        }
+
+        /* ========================================
+           TOAST NOTIFICATIONS
+        ======================================== */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 280px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast--success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast--error {
+            border-left: 4px solid var(--error);
+        }
+
+        .toast--warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .toast--info {
+            border-left: 4px solid var(--info);
+        }
+
+        .toast__icon {
+            font-size: 1.25rem;
+        }
+
+        .toast__message {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .toast__close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0;
+        }
+
+        /* ========================================
+           HISTORY MODAL
+        ======================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay--active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal__title {
+            font-size: 1.25rem;
+            color: var(--accent-primary);
+        }
+
+        .modal__close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .history-list {
+            list-style: none;
+        }
+
+        .history-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .history-item__icon {
+            font-size: 1.5rem;
+        }
+
+        .history-item__name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .history-item__meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .history-empty {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
+        }
+
+        /* ========================================
+           INFO CARDS
+        ======================================== */
+        .info-section {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .info-card__title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+        }
+
+        .info-card__list {
+            list-style: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .info-card__list li::before {
+            content: "▹ ";
+            color: var(--accent-primary);
+        }
+
+        /* ========================================
+           FOOTER
+        ======================================== */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+        }
+
+        /* ========================================
+           ANIMATIONS
+        ======================================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE
+        ======================================== */
+        @media (max-width: 768px) {
+            .header__content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header__actions {
+                margin-top: 0.5rem;
+            }
+
+            .main {
+                padding: 0 1rem;
+            }
+
+            .dropzone {
+                padding: 2rem 1rem;
+                min-height: 280px;
+            }
+
+            .viewer__header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .viewer__actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- History Modal -->
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal">
+            <div class="modal__header">
+                <h3 class="modal__title">📂 Historial de Archivos</h3>
+                <button class="modal__close" onclick="closeHistory()">&times;</button>
+            </div>
+            <ul class="history-list" id="historyList"></ul>
+            <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="clearHistory()">🗑️ Limpiar
+                Historial</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header__content">
+            <div class="header__brand">
+                <svg class="header__logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                    <polygon points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" fill="none" stroke="url(#logoGrad)"
+                        stroke-width="3" />
+                    <text x="35" y="55" font-family="monospace" font-size="30" fill="url(#logoGrad)"
+                        font-weight="bold">&lt;</text>
+                    <text x="55" y="55" font-family="monospace" font-size="30" fill="url(#logoGrad)"
+                        font-weight="bold">&gt;</text>
+                    <circle cx="50" cy="50" r="7" fill="none" stroke="url(#logoGrad)" stroke-width="2" />
+                </svg>
+                <div>
+                    <h1 class="header__title">OmniLens</h1>
+                    <span class="header__subtitle">// Visor Universal Refactorizado</span>
+                </div>
+            </div>
+            <div class="header__actions">
+                <button class="header__btn" onclick="showHistory()" title="Historial">📂</button>
+                <button class="header__btn" onclick="showShortcuts()" title="Atajos">⌨️</button>
+            </div>
+            <span class="header__badge">v1.1 STABLE</span>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Drop Zone -->
+        <div class="dropzone" id="dropzone">
+            <svg class="dropzone__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="uploadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#6366f1" />
+                        <stop offset="100%" style="stop-color:#8b5cf6" />
+                    </linearGradient>
+                </defs>
+                <path d="M 50 20 L 50 70" stroke="url(#uploadGrad)" stroke-width="5" fill="none"
+                    stroke-linecap="round" />
+                <path d="M 30 40 L 50 20 L 70 40" stroke="url(#uploadGrad)" stroke-width="5" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M 20 80 L 80 80" stroke="url(#uploadGrad)" stroke-width="5" stroke-linecap="round" />
+            </svg>
+            <h2 class="dropzone__title">Arrastra tu Archivo Aquí</h2>
+            <p class="dropzone__text">Imágenes, PDFs, Office, Código, Markdown y más</p>
+            <button class="dropzone__btn" onclick="document.getElementById('fileInput').click()">Seleccionar
+                Archivo</button>
+            <input type="file" id="fileInput" class="dropzone__input">
+        </div>
+
+        <!-- Viewer -->
+        <div class="viewer" id="viewer">
+            <div class="viewer__header">
+                <div class="viewer__file-info">
+                    <div class="viewer__file-icon" id="fileIcon">📄</div>
+                    <div>
+                        <div class="viewer__file-name" id="fileName">Archivo</div>
+                        <div class="viewer__file-meta"><span id="fileType">-</span> • <span id="fileSize">-</span></div>
+                    </div>
+                </div>
+                <div class="viewer__actions">
+                    <button class="btn btn--warning" onclick="toggleConvert()">🔄 Convertir</button>
+                    <button class="btn" onclick="resetViewer()">📁 Nuevo</button>
+                </div>
+            </div>
+
+            <!-- Convert Panel -->
+            <div class="convert-panel" id="convertPanel">
+                <h4 class="convert-panel__title">🔄 Convertir a:</h4>
+                <div class="convert-panel__options" id="convertOptions"></div>
+                <button class="convert-panel__btn" id="convertBtn" onclick="executeConvert()" disabled>Convertir y
+                    Descargar</button>
+            </div>
+
+            <!-- Content -->
+            <div class="viewer__content">
+                <div class="loading" id="loading">
+                    <div class="loading__spinner"></div>
+                    <p>Procesando archivo...</p>
+                </div>
+
+                <div class="content-viewer image-viewer" id="imageViewer">
+                    <img id="previewImage" class="image-viewer__img" src="" alt="Preview">
+                    <div class="controls">
+                        <button class="controls__btn" onclick="zoom(1.2)">🔍+</button>
+                        <button class="controls__btn" onclick="zoom(0.8)">🔍-</button>
+                        <button class="controls__btn" onclick="resetZoom()">↺</button>
+                    </div>
+                </div>
+
+                <div class="content-viewer text-viewer" id="textViewer">
+                    <pre><code id="textContent" class="language-plaintext"></code></pre>
+                </div>
+
+                <div class="content-viewer pdf-viewer" id="pdfViewer">
+                    <div class="pdf-viewer__info">Página <span id="pageNum">1</span> de <span id="pageCount">-</span>
+                    </div>
+                    <div class="controls">
+                        <button class="controls__btn" onclick="prevPage()">⬅ Anterior</button>
+                        <button class="controls__btn" onclick="nextPage()">Siguiente ➡</button>
+                        <button class="controls__btn" onclick="zoomPDF(1.2)">🔍+</button>
+                        <button class="controls__btn" onclick="zoomPDF(0.8)">🔍-</button>
+                    </div>
+                    <canvas id="pdfCanvas" class="pdf-viewer__canvas"></canvas>
+                </div>
+
+                <div class="content-viewer docx-viewer" id="docxViewer">
+                    <div id="docxContent" class="docx-viewer__content"></div>
+                </div>
+
+                <div class="content-viewer excel-viewer" id="excelViewer">
+                    <div id="excelContent"></div>
+                </div>
+
+                <div class="content-viewer markdown-viewer" id="markdownViewer">
+                    <div id="markdownContent" class="markdown-viewer__content"></div>
+                </div>
+
+                <div class="content-viewer media-viewer" id="mediaViewer">
+                    <div id="mediaContent"></div>
+                </div>
+
+                <div class="error" id="errorMsg">❌ Error al procesar</div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <section class="info-section">
+            <div class="info-card">
+                <h3 class="info-card__title">📷 Imágenes</h3>
+                <ul class="info-card__list">
+                    <li>JPG, PNG, WEBP, GIF, SVG</li>
+                    <li>Conversión entre formatos</li>
+                    <li>Zoom y previsualización</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3 class="info-card__title">📄 Documentos</h3>
+                <ul class="info-card__list">
+                    <li>PDF con paginación</li>
+                    <li>Word (DOCX)</li>
+                    <li>Excel (XLSX)</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3 class="info-card__title">💻 Código</h3>
+                <ul class="info-card__list">
+                    <li>30+ lenguajes</li>
+                    <li>Syntax highlighting</li>
+                    <li>JSON ↔ CSV</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3 class="info-card__title">🎵 Media</h3>
+                <ul class="info-card__list">
+                    <li>Audio: MP3, WAV</li>
+                    <li>Video: MP4, WebM</li>
+                    <li>Reproductor HTML5</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>OmniLens v1.1 STABLE | Refactorizado | © 2025</p>
+        <p style="margin-top: 0.25rem; opacity: 0.7;">Código limpio, modular y mantenible</p>
+    </footer>
+
+    <script>
+        // ========================================
+        // CONFIGURATION
+        // ========================================
+        const CONFIG = {
+            MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
+            HISTORY_MAX: 10,
+            PDF_WORKER: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+            TEXT_EXTENSIONS: ['.txt', '.md', '.js', '.ts', '.json', '.html', '.css', '.xml', '.csv', '.log', '.py', '.java', '.cpp', '.c', '.h', '.jsx', '.tsx', '.vue', '.php', '.rb', '.go', '.rs', '.sql', '.sh', '.yaml', '.yml'],
+            LANG_MAP: { js: 'javascript', ts: 'typescript', py: 'python', html: 'html', css: 'css', json: 'json', xml: 'xml', java: 'java', cpp: 'cpp', c: 'c', rb: 'ruby', go: 'go', rs: 'rust', sql: 'sql', sh: 'bash', yaml: 'yaml', yml: 'yaml' }
+        };
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = CONFIG.PDF_WORKER;
+
+        // ========================================
+        // STATE
+        // ========================================
+        const State = {
+            file: null,
+            fileType: null,
+            content: null,
+            zoom: 1,
+            pdfDoc: null,
+            pdfPage: 1,
+            pdfScale: 1.5,
+            convertFormat: null
+        };
+
+        // ========================================
+        // DOM ELEMENTS
+        // ========================================
+        const DOM = {
+            dropzone: document.getElementById('dropzone'),
+            fileInput: document.getElementById('fileInput'),
+            viewer: document.getElementById('viewer'),
+            loading: document.getElementById('loading'),
+            error: document.getElementById('errorMsg'),
+            convertPanel: document.getElementById('convertPanel'),
+            convertOptions: document.getElementById('convertOptions'),
+            convertBtn: document.getElementById('convertBtn'),
+            toastContainer: document.getElementById('toastContainer'),
+            historyModal: document.getElementById('historyModal'),
+            historyList: document.getElementById('historyList'),
+            viewers: {
+                image: document.getElementById('imageViewer'),
+                text: document.getElementById('textViewer'),
+                pdf: document.getElementById('pdfViewer'),
+                docx: document.getElementById('docxViewer'),
+                excel: document.getElementById('excelViewer'),
+                markdown: document.getElementById('markdownViewer'),
+                media: document.getElementById('mediaViewer')
+            }
+        };
+
+        // ========================================
+        // TOAST SYSTEM
+        // ========================================
+        function toast(message, type = 'info') {
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const t = document.createElement('div');
+            t.className = `toast toast--${type}`;
+            t.innerHTML = `
+                <span class="toast__icon">${icons[type]}</span>
+                <span class="toast__message">${message}</span>
+                <button class="toast__close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            DOM.toastContainer.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        // ========================================
+        // HISTORY SYSTEM
+        // ========================================
+        function saveHistory(file) {
+            try {
+                let history = JSON.parse(localStorage.getItem('omniLensHistory') || '[]');
+                const entry = { name: file.name, type: file.type || 'unknown', size: formatSize(file.size), date: new Date().toLocaleString('es-ES') };
+                history = [entry, ...history.filter(h => h.name !== file.name)].slice(0, CONFIG.HISTORY_MAX);
+                localStorage.setItem('omniLensHistory', JSON.stringify(history));
+            } catch (e) { console.warn('History save failed:', e); }
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('omniLensHistory') || '[]');
+            DOM.historyList.innerHTML = history.length === 0
+                ? '<p class="history-empty">📁 No hay archivos en el historial</p>'
+                : history.map(h => `
+                    <li class="history-item">
+                        <span class="history-item__icon">${getIcon(h.name)}</span>
+                        <div>
+                            <div class="history-item__name">${h.name}</div>
+                            <div class="history-item__meta">${h.size} • ${h.date}</div>
+                        </div>
+                    </li>
+                `).join('');
+            DOM.historyModal.classList.add('modal-overlay--active');
+        }
+
+        function closeHistory() { DOM.historyModal.classList.remove('modal-overlay--active'); }
+        function clearHistory() { localStorage.removeItem('omniLensHistory'); showHistory(); toast('Historial limpiado', 'success'); }
+
+        // ========================================
+        // DRAG & DROP
+        // ========================================
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+            DOM.dropzone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
+            document.body.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
+        });
+
+        ['dragenter', 'dragover'].forEach(e => DOM.dropzone.addEventListener(e, () => DOM.dropzone.classList.add('dropzone--dragover')));
+        ['dragleave', 'drop'].forEach(e => DOM.dropzone.addEventListener(e, () => DOM.dropzone.classList.remove('dropzone--dragover')));
+
+        DOM.dropzone.addEventListener('drop', e => handleFile(e.dataTransfer.files));
+        DOM.fileInput.addEventListener('change', e => handleFile(e.target.files));
+
+        // ========================================
+        // FILE HANDLER
+        // ========================================
+        async function handleFile(files) {
+            if (!files.length) return;
+            const file = files[0];
+
+            // Validation
+            if (file.size > CONFIG.MAX_FILE_SIZE) {
+                toast(`Archivo muy grande. Máximo: ${formatSize(CONFIG.MAX_FILE_SIZE)}`, 'error');
+                return;
+            }
+
+            State.file = file;
+            saveHistory(file);
+            updateFileInfo(file);
+            showLoading();
+            hideAllViewers();
+            DOM.convertPanel.classList.remove('convert-panel--active');
+
+            try {
+                const type = file.type;
+                const name = file.name.toLowerCase();
+
+                if (type.startsWith('image/')) { State.fileType = 'image'; await displayImage(file); }
+                else if (type === 'application/pdf') { State.fileType = 'pdf'; await displayPDF(file); }
+                else if (type.includes('wordprocessingml')) { State.fileType = 'docx'; await displayDOCX(file); }
+                else if (type.includes('spreadsheetml') || name.endsWith('.xlsx')) { State.fileType = 'excel'; await displayExcel(file); }
+                else if (name.endsWith('.md')) { State.fileType = 'markdown'; await displayMarkdown(file); }
+                else if (type.startsWith('audio/')) { State.fileType = 'audio'; await displayMedia(file, 'audio'); }
+                else if (type.startsWith('video/')) { State.fileType = 'video'; await displayMedia(file, 'video'); }
+                else if (name.endsWith('.json')) { State.fileType = 'json'; await displayText(file); }
+                else if (name.endsWith('.csv')) { State.fileType = 'csv'; await displayText(file); }
+                else if (type.startsWith('text/') || isTextFile(name)) { State.fileType = 'text'; await displayText(file); }
+                else { throw new Error('Formato no soportado'); }
+
+                hideLoading();
+                toast(`${file.name} cargado`, 'success');
+            } catch (err) {
+                console.error(err);
+                hideLoading();
+                showError(err.message);
+                toast(err.message, 'error');
+            }
+        }
+
+        // ========================================
+        // DISPLAY FUNCTIONS
+        // ========================================
+        async function displayImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    State.content = e.target.result;
+                    document.getElementById('previewImage').src = State.content;
+                    DOM.viewers.image.classList.add('content-viewer--active', 'image-viewer--active');
+                    State.zoom = 1;
+                    resolve();
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function displayPDF(file) {
+            const buffer = await file.arrayBuffer();
+            State.pdfDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
+            document.getElementById('pageCount').textContent = State.pdfDoc.numPages;
+            State.pdfPage = 1;
+            await renderPDFPage(State.pdfPage);
+            DOM.viewers.pdf.classList.add('content-viewer--active');
+        }
+
+        async function renderPDFPage(num) {
+            const page = await State.pdfDoc.getPage(num);
+            const viewport = page.getViewport({ scale: State.pdfScale });
+            const canvas = document.getElementById('pdfCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            document.getElementById('pageNum').textContent = num;
+        }
+
+        function prevPage() { if (State.pdfPage > 1) { State.pdfPage--; renderPDFPage(State.pdfPage); } }
+        function nextPage() { if (State.pdfPage < State.pdfDoc.numPages) { State.pdfPage++; renderPDFPage(State.pdfPage); } }
+        function zoomPDF(factor) { State.pdfScale = Math.max(0.5, Math.min(3, State.pdfScale * factor)); renderPDFPage(State.pdfPage); }
+
+        async function displayDOCX(file) {
+            const buffer = await file.arrayBuffer();
+            const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
+            State.content = result.value;
+            document.getElementById('docxContent').innerHTML = State.content;
+            DOM.viewers.docx.classList.add('content-viewer--active');
+        }
+
+        async function displayExcel(file) {
+            const buffer = await file.arrayBuffer();
+            const wb = XLSX.read(buffer, { type: 'array' });
+            State.content = wb;
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            document.getElementById('excelContent').innerHTML = XLSX.utils.sheet_to_html(ws);
+            DOM.viewers.excel.classList.add('content-viewer--active');
+        }
+
+        async function displayMarkdown(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const raw = e.target.result;
+                    State.content = { raw, html: marked.parse(raw) };
+                    document.getElementById('markdownContent').innerHTML = State.content.html;
+                    document.querySelectorAll('#markdownContent pre code').forEach(b => hljs.highlightElement(b));
+                    DOM.viewers.markdown.classList.add('content-viewer--active');
+                    resolve();
+                };
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        async function displayText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    State.content = e.target.result;
+                    const code = document.getElementById('textContent');
+                    code.textContent = State.content;
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    code.className = `language-${CONFIG.LANG_MAP[ext] || 'plaintext'}`;
+                    hljs.highlightElement(code);
+                    DOM.viewers.text.classList.add('content-viewer--active');
+                    resolve();
+                };
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        async function displayMedia(file, type) {
+            const url = URL.createObjectURL(file);
+            const tag = type === 'audio' ? 'audio' : 'video';
+            const style = type === 'audio' ? 'width: 100%; max-width: 500px;' : 'max-width: 100%; max-height: 500px;';
+            document.getElementById('mediaContent').innerHTML = `<${tag} controls style="${style}"><source src="${url}" type="${file.type}"></${tag}>`;
+            DOM.viewers.media.classList.add('content-viewer--active');
+        }
+
+        // ========================================
+        // CONVERSION
+        // ========================================
+        function toggleConvert() {
+            const isActive = DOM.convertPanel.classList.contains('convert-panel--active');
+            if (isActive) { DOM.convertPanel.classList.remove('convert-panel--active'); }
+            else { setupConvertOptions(); DOM.convertPanel.classList.add('convert-panel--active'); }
+        }
+
+        function setupConvertOptions() {
+            DOM.convertOptions.innerHTML = '';
+            State.convertFormat = null;
+            DOM.convertBtn.disabled = true;
+
+            let options = [];
+            if (State.fileType === 'image') options = [{ f: 'png', i: '🖼️', n: 'PNG' }, { f: 'jpg', i: '📷', n: 'JPG' }, { f: 'webp', i: '🌐', n: 'WEBP' }];
+            else if (State.fileType === 'pdf') options = [{ f: 'png', i: '🖼️', n: 'PNG' }];
+            else if (State.fileType === 'markdown') options = [{ f: 'html', i: '🌐', n: 'HTML' }];
+            else if (State.fileType === 'json') options = [{ f: 'csv', i: '📊', n: 'CSV' }];
+            else if (State.fileType === 'csv') options = [{ f: 'json', i: '📋', n: 'JSON' }];
+            else { DOM.convertOptions.innerHTML = '<p style="color: var(--text-secondary); grid-column: 1/-1; text-align: center;">No hay conversiones para este tipo</p>'; return; }
+
+            options.forEach(o => {
+                const div = document.createElement('div');
+                div.className = 'convert-option';
+                div.innerHTML = `<div class="convert-option__icon">${o.i}</div><div class="convert-option__name">${o.n}</div>`;
+                div.onclick = () => selectFormat(o.f, div);
+                DOM.convertOptions.appendChild(div);
+            });
+        }
+
+        function selectFormat(format, el) {
+            document.querySelectorAll('.convert-option').forEach(e => e.classList.remove('convert-option--selected'));
+            el.classList.add('convert-option--selected');
+            State.convertFormat = format;
+            DOM.convertBtn.disabled = false;
+        }
+
+        async function executeConvert() {
+            if (!State.convertFormat) return;
+            showLoading();
+            DOM.convertPanel.classList.remove('convert-panel--active');
+
+            try {
+                if (State.fileType === 'image') await convertImage(State.convertFormat);
+                else if (State.fileType === 'pdf') await convertPDFToImage();
+                else if (State.fileType === 'markdown') convertMarkdownToHTML();
+                else if (State.fileType === 'json') convertJSONToCSV();
+                else if (State.fileType === 'csv') convertCSVToJSON();
+            } catch (err) {
+                toast('Error en conversión: ' + err.message, 'error');
+            } finally { hideLoading(); }
+        }
+
+        async function convertImage(format) {
+            const img = new Image();
+            img.src = State.content;
+            await new Promise(r => img.onload = r);
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            const mimes = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp' };
+            canvas.toBlob(b => download(b, `converted.${format}`, mimes[format]), mimes[format], 0.95);
+        }
+
+        async function convertPDFToImage() {
+            document.getElementById('pdfCanvas').toBlob(b => download(b, `page-${State.pdfPage}.png`, 'image/png'), 'image/png');
+        }
+
+        function convertMarkdownToHTML() {
+            const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Documento</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:2rem auto;padding:2rem;line-height:1.6}code{background:#f4f4f4;padding:2px 6px;border-radius:3px}pre{background:#f4f4f4;padding:1rem;border-radius:5px;overflow-x:auto}</style></head><body>${State.content.html}</body></html>`;
+            download(new Blob([html], { type: 'text/html' }), 'document.html', 'text/html');
+        }
+
+        function convertJSONToCSV() {
+            const json = JSON.parse(State.content);
+            const data = Array.isArray(json) ? json : [json];
+            if (!data.length) throw new Error('JSON vacío');
+            const headers = Object.keys(data[0]);
+            let csv = headers.join(',') + '\n';
+            data.forEach(row => {
+                csv += headers.map(h => { const v = row[h]; return typeof v === 'string' && v.includes(',') ? `"${v}"` : v; }).join(',') + '\n';
+            });
+            download(new Blob([csv], { type: 'text/csv' }), 'data.csv', 'text/csv');
+        }
+
+        function convertCSVToJSON() {
+            const lines = State.content.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = lines.slice(1).map(line => {
+                const vals = line.split(',').map(v => v.trim());
+                return headers.reduce((obj, h, i) => { obj[h] = vals[i]; return obj; }, {});
+            });
+            download(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), 'data.json', 'application/json');
+        }
+
+        function download(blob, name, mime) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = name;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toast(`Descargado: ${name}`, 'success');
+        }
+
+        // ========================================
+        // ZOOM CONTROLS
+        // ========================================
+        function zoom(factor) {
+            State.zoom = Math.max(0.5, Math.min(5, State.zoom * factor));
+            document.getElementById('previewImage').style.transform = `scale(${State.zoom})`;
+        }
+
+        function resetZoom() {
+            State.zoom = 1;
+            document.getElementById('previewImage').style.transform = 'scale(1)';
+        }
+
+        // ========================================
+        // UI HELPERS
+        // ========================================
+        function updateFileInfo(file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileType').textContent = file.type || 'Desconocido';
+            document.getElementById('fileSize').textContent = formatSize(file.size);
+            document.getElementById('fileIcon').textContent = getIcon(file.name);
+            DOM.dropzone.classList.add('dropzone--hidden');
+            DOM.viewer.classList.add('viewer--active');
+        }
+
+        function resetViewer() {
+            DOM.dropzone.classList.remove('dropzone--hidden');
+            DOM.viewer.classList.remove('viewer--active');
+            DOM.convertPanel.classList.remove('convert-panel--active');
+            hideAllViewers();
+            DOM.fileInput.value = '';
+            Object.assign(State, { file: null, fileType: null, content: null, zoom: 1, pdfDoc: null, pdfPage: 1, pdfScale: 1.5, convertFormat: null });
+        }
+
+        function hideAllViewers() {
+            Object.values(DOM.viewers).forEach(v => { v.classList.remove('content-viewer--active', 'image-viewer--active'); });
+            DOM.error.classList.remove('error--active');
+        }
+
+        function showLoading() { DOM.loading.classList.add('loading--active'); }
+        function hideLoading() { DOM.loading.classList.remove('loading--active'); }
+        function showError(msg) { DOM.error.textContent = '❌ ' + msg; DOM.error.classList.add('error--active'); }
+
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024, sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
+        }
+
+        function isTextFile(name) { return CONFIG.TEXT_EXTENSIONS.some(e => name.endsWith(e)); }
+
+        function getIcon(name) {
+            const n = name.toLowerCase();
+            if (/\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(n)) return '🖼️';
+            if (/\.pdf$/i.test(n)) return '📕';
+            if (/\.docx?$/i.test(n)) return '📘';
+            if (/\.xlsx?$/i.test(n)) return '📊';
+            if (/\.md$/i.test(n)) return '📝';
+            if (/\.json$/i.test(n)) return '📋';
+            if (/\.csv$/i.test(n)) return '📈';
+            if (/\.(mp3|wav|ogg)$/i.test(n)) return '🎵';
+            if (/\.(mp4|webm|ogv)$/i.test(n)) return '🎬';
+            return '📄';
+        }
+
+        function showShortcuts() {
+            toast('Atajos: Ctrl+O (Abrir) • +/- (Zoom) • ←/→ (Páginas PDF)', 'info');
+        }
+
+        // ========================================
+        // KEYBOARD SHORTCUTS
+        // ========================================
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'o') { e.preventDefault(); DOM.fileInput.click(); }
+            if (State.fileType === 'image') {
+                if (e.key === '+' || e.key === '=') zoom(1.2);
+                if (e.key === '-') zoom(0.8);
+                if (e.key === '0') resetZoom();
+            }
+            if (State.fileType === 'pdf') {
+                if (e.key === 'ArrowLeft') prevPage();
+                if (e.key === 'ArrowRight') nextPage();
+            }
+            if (e.key === 'Escape') {
+                closeHistory();
+                DOM.convertPanel.classList.remove('convert-panel--active');
+            }
+        });
+
+        // ========================================
+        // INIT
+        // ========================================
+        console.log('%c🔷 OmniLens v1.1 STABLE 🔷', 'color: #6366f1; font-size: 18px; font-weight: bold;');
+        console.log('%cRefactorizado • Modular • Optimizado', 'color: #10b981; font-size: 12px;');
+    </script>
+</body>
+
+</html>
