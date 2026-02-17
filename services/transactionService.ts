@@ -105,6 +105,30 @@ export async function deleteTransaction(
 }
 
 /**
+ * Update an existing transaction
+ */
+export async function updateTransaction(
+    id: string,
+    updates: Partial<CreateTransactionInput>
+): Promise<{ data: Transaction | null; error: any }> {
+    try {
+        const { data, error } = await supabase
+            .from('transactions')
+            .update(updates)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        return { data, error: null };
+    } catch (error) {
+        console.error('Error updating transaction:', error);
+        return { data: null, error };
+    }
+}
+
+/**
  * Calculate balance from transactions
  * @param transactions - Array of transactions with category information
  * @returns Balance data with total, income, and expense

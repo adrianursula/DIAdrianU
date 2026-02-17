@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroG Finance - Documentación Oficial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151e32', // Custom slightly lighter than 900
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        sky: {
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-rocket text-sky-400 text-2xl mr-3"></i>
+                    <span class="font-bold text-xl tracking-wide">ZeroG Finance</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#features"
+                            class="hover:bg-slate-800 px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white transition">Características</a>
+                        <a href="#tech-stack"
+                            class="hover:bg-slate-800 px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white transition">Tecnología</a>
+                        <a href="#architecture"
+                            class="hover:bg-slate-800 px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white transition">Arquitectura</a>
+                        <a href="#install"
+                            class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-full text-sm font-bold transition shadow-lg shadow-sky-500/20">
+                            Descargar APK
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 overflow-hidden">
+        <div
+            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1639322537228-ad714dd474f5?q=80&w=2664&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
+        </div>
+        <div class="absolute inset-x-0 top-0 h-full bg-gradient-to-b from-transparent via-slate-900/80 to-slate-900">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div
+                class="inline-flex items-center px-4 py-2 rounded-full border border-sky-500/30 bg-sky-500/10 mb-8 backdrop-blur-sm animate-fade-in-up">
+                <span class="flex h-2 w-2 rounded-full bg-sky-400 mr-2 animate-pulse"></span>
+                <span class="text-sm font-medium text-sky-300">Versión 1.0.0 Disponible</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+                Control Financiero con <br />
+                <span class="gradient-text">Gravedad Cero</span>
+            </h1>
+
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-400 mb-10">
+                Una aplicación moderna, segura y elegante para gestionar tus finanzas personales.
+                Desarrollada con React Native y potenciada por Supabase.
+            </p>
+
+            <div class="flex justify-center gap-4">
+                <a href="#install"
+                    class="px-8 py-4 bg-sky-500 text-white rounded-xl font-bold text-lg hover:bg-sky-400 transition transform hover:-translate-y-1 shadow-xl shadow-sky-500/20 flex items-center">
+                    <i class="fa-brands fa-android mr-2"></i> Descargar Android
+                </a>
+                <a href="#features"
+                    class="px-8 py-4 glass-panel text-white rounded-xl font-bold text-lg hover:bg-slate-800 transition transform hover:-translate-y-1 border border-slate-700">
+                    Saber Más
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Potencia y Simplicidad</h2>
+                <p class="text-slate-400">Todo lo que necesitas para entender tu dinero.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-sky-500/50 transition duration-300 group">
+                    <div
+                        class="w-14 h-14 bg-sky-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chart-pie text-2xl text-sky-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Visualización de Datos</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Gráficos interactivos SVG que muestran tus gastos por categoría. Entiende a dónde va tu dinero
+                        de un vistazo.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-sky-500/50 transition duration-300 group">
+                    <div
+                        class="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-shield-halved text-2xl text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Seguridad RLS</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Tus datos están protegidos por Row Level Security de Supabase. Solo tú tienes acceso a tus
+                        transacciones financieras.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-panel p-8 rounded-2xl hover:border-sky-500/50 transition duration-300 group">
+                    <div
+                        class="w-14 h-14 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-globe text-2xl text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Multi-Idioma</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Soporte nativo para Español e Inglés con cambio instantáneo. Adaptado a tu preferencia regional
+                        y de moneda.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Log Section -->
+    <section id="dev-log" class="py-20 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Bitácora de Desarrollo</h2>
+                <p class="text-slate-400">Historia de la construcción, retos técnicos y soluciones aplicadas.</p>
+            </div>
+
+            <div class="relative border-l-2 border-slate-800 ml-4 md:ml-10 space-y-12">
+
+                <!-- Hito 1 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div
+                        class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-sky-500 ring-4 ring-slate-900 group-hover:scale-125 transition">
+                    </div>
+                    <div class="mb-2 text-sm text-sky-400 font-bold uppercase tracking-wider">Fase 1: Cimientos</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Inicialización y Backend</h3>
+                    <div class="glass-panel p-6 rounded-xl">
+                        <p class="text-slate-300 mb-4">
+                            Se inició el proyecto con <strong>Expo SDK 52</strong> y se integró
+                            <strong>Supabase</strong> como backend as a service.
+                        </p>
+                        <div class="bg-slate-950 rounded p-4 text-xs font-mono text-slate-400 border border-slate-800">
+                            <span class="text-green-400">SUCCESS:</span> Conexión a Supabase establecida.<br>
+                            <span class="text-green-400">FEATURE:</span> Auth Context creado para manejar sesiones de
+                            usuario y persistencia.<br>
+                            <span class="text-amber-400">CHALLENGE:</span> Definir esquemas RLS para asegurar que los
+                            nuevos usuarios solo vean sus propios datos.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hito 2 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div
+                        class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-slate-900 group-hover:scale-125 transition">
+                    </div>
+                    <div class="mb-2 text-indigo-400 text-sm font-bold uppercase tracking-wider">Fase 2: Estilado y UI
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Reto NativeWind</h3>
+                    <div class="glass-panel p-6 rounded-xl">
+                        <p class="text-slate-300 mb-4">
+                            Implementación de un diseño "Premium" oscuro. Nos encontramos con un problema crítico al
+                            configurar <strong>NativeWind/Tailwind</strong>.
+                        </p>
+                        <div
+                            class="bg-slate-950 rounded p-4 text-xs font-mono text-slate-400 border border-slate-800 mb-4">
+                            <span class="text-red-400">ERROR:</span> @tailwind directives not recognized.<br>
+                            <span class="text-sky-400">FIX:</span> Se crearon manualmente `postcss.config.js` y
+                            `tailwind.config.js` y se forzó la reinstalación de `postcss` y `autoprefixer`.
+                        </div>
+                        <p class="text-slate-400 italic">"El diseño no es solo cómo se ve, sino cómo funciona.
+                            NativeWind nos permitió iterar rápido."</p>
+                    </div>
+                </div>
+
+                <!-- Hito 3 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div
+                        class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-slate-900 group-hover:scale-125 transition">
+                    </div>
+                    <div class="mb-2 text-emerald-400 text-sm font-bold uppercase tracking-wider">Fase 3: Visualización
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Gráficos Interactivos</h3>
+                    <div class="glass-panel p-6 rounded-xl">
+                        <p class="text-slate-300 mb-4">
+                            Creación del componente <code>DonutChart</code>. Hubo dificultades con la librería de SVG en
+                            Expo Go.
+                        </p>
+                        <div class="bg-slate-950 rounded p-4 text-xs font-mono text-slate-400 border border-slate-800">
+                            <span class="text-red-400">ERROR:</span> RNSVG module not found.<br>
+                            <span class="text-sky-400">SOLUTION:</span> Reinstalación limpia de `react-native-svg` y
+                            rebuild del prebuild local.<br>
+                            <span class="text-green-400">RESULT:</span> Gráficos animados y reactivos al filtrar gastos
+                            vs ingresos.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hito 4 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div
+                        class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-pink-500 ring-4 ring-slate-900 group-hover:scale-125 transition">
+                    </div>
+                    <div class="mb-2 text-pink-400 text-sm font-bold uppercase tracking-wider">Fase 4: Multi-Idioma
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Internacionalización (i18n)</h3>
+                    <div class="glass-panel p-6 rounded-xl">
+                        <p class="text-slate-300 mb-4">
+                            Implementación in-house de un sistema de traducción mediante <strong>React Context</strong>.
+                        </p>
+                        <ul class="list-disc list-inside text-slate-400 space-y-2 text-sm">
+                            <li>Creación de diccionarios JSON para ES y EN.</li>
+                            <li><strong>Bug Crítico:</strong> El cambio de idioma no se reflejaba en toda la app.</li>
+                            <li><strong>Solución:</strong> Se descubrió que `LanguageProvider` no envolvía correctamente
+                                a `_layout.tsx` raíz. Se corrigió y envolvió toda la navegación.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Hito 5 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div
+                        class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-yellow-500 ring-4 ring-slate-900 group-hover:scale-125 transition">
+                    </div>
+                    <div class="mb-2 text-yellow-400 text-sm font-bold uppercase tracking-wider">Fase 5: Entrega</div>
+                    <h3 class="text-xl font-bold text-white mb-2">APK y Documentación</h3>
+                    <div class="glass-panel p-6 rounded-xl">
+                        <p class="text-slate-300 mb-4">
+                            Generación del ejecutable Android usando <strong>EAS Build</strong> en la nube y creación de
+                            esta web.
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <a href="#install" class="text-sky-400 hover:text-sky-300 text-sm font-bold underline">Ver
+                                Instalación</a>
+                            <span class="text-slate-600">|</span>
+                            <span class="text-slate-500 text-sm">Estado: Completo</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-20 bg-slate-950/50 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-center lg:gap-16">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h2 class="text-3xl font-bold mb-6">Arquitectura Moderna</h2>
+                    <p class="text-slate-400 mb-6 text-lg">
+                        Construida sobre un stack robusto diseñado para escalar.
+                        La aplicación separa claramente la capa de UI de la lógica de negocio y persistencia.
+                    </p>
+
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-sky-400 mt-1 mr-3"></i>
+                            <div>
+                                <strong class="block text-white">Frontend: Expo & React Native</strong>
+                                <span class="text-sm text-slate-500">Renderizado nativo fluido a 60fps con
+                                    actualizaciones OTA.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-sky-400 mt-1 mr-3"></i>
+                            <div>
+                                <strong class="block text-white">Backend: Supabase Cloud</strong>
+                                <span class="text-sm text-slate-500">PostgreSQL gestionado con Auth y Realtime
+                                    capabilities.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-sky-400 mt-1 mr-3"></i>
+                            <div>
+                                <strong class="block text-white">Estilado: NativeWind</strong>
+                                <span class="text-sm text-slate-500">Utilidades de Tailwind CSS compiles a estilos
+                                    nativos.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="lg:w-1/2">
+                    <div class="glass-panel p-6 rounded-2xl relative">
+                        <div class="absolute -top-4 -left-4 w-20 h-20 bg-sky-500/30 blur-2xl rounded-full"></div>
+                        <div class="absolute -bottom-4 -right-4 w-20 h-20 bg-purple-500/30 blur-2xl rounded-full"></div>
+
+                        <!-- Mini Code Mockup -->
+                        <div
+                            class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-hidden shadow-2xl border border-slate-800">
+                            <div class="flex gap-2 mb-4 border-b border-slate-800 pb-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                            <p><span class="text-purple-400">export</span> <span class="text-sky-400">interface</span>
+                                <span class="text-yellow-400">Transaction</span> {</p>
+                            <p class="pl-4">id: <span class="text-sky-400">string</span>;</p>
+                            <p class="pl-4">amount: <span class="text-sky-400">number</span>;</p>
+                            <p class="pl-4">date: <span class="text-sky-400">Date</span>;</p>
+                            <p class="pl-4">category: <span class="text-sky-400">Category</span>;</p>
+                            <p class="pl-4">user_id: <span class="text-sky-400">AuthID</span>;</p>
+                            <p>}</p>
+                            <br>
+                            <p><span class="text-slate-500">// Row Level Security ensures</span></p>
+                            <p><span class="text-slate-500">// users only see their own data</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="install" class="py-20 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">Empieza Ahora</h2>
+
+            <div class="glass-panel rounded-2xl p-10 max-w-2xl mx-auto border-t-4 border-sky-500">
+                <i class="fa-brands fa-android text-6xl text-sky-500 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Descargar para Android</h3>
+                <p class="text-slate-400 mb-8">
+                    Obtén la última versión (v1.0.0-preview) compilada y lista para instalar.
+                    Requiere habilitar "Orígenes desconocidos" en tu dispositivo.
+                </p>
+
+                <a href="https://expo.dev/artifacts/eas/squZPyrz71JZgyKzHpuEZW.apk"
+                    class="block w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-sky-600/30">
+                    <i class="fa-solid fa-download mr-2"></i> Descargar APK Directo
+                </a>
+
+                <p class="mt-4 text-xs text-slate-500">
+                    Tamaño aprox: 45MB • Compilación EAS Cloud
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-12 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 mb-4">
+                <i class="fa-solid fa-rocket text-sky-500"></i>
+                <span class="font-bold text-lg">ZeroG Finance</span>
+            </div>
+            <p class="text-slate-500 text-sm">
+                &copy; 2026 ZeroG Finance Development Team. Construido con ❤️ y mucho café.
+            </p>
+            <div class="mt-6 flex justify-center gap-6">
+                <a href="#" class="text-slate-400 hover:text-white transition"><i
+                        class="fa-brands fa-github text-xl"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition"><i
+                        class="fa-brands fa-twitter text-xl"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition"><i
+                        class="fa-solid fa-envelope text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
